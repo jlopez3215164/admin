@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+
+<url>
+  <loc>https://www.gravityelemex.com/</loc>
+  <lastmod>2022-07-13T02:39:36+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/index.html</loc>
+  <lastmod>2022-07-13T02:39:36+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/productos/elevador-para-pasajeros.html</loc>
+  <lastmod>2020-04-26T06:35:39+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/productos/elevador-para-autos.html</loc>
+  <lastmod>2020-04-26T06:35:39+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/productos/elevador-para-hospital.html</loc>
+  <lastmod>2020-04-26T06:35:39+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/productos/escalera-electrica.html</loc>
+  <lastmod>2020-04-26T06:35:39+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/productos/minicarga-montaplatos.html</loc>
+  <lastmod>2020-04-26T06:35:39+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/productos/apilacoches.html</loc>
+  <lastmod>2020-04-26T06:35:39+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/productos/elevador-para-carga.html</loc>
+  <lastmod>2020-04-26T06:35:39+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/productos/salvaescaleras.html</loc>
+  <lastmod>2020-04-26T06:35:40+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/productos/elevador-inclinado.html</loc>
+  <lastmod>2020-04-26T06:35:39+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/productos/media-cabina.html</loc>
+  <lastmod>2020-04-26T06:35:39+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/servicios.html</loc>
+  <lastmod>2020-04-26T06:35:18+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.gravityelemex.com/contacto.html</loc>
+  <lastmod>2020-04-26T06:35:18+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+
+
+</urlset>
