@@ -14,3 +14,9 @@ ERROR - 2022-07-28 04:05:50 --> Severity: Warning --> Undefined variable $module
 ERROR - 2022-07-28 04:05:50 --> Severity: Compile Error --> Array and string offset access syntax with curly braces is no longer supported C:\xampp\htdocs\admin\modules\purchase\third_party\excel\PHPExcel\Shared\String.php 526
 ERROR - 2022-07-28 04:07:42 --> Severity: Compile Error --> Array and string offset access syntax with curly braces is no longer supported C:\xampp\htdocs\admin\modules\purchase\third_party\excel\PHPExcel\Shared\String.php 526
 ERROR - 2022-07-28 04:13:15 --> Could not find the language line "List items"
+ERROR - 2022-07-28 04:14:55 --> Could not find the language line "Elementos de lista"
+ERROR - 2022-07-28 04:15:03 --> Severity: 8192 --> Required parameter $status follows optional parameter $department_id C:\xampp\htdocs\admin\modules\hr_profile\models\Hr_profile_model.php 1879
+ERROR - 2022-07-28 04:15:03 --> Severity: 8192 --> Required parameter $status follows optional parameter $department_id C:\xampp\htdocs\admin\modules\hr_profile\models\Hr_profile_model.php 2504
+ERROR - 2022-07-28 04:15:03 --> Severity: Warning --> Undefined array key "slug" C:\xampp\htdocs\admin\modules\products\products.php 236
+ERROR - 2022-07-28 04:15:04 --> Severity: 8192 --> Required parameter $status follows optional parameter $department_id C:\xampp\htdocs\admin\modules\hr_profile\models\Hr_profile_model.php 1879
+ERROR - 2022-07-28 04:15:04 --> Severity: 8192 --> Required parameter $status follows optional parameter $department_id C:\xampp\htdocs\admin\modules\hr_profile\models\Hr_profile_model.php 2504
