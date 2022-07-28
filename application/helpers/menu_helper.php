@@ -489,11 +489,11 @@ function app_init_admin_sidebar_menu_items()
             'badge'    => [],
         ]);
 
-       /* $modules_name = _l('modules');
+        $modules_name = _l('modules');
 
         if ($modulesNeedsUpgrade = $CI->app_modules->number_of_modules_that_require_database_upgrade()) {
             $modules_name .= '<span class="badge menu-badge bg-warning">' . $modulesNeedsUpgrade . '</span>';
-        }*/
+        }
 
         $CI->app_menu->add_setup_menu_item('modules', [
             'href'     => admin_url('modules'),
