@@ -37,7 +37,7 @@ function get_all_email_contacts(){
  * @param  int $minutes 
  * @return  bolean         
  */
-function cron_job_sync_woo($type, $store = '', $minutes){
+function cron_job_sync_woo($type, $store = '', $minutes = 0){
 	$CI = & get_instance();      
 
     $CI->load->model('omni_sales/omni_sales_model');
