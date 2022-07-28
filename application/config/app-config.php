@@ -17,7 +17,18 @@ defined('BASEPATH') or exit('No direct script access allowed');
 * environments.
 *
 */
-define('APP_BASE_URL', 'https://localhost/admin');
+//define('APP_BASE_URL', 'https://localhost/admin');
+$https = true;
+	 if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+		  $protocol = 'https://';
+		}
+		else {
+		  $protocol = 'http://';
+		}
+
+$dirname = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/').'/';
+$root=$protocol.$_SERVER['HTTP_HOST'].$dirname;
+define('APP_BASE_URL', $root);
 
 /*
 * --------------------------------------------------------------------------
