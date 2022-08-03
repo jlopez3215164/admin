@@ -13,7 +13,7 @@
 						?>
 						<li<?php if($i == 0){echo " class='active'"; } ?>>
 						<a href="<?php echo admin_url('manufacturing/setting?group='.$gr); ?>" data-group="<?php echo html_entity_decode($gr); ?>">
-							<?
+							<?php
 								$icon['working_hour'] = '<span class="fa fa-area-chart"></span>';
 								$icon['unit_of_measure_categories'] = '<span class="fa fa-certificate"></span>';
 								$icon['unit_of_measure'] = '<span class="fa fa-list-alt"></span>';
@@ -26,9 +26,9 @@
 
 									echo html_entity_decode($icon[$gr] .' '. _l($gr)); 
 								}
-							
-							
 
+								
+							
 							?>
 						</a>
 					</li>
