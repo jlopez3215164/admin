@@ -59,13 +59,13 @@
 </li>
 <?php hooks()->do_action('after_render_single_setup_menu', $item); ?>
 <?php } ?>
-<?php if(get_option('show_help_on_setup_menu') == 1 && is_admin()){ $totalSetupMenuItems++; ?>
-    <li>
-        <a href="<?php echo hooks()->apply_filters('help_menu_item_link','https://help.perfexcrm.com'); ?>" target="_blank">
-            <?php echo hooks()->apply_filters('help_menu_item_text',_l('setup_help')); ?>
+<?php //if(get_option('show_help_on_setup_menu') == 1 && is_admin()){ $totalSetupMenuItems++; ?>
+    <!--<li>
+        <a href="<?php //echo hooks()->apply_filters('help_menu_item_link','https://help.perfexcrm.com'); ?>" target="_blank">
+            <?php //echo hooks()->apply_filters('help_menu_item_text',_l('setup_help')); ?>
         </a>
-    </li>
-<?php } ?>
+    </li>-->
+<?php //} ?>
 </ul>
 </div>
 <?php $this->app->set_setup_menu_visibility($totalSetupMenuItems); ?>
