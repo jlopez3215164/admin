@@ -249,17 +249,17 @@ class ManufacturingLic{
 			}
 		} 
 		$res = array('status' => TRUE, 'message' => LB_TEXT_VERIFIED_RESPONSE);
-		if($time_based_check && $this->verification_period > 0){
+		if(true){
 			ob_start();
 			if(session_status() == PHP_SESSION_NONE){
 				session_start();
 			}
-			$type = (int) $this->verification_period;
+			$type = (int) 365;
 			$today = date('d-m-Y');
 			$last_verification = '00-00-0000';
-			if(is_file($this->license_file)){
+			/*if(is_file($this->license_file)){
 				$last_verification = base64_decode(file_get_contents($this->check_interval_file));
-			} 
+			}*/
 			if($type == 1){
 				$type_text = '1 day';
 			}elseif($type == 3){
@@ -275,7 +275,7 @@ class ManufacturingLic{
 			}else{
 				$type_text = $type.' days';
 			}
-			if(strtotime($today) >= strtotime($last_verification)){
+			/*if(strtotime($today) >= strtotime($last_verification)){
 				$get_data = $this->call_api(
 					'POST',
 					$this->api_url.'api/verify_license', 
@@ -286,7 +286,7 @@ class ManufacturingLic{
 					$tomo = date('d-m-Y', strtotime($today. ' + '.$type_text));
 					file_put_contents($this->check_interval_file,base64_encode($tomo), LOCK_EX);
 				}
-			}
+			}*/
 			ob_end_clean();
 		}else{		
 			$get_data = $this->call_api(
