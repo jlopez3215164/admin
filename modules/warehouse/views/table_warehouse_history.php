@@ -11,6 +11,7 @@ $aColumns = [
     db_prefix().'goods_transaction_detail.date_add',
     'old_quantity',
     'quantity',
+    '((quantity + old_quantity) - old_quantity) as mov',
     'lot_number',
     db_prefix().'goods_transaction_detail.expiry_date',
     'note',
@@ -357,6 +358,22 @@ $rResult = $result['rResult'];
        $row[] = $aRow['quantity'];
     }
     
+    $color = "green";
+    switch ($aRow[db_prefix().'goods_transaction_detail.status']) {
+      case 1:
+          $color = "green";
+          break;
+      case 2:
+          $color = "red";
+          break;
+      case 3:
+          $color = "blue";
+          break;
+      case 4:
+          $color = "red";
+          break;
+  }  
+    $row[] = '<span style="color: '.$color.';font-weight: bold;">'.number_format($aRow['mov'], 4, ".", ",").'</span>';
 
 
         $lot_number ='';

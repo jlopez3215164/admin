@@ -76,6 +76,7 @@
                         _l('day_vouchers'),
                         _l('opening_stock'),
                         _l('closing_stock'),
+                        "MOVIMIENTO",
                         _l('lot_number').'/'._l('quantity_sold'),
                         _l('expiry_date'),
                         _l('note'),
