@@ -12,6 +12,8 @@ $aColumns = [
     'old_quantity',
     'quantity',
     '((quantity + old_quantity) - old_quantity) as mov',
+    '(((quantity + old_quantity) - old_quantity)/old_quantity) * 100 as rendi',
+    '(1-(((quantity + old_quantity) - old_quantity)/old_quantity)) * 100 as merma',
     'lot_number',
     db_prefix().'goods_transaction_detail.expiry_date',
     'note',
@@ -375,6 +377,15 @@ $rResult = $result['rResult'];
   }  
     $row[] = '<span style="color: '.$color.';font-weight: bold;">'.number_format($aRow['mov'], 4, ".", ",").'</span>';
 
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 3)
+      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['rendi'], 4, ".", ",").' %</span>';
+    else
+      $row[] = '<span style="color: green;font-weight: bold;">-</span>';
+
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 3)
+      $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['merma'], 4, ".", ",").' %</span>';
+    else
+      $row[] = '<span style="color: red;font-weight: bold;">-</span>';
 
         $lot_number ='';
          if(($aRow['lot_number'] != null) && ( $aRow['lot_number'] != '') ){

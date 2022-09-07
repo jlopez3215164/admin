@@ -77,6 +77,8 @@
                         _l('opening_stock'),
                         _l('closing_stock'),
                         "MOVIMIENTO",
+                        "RENDIMIENTO",
+                        "MERMA",
                         _l('lot_number').'/'._l('quantity_sold'),
                         _l('expiry_date'),
                         _l('note'),
