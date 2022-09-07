@@ -14,8 +14,9 @@ $aColumns = [
     '((quantity + old_quantity) - old_quantity) as mov',
     '(((quantity + old_quantity) - old_quantity)/old_quantity) * 100 as rendi',
     '(1-(((quantity + old_quantity) - old_quantity)/old_quantity)) * 100 as merma',
-    '(select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.goods_receipt_id = tblgoods_transaction_detail.goods_receipt_id order by tblgoods_receipt_detail.id desc limit 1) as costo',
+    '(select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1) as costo',
     '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.goods_receipt_id = tblgoods_transaction_detail.goods_receipt_id order by tblgoods_receipt_detail.id desc limit 1)/((((quantity + old_quantity) - old_quantity)/old_quantity) * 100)) * ((quantity + old_quantity) - old_quantity) ) as price_sug',
+    '((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) as price_sug_2',
     'lot_number',
     db_prefix().'goods_transaction_detail.expiry_date',
     'note',
@@ -341,20 +342,20 @@ $rResult = $result['rResult'];
          switch ($aRow[db_prefix().'goods_transaction_detail.status']) {
            case 1:
            //stock_import
-              $row[] = (float)$aRow['old_quantity'] + (float)$aRow['quantity'];
+              $row[] = "<span style='color: white;background-color:green; padding: 10px;font-weightbold;border-radius: 5px;'>".(float)$aRow['old_quantity'] + (float)$aRow['quantity']."<span>";
 
                break;
            case 2:
            //stock_export
-               $row[] = (float)$aRow['old_quantity'];
+               $row[] = "<span style='color: white;background-color:green; padding: 10px;font-weightbold;border-radius: 5px;'>".(float)$aRow['old_quantity']."<span>";
                break;
            case 3:
            //lost adjustment
-               $row[] = $aRow['quantity'];
+               $row[] = "<span style='color: white;background-color:green; padding: 10px;font-weightbold;border-radius: 5px;'>".$aRow['quantity']."<span>";
                break;
            case 4:
            //internal_delivery_note
-               $row[] = app_format_money((float)$aRow['old_quantity'] - (float)$aRow['quantity'],'');
+               $row[] = "<span style='color: white;background-color:green; padding: 10px;font-weightbold;border-radius: 5px;'>".app_format_money((float)$aRow['old_quantity'] - (float)$aRow['quantity'],'')."<span>";
                break;
        } 
 
@@ -392,9 +393,9 @@ $rResult = $result['rResult'];
       $row[] = '<span style="color: orange;font-weight: bold;">'.number_format($aRow['costo'], 4, ".", ",").'</span>';
 
       if($aRow[db_prefix().'goods_transaction_detail.status'] == 3)
-        $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['price_sug'], 4, ".", ",").'</span>';
+        $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['price_sug'], 4, ".", ",").'</span>';
       else
-        $row[] = '<span style="color: green;font-weight: bold;">-</span>';
+        $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['price_sug_2'], 4, ".", ",").'</span>';
 
         $lot_number ='';
          if(($aRow['lot_number'] != null) && ( $aRow['lot_number'] != '') ){
