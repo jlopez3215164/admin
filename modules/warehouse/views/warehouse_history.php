@@ -80,6 +80,7 @@
                         "RENDIMIENTO",
                         "MERMA",
                         "COSTO",
+                        "COSTO PROD",
                         _l('lot_number').'/'._l('quantity_sold'),
                         _l('expiry_date'),
                         _l('note'),
