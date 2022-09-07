@@ -79,6 +79,7 @@
                         "MOVIMIENTO",
                         "RENDIMIENTO",
                         "MERMA",
+                        "COSTO",
                         _l('lot_number').'/'._l('quantity_sold'),
                         _l('expiry_date'),
                         _l('note'),

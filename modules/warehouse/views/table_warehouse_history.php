@@ -14,6 +14,7 @@ $aColumns = [
     '((quantity + old_quantity) - old_quantity) as mov',
     '(((quantity + old_quantity) - old_quantity)/old_quantity) * 100 as rendi',
     '(1-(((quantity + old_quantity) - old_quantity)/old_quantity)) * 100 as merma',
+    '(select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.goods_receipt_id = tblgoods_transaction_detail.goods_receipt_id order by tblgoods_receipt_detail.id desc limit 1) as costo',
     'lot_number',
     db_prefix().'goods_transaction_detail.expiry_date',
     'note',
@@ -386,6 +387,8 @@ $rResult = $result['rResult'];
       $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['merma'], 4, ".", ",").' %</span>';
     else
       $row[] = '<span style="color: red;font-weight: bold;">-</span>';
+
+      $row[] = '<span style="color: orange;font-weight: bold;">'.number_format($aRow['costo'], 4, ".", ",").'</span>';
 
         $lot_number ='';
          if(($aRow['lot_number'] != null) && ( $aRow['lot_number'] != '') ){
