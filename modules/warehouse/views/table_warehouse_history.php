@@ -321,19 +321,19 @@ $rResult = $result['rResult'];
     switch ($aRow[db_prefix().'goods_transaction_detail.status']) {
       case 1:
            //stock_import
-         $row[] = $aRow['old_quantity']; 
+         $row[] = number_format($aRow['old_quantity'], 4, ".", ","); 
          break;
       case 2:
            //stock_export
-        $row[] = (float)$aRow['old_quantity']+ (float)$aRow['quantity'];
+        $row[] = number_format((float)number_format($aRow['old_quantity'], 4, ".", ",") + (float)number_format($aRow['quantity'], 4, ".", ","),  4, ".", ",");
          break;
       case 3:
            //lost adjustment
-         $row[] = $aRow['old_quantity']; 
+         $row[] = number_format($aRow['old_quantity'], 4, ".", ",");
          break;
       case 4:
            //internal_delivery_note
-         $row[] = $aRow['old_quantity'];
+         $row[] = number_format($aRow['old_quantity'], 4, ".", ",");
          break;
        
      } 
