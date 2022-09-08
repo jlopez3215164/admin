@@ -10,7 +10,7 @@ $aColumns = [
     db_prefix().'goods_transaction_detail.date_add',
     'old_quantity',
     'quantity',
-    '(select unit_code from tblware_unit_type t1 inner join tblgoods_receipt_detail t2 where t1.unit_type_id = t2.unit_id and t2.goods_receipt_id = tblgoods_transaction_detail.goods_receipt_id) as unit',
+    '(select unit_code from tblware_unit_type t1 inner join tblgoods_receipt_detail t2 where t1.unit_type_id = t2.unit_id and t2.goods_receipt_id = tblgoods_transaction_detail.goods_receipt_id limit 1) as unit',
     '((quantity + old_quantity) - old_quantity) as mov',
     '(((quantity + old_quantity) - old_quantity)/old_quantity) * 100 as rendi',
     '(1-(((quantity + old_quantity) - old_quantity)/old_quantity)) * 100 as merma',
