@@ -2,7 +2,6 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-
 $aColumns = [
     db_prefix().'goods_transaction_detail.id',
     'goods_receipt_id',
@@ -11,12 +10,18 @@ $aColumns = [
     db_prefix().'goods_transaction_detail.date_add',
     'old_quantity',
     'quantity',
+    '(select unit_code from tblware_unit_type t1 inner join tblgoods_receipt_detail t2 where t1.unit_type_id = t2.unit_id and t2.goods_receipt_id = tblgoods_transaction_detail.goods_receipt_id) as unit',
     '((quantity + old_quantity) - old_quantity) as mov',
     '(((quantity + old_quantity) - old_quantity)/old_quantity) * 100 as rendi',
     '(1-(((quantity + old_quantity) - old_quantity)/old_quantity)) * 100 as merma',
     '(select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1) as costo',
     '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.goods_receipt_id = tblgoods_transaction_detail.goods_receipt_id order by tblgoods_receipt_detail.id desc limit 1)/((((quantity + old_quantity) - old_quantity)/old_quantity) * 100)) * ((quantity + old_quantity) - old_quantity) ) as price_sug',
     '((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) as price_sug_2',
+    '(select profif_ratio from tblitems where commodity_code = tblgoods_transaction_detail.commodity_id) as gain',
+    '(select symbol from tblcurrencies where isdefault = 1 limit 1) as currency',
+    '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) * ((select profif_ratio from tblitems where commodity_code = tblgoods_transaction_detail.commodity_id)/100)) as gain_price',
+    '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) + (((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) * ((select profif_ratio from tblitems where commodity_code = tblgoods_transaction_detail.commodity_id)/100))) as price_sale',
+    '((((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) + (((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) * ((select profif_ratio from tblitems where commodity_code = tblgoods_transaction_detail.commodity_id)/100))) / ((quantity + old_quantity) - old_quantity)) as price_sale_unit',
     'lot_number',
     db_prefix().'goods_transaction_detail.expiry_date',
     'note',
@@ -41,8 +46,6 @@ $join =[
   'LEFT JOIN '.db_prefix().'wh_loss_adjustment ON '.db_prefix().'wh_loss_adjustment.id = '.db_prefix().'goods_transaction_detail.goods_receipt_id AND  '.db_prefix().'goods_transaction_detail.status = 3',
   'LEFT JOIN '.db_prefix().'internal_delivery_note ON '.db_prefix().'internal_delivery_note.id = '.db_prefix().'goods_transaction_detail.goods_receipt_id AND  '.db_prefix().'goods_transaction_detail.status = 4'
 ];
-
-
 
 if(isset($warehouse_ft)){
 
@@ -166,7 +169,7 @@ $rResult = $result['rResult'];
          $value = get_goods_receipt_code($aRow['goods_receipt_id']) != null ? get_goods_receipt_code($aRow['goods_receipt_id'])->goods_receipt_code : '';
 
          if($value != ''){
-            $row[] = '<a href="' . admin_url('warehouse/manage_purchase/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
+            $row[] = '<a style="color: green;font-weight: bold;" href="' . admin_url('warehouse/manage_purchase/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
          }else{
             $row[] = '';
          }
@@ -178,7 +181,7 @@ $rResult = $result['rResult'];
          $value = get_goods_delivery_code($aRow['goods_receipt_id']) != null ? get_goods_delivery_code($aRow['goods_receipt_id'])->goods_delivery_code : '';
 
          if($value != ''){
-            $row[] = '<a href="' . admin_url('warehouse/manage_delivery/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
+            $row[] = '<a style="color: red;font-weight:bold;" href="' . admin_url('warehouse/manage_delivery/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
          }else{
             $row[] = '';
          }
@@ -189,7 +192,7 @@ $rResult = $result['rResult'];
          $value = get_internal_delivery_code($aRow['goods_receipt_id']) != null ? get_internal_delivery_code($aRow['goods_receipt_id'])->internal_delivery_code : '';
 
          if($value != ''){
-            $row[] = '<a href="' . admin_url('warehouse/manage_internal_delivery/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
+            $row[] = '<a style="color: blue;font-weight:bold;" href="' . admin_url('warehouse/manage_internal_delivery/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
          }else{
             $row[] = '';
          }
@@ -200,7 +203,7 @@ $rResult = $result['rResult'];
          $value = "LA#".$aRow['goods_receipt_id'];
 
          if($value != ''){
-            $row[] = '<a href="' . admin_url('warehouse/view_lost_adjustment/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
+            $row[] = '<a style="color: blue;font-weight:bold;" href="' . admin_url('warehouse/view_lost_adjustment/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
          }else{
             $row[] = '';
          }
@@ -364,21 +367,28 @@ $rResult = $result['rResult'];
     }
     
     $color = "green";
+    $signo = "+";
     switch ($aRow[db_prefix().'goods_transaction_detail.status']) {
       case 1:
           $color = "green";
+          $signo = "+";
           break;
       case 2:
           $color = "red";
+          $signo = "-";
           break;
       case 3:
           $color = "blue";
+          $signo = "";
           break;
       case 4:
           $color = "red";
+          $signo = "-";
           break;
-  }  
-    $row[] = '<span style="color: '.$color.';font-weight: bold;">'.number_format($aRow['mov'], 4, ".", ",").'</span>';
+    }  
+
+  $row[] = '<span style="color: grey;font-weight: bold;">'.$aRow['unit'].'</span>';
+    $row[] = '<span style="color: '.$color.';font-weight: bold;">'.$signo.number_format($aRow['mov'], 4, ".", ",").'</span>';
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 3)
       $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['rendi'], 4, ".", ",").' %</span>';
@@ -390,12 +400,20 @@ $rResult = $result['rResult'];
     else
       $row[] = '<span style="color: red;font-weight: bold;">-</span>';
 
-      $row[] = '<span style="color: orange;font-weight: bold;">'.number_format($aRow['costo'], 4, ".", ",").'</span>';
+      $row[] = '<span style="color: orange;font-weight: bold;">'.number_format($aRow['costo'], 4, ".", ",").$aRow['currency'].'</span>';
 
       if($aRow[db_prefix().'goods_transaction_detail.status'] == 3)
-        $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['price_sug'], 4, ".", ",").'</span>';
+        $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['price_sug'], 4, ".", ",").$aRow['currency'].'</span>';
       else
-        $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['price_sug_2'], 4, ".", ",").'</span>';
+        $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['price_sug_2'], 4, ".", ",").$aRow['currency'].'</span>';
+
+    $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['gain'], 4, ".", ",").'%</span>';
+
+    $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['gain_price'], 4, ".", ",").$aRow['currency'].'</span>';
+
+    $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['price_sale_unit'], 4, ".", ",").$aRow['currency'].'</span>';
+
+    $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['price_sale'], 4, ".", ",").$aRow['currency'].'</span>';
 
         $lot_number ='';
          if(($aRow['lot_number'] != null) && ( $aRow['lot_number'] != '') ){
@@ -414,6 +432,8 @@ $rResult = $result['rResult'];
 
 
      $row[] = $lot_number;
+
+    
 
      $expiry_date ='';
          if(($aRow[db_prefix().'goods_transaction_detail.expiry_date'] != null) && ( $aRow[db_prefix().'goods_transaction_detail.expiry_date'] != '') ){
@@ -451,4 +471,6 @@ $rResult = $result['rResult'];
     $output['aaData'][] = $row;
 
     }
+
+
 
