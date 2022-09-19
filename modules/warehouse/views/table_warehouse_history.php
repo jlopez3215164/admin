@@ -440,7 +440,7 @@ $rResult = $result['rResult'];
       $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['gain_price'], 4, ".", ",").$aRow['currency'].'</span>';
     }
     if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 3){
-      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($total_utility_cost, 4, ".", ",").$aRow['currency'].'</span>';
+      $row[] = '<span style="color: #82C632;font-weight: bold;">'.number_format($total_utility_cost, 4, ".", ",").$aRow['currency'].'</span>';
       $total_utility_cost = 0;
     } 
 
@@ -449,7 +449,7 @@ $rResult = $result['rResult'];
       $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['price_sale_unit'], 4, ".", ",").$aRow['currency'].'</span>';
     }
     if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 3){
-      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($total_price_sale_unit, 4, ".", ",").$aRow['currency'].'</span>';
+      $row[] = '<span style="color: #82C632;font-weight: bold;">'.number_format($total_price_sale_unit, 4, ".", ",").$aRow['currency'].'</span>';
       $total_price_sale_unit = 0;
     } 
 
@@ -457,7 +457,7 @@ $rResult = $result['rResult'];
       $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['price_sale'], 4, ".", ",").$aRow['currency'].'</span>';
     }
     if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 3){
-      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($total_sale_price, 4, ".", ",").$aRow['currency'].'</span>';
+      $row[] = '<span style="color: #82C632;font-weight: bold;">'.number_format($total_sale_price, 4, ".", ",").$aRow['currency'].'</span>';
       $total_sale_price = 0;
     } 
    
