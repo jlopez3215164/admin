@@ -1,5 +1,7 @@
 <?php
 
+$total_production = 0;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 $aColumns = [
@@ -35,6 +37,8 @@ $sTable       = db_prefix().'goods_transaction_detail';
 $where = [];
 
 
+
+
 $warehouse_ft = $this->ci->input->post('warehouse_ft');
 $commodity_ft = $this->ci->input->post('commodity_ft'); 
 $status_ft = $this->ci->input->post('status_ft'); 
@@ -46,6 +50,8 @@ $join =[
   'LEFT JOIN '.db_prefix().'wh_loss_adjustment ON '.db_prefix().'wh_loss_adjustment.id = '.db_prefix().'goods_transaction_detail.goods_receipt_id AND  '.db_prefix().'goods_transaction_detail.status = 3',
   'LEFT JOIN '.db_prefix().'internal_delivery_note ON '.db_prefix().'internal_delivery_note.id = '.db_prefix().'goods_transaction_detail.goods_receipt_id AND  '.db_prefix().'goods_transaction_detail.status = 4'
 ];
+
+
 
 if(isset($warehouse_ft)){
 
@@ -387,6 +393,14 @@ $rResult = $result['rResult'];
           break;
     }  
 
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 2){
+      $total_production_cost_unit = $total_production_cost_unit + $aRow['costo'];
+      $total_production_cost = $total_production_cost + $aRow['price_sug_2'];
+      $total_utility_cost = $total_utility_cost + $aRow['gain_price'];
+      $total_price_sale_unit = $total_price_sale_unit + $aRow['price_sale_unit'];
+      $total_sale_price = $total_sale_price + $aRow['price_sale'];
+    }
+
   $row[] = '<span style="color: grey;font-weight: bold;">'.$aRow['unit'].'</span>';
     $row[] = '<span style="color: '.$color.';font-weight: bold;">'.$signo.number_format($aRow['mov'], 4, ".", ",").'</span>';
 
@@ -400,20 +414,56 @@ $rResult = $result['rResult'];
     else
       $row[] = '<span style="color: red;font-weight: bold;">-</span>';
 
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
       $row[] = '<span style="color: orange;font-weight: bold;">'.number_format($aRow['costo'], 4, ".", ",").$aRow['currency'].'</span>';
+    }
+    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 3){
+      $row[] = '<span style="color: orange;font-weight: bold;">'.number_format($total_production_cost_unit, 4, ".", ",").$aRow['currency'].'</span>';
+      $total_production_cost_unit = 0;
+    } 
 
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
       if($aRow[db_prefix().'goods_transaction_detail.status'] == 3)
         $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['price_sug'], 4, ".", ",").$aRow['currency'].'</span>';
       else
         $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['price_sug_2'], 4, ".", ",").$aRow['currency'].'</span>';
+    }else{
+      $row[] = '<span style="color: red;font-weight: bold;">'.number_format($total_production_cost, 4, ".", ",").$aRow['currency'].'</span>';
+      $total_production_cost = 0;
+    }
 
     $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['gain'], 4, ".", ",").'%</span>';
 
-    $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['gain_price'], 4, ".", ",").$aRow['currency'].'</span>';
 
-    $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['price_sale_unit'], 4, ".", ",").$aRow['currency'].'</span>';
 
-    $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['price_sale'], 4, ".", ",").$aRow['currency'].'</span>';
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
+      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['gain_price'], 4, ".", ",").$aRow['currency'].'</span>';
+    }
+    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 3){
+      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($total_utility_cost, 4, ".", ",").$aRow['currency'].'</span>';
+      $total_utility_cost = 0;
+    } 
+
+
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
+      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['price_sale_unit'], 4, ".", ",").$aRow['currency'].'</span>';
+    }
+    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 3){
+      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($total_price_sale_unit, 4, ".", ",").$aRow['currency'].'</span>';
+      $total_price_sale_unit = 0;
+    } 
+
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
+      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['price_sale'], 4, ".", ",").$aRow['currency'].'</span>';
+    }
+    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 3){
+      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($total_sale_price, 4, ".", ",").$aRow['currency'].'</span>';
+      $total_sale_price = 0;
+    } 
+   
+
+
+   
 
         $lot_number ='';
          if(($aRow['lot_number'] != null) && ( $aRow['lot_number'] != '') ){
