@@ -13,18 +13,21 @@ $aColumns = [
     'old_quantity',
     'quantity',
     '(select unit_code from tblware_unit_type t1 inner join tblgoods_receipt_detail t2 where t1.unit_type_id = t2.unit_id and t2.goods_receipt_id = tblgoods_transaction_detail.goods_receipt_id limit 1) as unit',
+    '(select unit_code from tblware_unit_type t1 inner join tblgoods_delivery_detail t2 where t1.unit_type_id = t2.unit_id and t2.goods_delivery_id = tblgoods_transaction_detail.goods_receipt_id limit 1) as unit_2',
+    '(select unit_code from tblware_unit_type t1 inner join tblwh_loss_adjustment_detail t2 where t1.unit_type_id = t2.unit and tblgoods_transaction_detail.goods_receipt_id = 0 limit 1) as unit_3',
     '((quantity + old_quantity) - old_quantity) as mov',
     '(((quantity + old_quantity) - old_quantity)/old_quantity) * 100 as rendi',
     '(1-(((quantity + old_quantity) - old_quantity)/old_quantity)) * 100 as merma',
     '(select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1) as costo',
     '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.goods_receipt_id = tblgoods_transaction_detail.goods_receipt_id order by tblgoods_receipt_detail.id desc limit 1)/((((quantity + old_quantity) - old_quantity)/old_quantity) * 100)) * ((quantity + old_quantity) - old_quantity) ) as price_sug',
     '((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) as price_sug_2',
-    '(select profif_ratio from tblitems where commodity_code = ( select commodity_code from tblitems where id = tblgoods_transaction_detail.commodity_id)) as gain',
+    '(select profif_ratio from tblitems where commodity_code = tblgoods_transaction_detail.commodity_id) as gain',
     '(select symbol from tblcurrencies where isdefault = 1 limit 1) as currency',
     '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) * ((select profif_ratio from tblitems where commodity_code = ( select commodity_code from tblitems where id = tblgoods_transaction_detail.commodity_id))/100)) as gain_price',
     '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) + (((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) * ((select profif_ratio from tblitems where commodity_code = ( select commodity_code from tblitems where id = tblgoods_transaction_detail.commodity_id)) /100))) as price_sale',
     '((((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) + (((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) * ((select profif_ratio from tblitems where commodity_code = ( select commodity_code from tblitems where id = tblgoods_transaction_detail.commodity_id)) /100))) / ((quantity + old_quantity) - old_quantity)) as price_sale_unit',
     'lot_number',
+    '(select unit_price from tblgoods_receipt_detail left join tblwh_loss_adjustment_detail on tblgoods_receipt_detail.commodity_code = tblwh_loss_adjustment_detail.items order by tblgoods_receipt_detail.id desc limit 1) as costo_merma',
     db_prefix().'goods_transaction_detail.expiry_date',
     'note',
     db_prefix().'goods_transaction_detail.status',
@@ -175,7 +178,7 @@ $rResult = $result['rResult'];
          $value = get_goods_receipt_code($aRow['goods_receipt_id']) != null ? get_goods_receipt_code($aRow['goods_receipt_id'])->goods_receipt_code : '';
 
          if($value != ''){
-            $row[] = '<a style="color: green;font-weight: bold;" href="' . admin_url('warehouse/manage_purchase/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
+            $row[] = '<a style="color: #84c529;font-weight: bold;" href="' . admin_url('warehouse/manage_purchase/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
          }else{
             $row[] = '';
          }
@@ -198,7 +201,7 @@ $rResult = $result['rResult'];
          $value = get_internal_delivery_code($aRow['goods_receipt_id']) != null ? get_internal_delivery_code($aRow['goods_receipt_id'])->internal_delivery_code : '';
 
          if($value != ''){
-            $row[] = '<a style="color: blue;font-weight:bold;" href="' . admin_url('warehouse/manage_internal_delivery/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
+            $row[] = '<a style="color: #337ab7;font-weight:bold;" href="' . admin_url('warehouse/manage_internal_delivery/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
          }else{
             $row[] = '';
          }
@@ -209,7 +212,7 @@ $rResult = $result['rResult'];
          $value = "LA#".$aRow['goods_receipt_id'];
 
          if($value != ''){
-            $row[] = '<a style="color: blue;font-weight:bold;" href="' . admin_url('warehouse/view_lost_adjustment/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
+            $row[] = '<a style="color: #337ab7;font-weight:bold;" href="' . admin_url('warehouse/view_lost_adjustment/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
          }else{
             $row[] = '';
          }
@@ -327,19 +330,19 @@ $rResult = $result['rResult'];
     switch ($aRow[db_prefix().'goods_transaction_detail.status']) {
       case 1:
            //stock_import
-         $row[] = number_format($aRow['old_quantity'], 4, ".", ","); 
+         $row[] = number_format($aRow['old_quantity'], 4, ",", "."); 
          break;
       case 2:
            //stock_export
-        $row[] = number_format((float)number_format($aRow['old_quantity'], 4, ".", ",") + (float)number_format($aRow['quantity'], 4, ".", ","),  4, ".", ",");
+        $row[] = number_format((float)number_format($aRow['old_quantity'], 4, ",", ".") + (float)number_format($aRow['quantity'], 4, ",", "."),  4, ",", ".");
          break;
       case 3:
            //lost adjustment
-         $row[] = number_format($aRow['old_quantity'], 4, ".", ",");
+         $row[] = number_format($aRow['old_quantity'], 4, ",", ".");
          break;
       case 4:
            //internal_delivery_note
-         $row[] = number_format($aRow['old_quantity'], 4, ".", ",");
+         $row[] = number_format($aRow['old_quantity'], 4, ",", ".");
          break;
        
      } 
@@ -351,32 +354,33 @@ $rResult = $result['rResult'];
          switch ($aRow[db_prefix().'goods_transaction_detail.status']) {
            case 1:
            //stock_import
-              $row[] = "<span style='color: white;background-color:green; padding: 10px;font-weightbold;border-radius: 5px;'>".(float)$aRow['old_quantity'] + (float)$aRow['quantity']."<span>";
+              $row[] = "<center><span style='color: white;background-color:#84c529; padding: 10px;font-weight:bold;border-radius: 5px;'>".number_format( (float)$aRow['old_quantity'] + (float)$aRow['quantity'], 4, ",", ".")."<span></center>";
 
                break;
            case 2:
            //stock_export
-               $row[] = "<span style='color: white;background-color:green; padding: 10px;font-weightbold;border-radius: 5px;'>".(float)$aRow['old_quantity']."<span>";
+               $row[] = "<center><span style='color: white;background-color:#84c529; padding: 10px;font-weight:bold;border-radius: 5px;'>".number_format( (float)$aRow['old_quantity'], 4, ",", ".")."<span></center>";
                break;
            case 3:
            //lost adjustment
-               $row[] = "<span style='color: white;background-color:green; padding: 10px;font-weightbold;border-radius: 5px;'>".$aRow['quantity']."<span>";
+               $row[] = "<center><span style='color: white;background-color:#84c529; padding: 10px;font-weight:bold;border-radius: 5px;'>".number_format( $aRow['quantity'], 4, ",", ".")."<span></center>";
                break;
            case 4:
            //internal_delivery_note
-               $row[] = "<span style='color: white;background-color:green; padding: 10px;font-weightbold;border-radius: 5px;'>".app_format_money((float)$aRow['old_quantity'] - (float)$aRow['quantity'],'')."<span>";
+               $row[] = "<center><span style='color: white;background-color:#84c529; padding: 10px;font-weight:bold;border-radius: 5px;'>".number_format((float)$aRow['old_quantity'] - (float)$aRow['quantity'], 4, ",", ".")."<span></center>";
                break;
        } 
 
     }else{
-       $row[] = $aRow['quantity'];
+       //$row[] = $aRow['quantity'];
+       $row[] = "<center><span style='color: white;background-color:#84c529; padding: 10px;font-weight:bold;border-radius: 5px;'>".number_format((float)$aRow['quantity'], 4, ",", ".")."<span></center>";
     }
     
-    $color = "green";
+    $color = "#84c529";
     $signo = "+";
     switch ($aRow[db_prefix().'goods_transaction_detail.status']) {
       case 1:
-          $color = "green";
+          $color = "#84c529";
           $signo = "+";
           break;
       case 2:
@@ -384,7 +388,7 @@ $rResult = $result['rResult'];
           $signo = "-";
           break;
       case 3:
-          $color = "blue";
+          $color = "#337ab7";
           $signo = "";
           break;
       case 4:
@@ -394,72 +398,126 @@ $rResult = $result['rResult'];
     }  
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 2){
-      $total_production_cost_unit = $total_production_cost_unit + $aRow['costo'];
-      $total_production_cost = $total_production_cost + $aRow['price_sug_2'];
-      $total_utility_cost = $total_utility_cost + $aRow['gain_price'];
-      $total_price_sale_unit = $total_price_sale_unit + $aRow['price_sale_unit'];
-      $total_sale_price = $total_sale_price + $aRow['price_sale'];
+      //$value_comp = get_goods_delivery_code($aRow['goods_receipt_id']) != null ? get_goods_delivery_code($aRow['goods_receipt_id'])->goods_delivery_code : '';
+        $total_production_cost_unit = $total_production_cost_unit + $aRow['costo'];
+        $total_production_cost = $total_production_cost + $aRow['price_sug_2'];
+        $total_utility_cost = $total_utility_cost + $aRow['gain_price'];
+        $total_price_sale_unit = $total_price_sale_unit + $aRow['price_sale_unit'];
+        $total_sale_price = $total_sale_price + $aRow['price_sale'];
     }
 
-  $row[] = '<span style="color: grey;font-weight: bold;">'.$aRow['unit'].'</span>';
-    $row[] = '<span style="color: '.$color.';font-weight: bold;">'.$signo.number_format($aRow['mov'], 4, ".", ",").'</span>';
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 1){
+  $row[] = '<center><span style="color: grey;font-weight: bold;">'.$aRow['unit'].'</span></center>';
+    }elseif ($aRow[db_prefix().'goods_transaction_detail.status'] == 2){
+      $row[] = '<center><span style="color: grey;font-weight: bold;">'.$aRow['unit_2'].'</span></center>';
+    }elseif ($aRow[db_prefix().'goods_transaction_detail.status'] == 3){
+      $row[] = '<center><span style="color: grey;font-weight: bold;">'.$aRow['unit_3'].'</span></center>';
+    }
+  if($aRow['mov'] != 0){
+    $row[] = '<center><span style="color: '.$color.';font-weight: bold;">'.$signo.number_format($aRow['mov'], 4, ",", ".").'</span></center>';
+  }else{
+    $row[] = '<center><span style="color: '.$color.';font-weight: bold;">'.$signo.number_format($aRow['quantity'], 4, ",", ".").'</span></center>';
+  }
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 3)
-      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['rendi'], 4, ".", ",").' %</span>';
+      $row[] = '<center><span style="color: #84c529;font-weight: bold;">'.number_format($aRow['rendi'], 4, ",", ".").' %</span></center>';
     else
-      $row[] = '<span style="color: green;font-weight: bold;">-</span>';
+      $row[] = '<center><span style="color: #84c529;font-weight: bold;">-</span></center>';
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 3)
-      $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['merma'], 4, ".", ",").' %</span>';
+      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format($aRow['merma'], 4, ",", ".").' %</span></center>';
     else
-      $row[] = '<span style="color: red;font-weight: bold;">-</span>';
+      $row[] = '<center><span style="color: red;font-weight: bold;">-</span></center>';
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
-      $row[] = '<span style="color: orange;font-weight: bold;">'.number_format($aRow['costo'], 4, ".", ",").$aRow['currency'].'</span>';
+      $row[] = '<center><span style="color: orange;font-weight: bold;">'.number_format($aRow['costo'], 4, ",", ".").$aRow['currency'].'</span></center>';
     }
-    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 3){
-      $row[] = '<span style="color: orange;font-weight: bold;">'.number_format($total_production_cost_unit, 4, ".", ",").$aRow['currency'].'</span>';
-      $total_production_cost_unit = 0;
+
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
+      //$row[] = '<center><span style="color: orange;font-weight: bold;"> - </span></center>';
+      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(fdiv($aRow['costo_merma'], $aRow['rendi']) * 100, 4, ",", ".").$aRow['currency'].'</span></center>';
+    }
+
+    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1){
+      $mov = $aRow['mov'];
+      if($aRow['mov'] == 0){
+          $mov = $aRow['quantity'];
+      }
+      $total_cal = number_format(fdiv(floatval($total_production_cost),floatval($mov)), 4, ",", ".");//calculamos el precio por unidad producida
+      $row[] = '<center><span style="color: orange;font-weight: bold;">'.$total_cal.$aRow['currency'].'</span></center>';
+      
     } 
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
-      if($aRow[db_prefix().'goods_transaction_detail.status'] == 3)
-        $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['price_sug'], 4, ".", ",").$aRow['currency'].'</span>';
-      else
-        $row[] = '<span style="color: red;font-weight: bold;">'.number_format($aRow['price_sug_2'], 4, ".", ",").$aRow['currency'].'</span>';
+        $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format($aRow['price_sug_2'], 4, ",", ".").$aRow['currency'].'</span></center>';
     }else{
-      $row[] = '<span style="color: red;font-weight: bold;">'.number_format($total_production_cost, 4, ".", ",").$aRow['currency'].'</span>';
-      $total_production_cost = 0;
+      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format($total_production_cost, 4, ",", ".").$aRow['currency'].'</span></center>';
+      
     }
 
-    $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['gain'], 4, ".", ",").'%</span>';
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
+      $row[] = '<center><span style="color: red;font-weight: bold;"> - </span></center>';
+    }
+
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 2 || $aRow[db_prefix().'goods_transaction_detail.status'] == 1){
+      $row[] = '<center><span style="color: #84c529;font-weight: bold;">'.number_format($aRow['gain'], 4, ",", ".").'%</span></center>';
+    }
+
+
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
+      $row[] = '<center><span style="color: red;font-weight: bold;"> - </span></center>';
+    }
 
 
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
-      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['gain_price'], 4, ".", ",").$aRow['currency'].'</span>';
+      $row[] = '<center><span style="color: #84c529;font-weight: bold;">'.number_format($aRow['gain_price'], 4, ",", ".").$aRow['currency'].'</span></center>';
     }
-    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 3){
-      $row[] = '<span style="color: #82C632;font-weight: bold;">'.number_format($total_utility_cost, 4, ".", ",").$aRow['currency'].'</span>';
-      $total_utility_cost = 0;
+    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1){
+      $total_utility_calc = $total_production_cost * (fdiv($aRow['gain'],100));
+      $row[] = '<center><span style="color: #82C632;font-weight: bold;">'.number_format($total_utility_calc, 4, ",", ".").$aRow['currency'].'</span></center>';
+     
+    } 
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
+      $row[] = '<center><span style="color: red;font-weight: bold;"> - </span></center>';
+    }
+
+
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
+      $row[] = '<center><span style="color: #84c529;font-weight: bold;">'.number_format($aRow['price_sale_unit'], 4, ",", ".").$aRow['currency'].'</span></center>';
+    }
+    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1){
+      $total_cal = fdiv(floatval($total_production_cost),floatval($aRow['mov']));//calculamos el precio por unidad producida
+      $total_sale_price_unit_cal =  $total_cal + ($total_cal * (fdiv($aRow["gain"], 100)));
+      $row[] = '<center><span style="color: #82C632;font-weight: bold;">'.number_format($total_sale_price_unit_cal, 4, ",", ".").$aRow['currency'].'</span></center>';
     } 
 
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
+      $row[] = '<center><span style="color: red;font-weight: bold;"> - </span></center>';
+    }
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
-      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['price_sale_unit'], 4, ".", ",").$aRow['currency'].'</span>';
+      $row[] = '<center><span style="color: #84c529;font-weight: bold;">'.number_format($aRow['price_sale'], 4, ",", ".").$aRow['currency'].'</span><center>';
     }
-    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 3){
-      $row[] = '<span style="color: #82C632;font-weight: bold;">'.number_format($total_price_sale_unit, 4, ".", ",").$aRow['currency'].'</span>';
-      $total_price_sale_unit = 0;
-    } 
-
-    if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
-      $row[] = '<span style="color: green;font-weight: bold;">'.number_format($aRow['price_sale'], 4, ".", ",").$aRow['currency'].'</span>';
-    }
-    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 3){
-      $row[] = '<span style="color: #82C632;font-weight: bold;">'.number_format($total_sale_price, 4, ".", ",").$aRow['currency'].'</span>';
+    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1){
+      $total_cal = fdiv(floatval($total_production_cost),floatval($aRow['mov']));//calculamos el precio por unidad producida
+      $total_sale_price_cal =  ($total_cal + ($total_cal * (fdiv($aRow["gain"], 100)))) * $aRow['mov'];
+      $row[] = '<center><span style="color: #82C632;font-weight: bold;">'.number_format($total_sale_price_cal, 4, ",", ".").$aRow['currency'].'</span></center>';
       $total_sale_price = 0;
-    } 
+      //=============================================
+      $total_price_sale_unit = 0;
+      $total_utility_cost = 0;
+      $total_production_cost = 0;
+      $total_production_cost_unit = 0;
+      //=============================================
+    }
+
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
+      $row[] = '<center><span style="color: red;font-weight: bold;"> - </span></center>';
+    }
+    
+
+    
    
 
 
@@ -516,10 +574,12 @@ $rResult = $result['rResult'];
                $row[] = _l('internal_delivery_note');
                break;
        }  
-     
+       //$row[] = '<a href='.admin_url('warehouse/loss_adjustment').' class="btn btn-danger text-right mright5">ELIMINAR</a>';
+
      
     $output['aaData'][] = $row;
 
+ 
     }
 
 
