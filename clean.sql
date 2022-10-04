@@ -7,3 +7,4 @@ truncate table tblwh_goods_delivery_activity_log;
 truncate table tblinventory_manage;
 truncate table tblwh_loss_adjustment;
 truncate table tblwh_loss_adjustment_detail;
+truncate table tblproduct_master;
