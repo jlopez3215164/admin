@@ -1,0 +1,9 @@
+truncate table tblgoods_delivery;
+truncate table tblgoods_delivery_detail;
+truncate table tblgoods_receipt;
+truncate table tblgoods_receipt_detail;
+truncate table tblgoods_transaction_detail;
+truncate table tblwh_goods_delivery_activity_log;
+truncate table tblinventory_manage;
+truncate table tblwh_loss_adjustment;
+truncate table tblwh_loss_adjustment_detail;
