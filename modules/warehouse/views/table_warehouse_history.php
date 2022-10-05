@@ -527,16 +527,16 @@ $rResult = $result['rResult'];
      $row[] = $aRow['note'];
      switch ($aRow[db_prefix().'goods_transaction_detail.status']) {
            case 1:
-               $row[] = _l('stock_import');
+               $row[] = "<center>ENTRADA</center>";
                break;
            case 2:
-               $row[] = _l('stock_export');
+               $row[] = "<center>SALIDA</center>";
                break;
            case 3:
-               $row[] = _l('lost, adjustment');
+               $row[] = "<center>AJUSTE</center>";
                break;
            case 4:
-               $row[] = _l('internal_delivery_note');
+               $row[] = "<center>INTERCAMBIO</center>";
                break;
        }  
        //$row[] = '<a href='.admin_url('warehouse/loss_adjustment').' class="btn btn-danger text-right mright5">ELIMINAR</a>';
