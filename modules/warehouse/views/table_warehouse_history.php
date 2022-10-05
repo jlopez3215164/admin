@@ -474,15 +474,13 @@ $rResult = $result['rResult'];
       }else{
         $value_cost_val_2 = $aRow['costo'];
       }
-        $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(($value_cost_val_2 * $aRow['mov']), 2, ",", ".").$aRow['currency'].'</span></center>';
+      $value_cost_val_2_final = $value_cost_val_2_final + ($value_cost_val_2 * $aRow['mov']);
+      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(($value_cost_val_2 * $aRow['mov']), 2, ",", ".").$aRow['currency'].'</span></center>';
     }
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 1) {
-      $mov = $aRow['mov'];
-      if($aRow['mov'] == 0){
-          $mov = $aRow['quantity'];
-      }
-      $row[] = '<center><span style="color: red;font-weight: bold;">'.$aRow['mov'].number_format(($total_production_cost_unit * $mov), 2, ",", ".").$aRow['currency'].'</span></center>';
+      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(($value_cost_val_2_final), 2, ",", ".").$aRow['currency'].'</span></center>';
+      $value_cost_val_2_final = 0;
     }
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
@@ -540,6 +538,7 @@ $rResult = $result['rResult'];
       $total_production_cost = 0;
       $total_production_cost_unit = 0;
       //=============================================
+      $value_cost_val_2_final = 0;
     }
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {

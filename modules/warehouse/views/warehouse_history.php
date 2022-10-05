@@ -62,6 +62,10 @@
                 </div>
             </div>        
         </div>
+
+        <div>
+<?php echo "<h1>".$_SESSION["item_merma"]." ".number_format($_SESSION[$_SESSION["item_merma"]],2,",",".")."</h1><input type='number' class='form-control'/>"; ?>
+                              </div>
                     <br><br>
 
                       <?php render_datatable(array(
