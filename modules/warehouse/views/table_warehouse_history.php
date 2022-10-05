@@ -54,7 +54,7 @@ $join =[
   'LEFT JOIN '.db_prefix().'internal_delivery_note ON '.db_prefix().'internal_delivery_note.id = '.db_prefix().'goods_transaction_detail.goods_receipt_id AND  '.db_prefix().'goods_transaction_detail.status = 4'
 ];
 
-
+array_push($where, " AND consolidate is NULL");
 
 if(isset($warehouse_ft)){
 
@@ -209,7 +209,7 @@ $rResult = $result['rResult'];
 
     }else{
       //3 lost adjustment
-         $value = "LA#".$aRow['goods_receipt_id'];
+         $value = "AJUSTE_".$aRow['goods_receipt_id'];
 
          if($value != ''){
             $row[] = '<a style="color: #337ab7;font-weight:bold;" href="' . admin_url('warehouse/view_lost_adjustment/' . $aRow['goods_receipt_id']) . '" >'. $value.'</a>';
