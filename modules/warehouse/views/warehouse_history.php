@@ -62,9 +62,30 @@
                 </div>
             </div>        
         </div>
-
+<script>
+    function calculatePriceVenta(){
+        $('#percentage_gain').val(((($('#price_sale').val() - $('#price_unit').val()) * 100)/$('#price_unit').val()).toFixed(2));
+    }
+    </script>
         <div>
-<?php echo "<h1>".$_SESSION["item_merma"]." ".number_format($_SESSION[$_SESSION["item_merma"]],2,",",".")."</h1><input type='number' class='form-control'/>"; ?>
+            <center>
+<?php echo "<h1>".$_SESSION["item_merma"]." ".number_format($_SESSION[$_SESSION["item_merma"]],2,",",".")."</h1>"; ?>
+<div  class="col-md-3 leads-filter-column">
+                <div class="form-group">
+<input type='hidden' id="price_unit" value="<?php echo $_SESSION[$_SESSION["item_merma"]]; ?>" class='form-control' placeholder="Precio de Venta"/>
+                              </div>
+                              </div>
+<div  class="col-md-3 leads-filter-column">
+                <div class="form-group">
+<input type='number' onkeyUp="calculatePriceVenta()" id="price_sale" class='form-control' placeholder="Precio de Venta"/>
+                              </div>
+                              </div>
+                              <div  class="col-md-3 leads-filter-column">
+                <div class="form-group">
+<input type='number' id="percentage_gain" class='form-control' placeholder="Porcentaje de Ganancia"/>
+                              </div>
+                              </div>
+                              </center>
                               </div>
                     <br><br>
 
