@@ -461,7 +461,7 @@ $rResult = $result['rResult'];
       }
       if($total_production_cost != 0) {
         //$total_cal = number_format(fdiv(floatval($total_production_cost),floatval($mov)), 2, ",", ".");//calculamos el precio por unidad producida
-        $row[] = '<center><span style="color: orange;font-weight: bold;">'.$total_production_cost_unit.$aRow['currency'].'</span></center>';
+        $row[] = '<center><span style="color: orange;font-weight: bold;">'.number_format($total_production_cost_unit, 2, ",", ".").$aRow['currency'].'</span></center>';
       }else{
         $row[] = '<center><span style="color: orange;font-weight: bold;">'.number_format($aRow['costo'], 2, ",", ".").$aRow['currency'].'</span></center>';
       }
