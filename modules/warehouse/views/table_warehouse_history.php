@@ -170,8 +170,13 @@ $rResult = $result['rResult'];
     foreach ($rResult as $aRow) {
         $row = [];
 
-
+       
     $row[] = $aRow['id'];
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 1){
+      $row[] = "<span style='color: white;background-color:#84c529; padding: 10px;font-weight:bold;border-radius: 5px;'>INGRESO</span>";
+    } else {
+      $row[] = "<span></span>";
+    }
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 1){
 
@@ -552,11 +557,14 @@ $rResult = $result['rResult'];
        }  
        //$row[] = '<a href='.admin_url('warehouse/loss_adjustment').' class="btn btn-danger text-right mright5">ELIMINAR</a>';
 
-     
+    
     $output['aaData'][] = $row;
+
 
  
     }
+
+    //$output['aaData'][] = "<span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>";
 
 
 
