@@ -70,6 +70,7 @@
         <div>
             <center>
 <?php echo "<h1>".$_SESSION["item_merma"]." ".number_format($_SESSION[$_SESSION["item_merma"]],2,",",".")."</h1>"; ?>
+<hr/>
 <div  class="col-md-3 leads-filter-column">
                 <div class="form-group">
 <input type='hidden' id="price_unit" value="<?php echo $_SESSION[$_SESSION["item_merma"]]; ?>" class='form-control' placeholder="Precio de Venta"/>
@@ -77,12 +78,14 @@
                               </div>
 <div  class="col-md-3 leads-filter-column">
                 <div class="form-group">
+                    <label>PRECIO VENTA</label>
 <input type='number' onkeyUp="calculatePriceVenta()" id="price_sale" class='form-control' placeholder="Precio de Venta"/>
                               </div>
                               </div>
                               <div  class="col-md-3 leads-filter-column">
                 <div class="form-group">
-<input type='number' id="percentage_gain" class='form-control' placeholder="Porcentaje de Ganancia"/>
+                <label>PORCENTAJE</label>
+<input type='number' disabled id="percentage_gain" class='form-control' placeholder="Porcentaje de Ganancia"/>
                               </div>
                               </div>
                               </center>
@@ -104,10 +107,6 @@
                         "MERMA",
                         "COSTO UNITARIO",
                         "COSTO",
-                        "% UTILIDAD",
-                        "MONTO UTILIDAD",
-                        "PRECIO VENTA SUG UNIDAD",
-                        "PRECIO VENTA SUG",
                         _l('lot_number').'/'._l('quantity_sold'),
                         _l('expiry_date'),
                         _l('note'),
