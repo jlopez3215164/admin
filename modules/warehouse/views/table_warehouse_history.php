@@ -399,18 +399,28 @@ $rResult = $result['rResult'];
 
     //$total_production_cost_unit =  $aRow['costo'];
     $value_comp = wh_get_item_variatiom($aRow['commodity_id']);
-    
+    $value_comp2 = get_goods_delivery_code($aRow['goods_receipt_id']) != null ? get_goods_delivery_code($aRow['goods_receipt_id'])->goods_delivery_code : '';
+    if($_SESSION['codigo'] == ""){
+      $_SESSION['codigo'] = $value_comp2;
+    }
+    //----------------------------------------------------------------------------------------------------------------------------------------------------------
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 2){
-      //$value_comp = get_goods_delivery_code($aRow['goods_receipt_id']) != null ? get_goods_delivery_code($aRow['goods_receipt_id'])->goods_delivery_code : '';
-        if($value_comp == $_SESSION["item_merma"]){
-          $total_production_cost_unit = $total_production_cost_unit + $_SESSION[$value_comp];//$aRow['costo'];
+        //$value_comp2 = get_goods_delivery_code($aRow['goods_receipt_id']) != null ? get_goods_delivery_code($aRow['goods_receipt_id'])->goods_delivery_code : '';
+        if($value_comp2 == $_SESSION["codigo"]){
+            if($value_comp == $_SESSION["item_merma"]){
+              $total_production_cost_unit = $total_production_cost_unit + $_SESSION[$value_comp];//$aRow['costo'];
+            }else{
+              $total_production_cost_unit = $total_production_cost_unit + $aRow['costo'];
+            }
+            $total_production_cost = $total_production_cost + $aRow['price_sug_2'];
+            $total_utility_cost = $total_utility_cost + $aRow['gain_price'];
+            $total_price_sale_unit = $total_price_sale_unit + $aRow['price_sale_unit'];
+            $total_sale_price = $total_sale_price + $aRow['price_sale'];
+            $_SESSION['codigo'] = $value_comp2;
         }else{
-          $total_production_cost_unit = $total_production_cost_unit + $aRow['costo'];
+            $_SESSION['codigo'] = "";
         }
-        $total_production_cost = $total_production_cost + $aRow['price_sug_2'];
-        $total_utility_cost = $total_utility_cost + $aRow['gain_price'];
-        $total_price_sale_unit = $total_price_sale_unit + $aRow['price_sale_unit'];
-        $total_sale_price = $total_sale_price + $aRow['price_sale'];
+        //$_SESSION["codigo"] = $value_comp2;
     }
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 1){
@@ -481,6 +491,7 @@ $rResult = $result['rResult'];
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 1) {
       $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(($value_cost_val_2_final), 2, ",", ".").$aRow['currency'].'</span></center>';
       $value_cost_val_2_final = 0;
+      $total_production_cost_unit = 0;
     }
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
