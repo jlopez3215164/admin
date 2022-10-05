@@ -69,7 +69,8 @@
     </script>
         <div>
             <center>
-<?php echo "<h1>".$_SESSION["item_merma"]." ".number_format($_SESSION[$_SESSION["item_merma"]],2,",",".")."</h1>"; ?>
+<?php echo "<h1>".$_SESSION["item_merma"]." : ".number_format($_SESSION[$_SESSION["item_merma"]],2,",",".")."</h1>"; ?>
+<h4>PRECIO POR UNIDAD DE MEDIDA PARA ESTE PRODUCTO.<h4/>
 <hr/>
 <div  class="col-md-3 leads-filter-column">
                 <div class="form-group">
