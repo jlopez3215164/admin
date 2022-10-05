@@ -27,7 +27,7 @@ $aColumns = [
     '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) + (((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) * ((select profif_ratio from tblitems where commodity_code = ( select commodity_code from tblitems where id = tblgoods_transaction_detail.commodity_id)) /100))) as price_sale',
     '((((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) + (((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) * ((select profif_ratio from tblitems where commodity_code = ( select commodity_code from tblitems where id = tblgoods_transaction_detail.commodity_id)) /100))) / ((quantity + old_quantity) - old_quantity)) as price_sale_unit',
     'lot_number',
-    '(select unit_price from tblgoods_receipt_detail left join tblwh_loss_adjustment_detail on tblgoods_receipt_detail.commodity_code = tblwh_loss_adjustment_detail.items order by tblgoods_receipt_detail.id desc limit 1) as costo_merma',
+    '(select unit_price from tblgoods_receipt_detail inner join tblwh_loss_adjustment_detail on tblgoods_receipt_detail.commodity_code = tblwh_loss_adjustment_detail.items order by tblgoods_receipt_detail.id desc limit 1) as costo_merma',
     db_prefix().'goods_transaction_detail.expiry_date',
     'note',
     db_prefix().'goods_transaction_detail.status',
@@ -397,9 +397,16 @@ $rResult = $result['rResult'];
           break;
     }  
 
+    //$total_production_cost_unit =  $aRow['costo'];
+    $value_comp = wh_get_item_variatiom($aRow['commodity_id']);
+    
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 2){
       //$value_comp = get_goods_delivery_code($aRow['goods_receipt_id']) != null ? get_goods_delivery_code($aRow['goods_receipt_id'])->goods_delivery_code : '';
-        $total_production_cost_unit = $total_production_cost_unit + $aRow['costo'];
+        if($value_comp == $_SESSION["item_merma"]){
+          $total_production_cost_unit = $total_production_cost_unit + $_SESSION[$value_comp];//$aRow['costo'];
+        }else{
+          $total_production_cost_unit = $total_production_cost_unit + $aRow['costo'];
+        }
         $total_production_cost = $total_production_cost + $aRow['price_sug_2'];
         $total_utility_cost = $total_utility_cost + $aRow['gain_price'];
         $total_price_sale_unit = $total_price_sale_unit + $aRow['price_sale_unit'];
@@ -430,10 +437,19 @@ $rResult = $result['rResult'];
       $row[] = '<center><span style="color: red;font-weight: bold;">-</span></center>';
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
-      $row[] = '<center><span style="color: orange;font-weight: bold;">'.number_format($aRow['costo'], 2, ",", ".").$aRow['currency'].'</span></center>';
+      if($value_comp == $_SESSION["item_merma"]){
+        $value_cost_val = $_SESSION[$value_comp];//$aRow['costo'];
+      }else{
+        $value_cost_val = $aRow['costo'];
+      }
+      $row[] = '<center><span style="color: orange;font-weight: bold;">'.number_format($value_cost_val, 2, ",", ".").$aRow['currency'].'</span></center>';
     }
-
+    //COSTO DE LA MERMA QUE DEFINE TODO
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
+      session_start();
+      //$value_comp = wh_get_item_variatiom($aRow['commodity_id']);
+      $_SESSION[$value_comp] = fdiv($aRow['costo_merma'], $aRow['rendi']) * 100;
+      $_SESSION["item_merma"] = $value_comp;
       //$row[] = '<center><span style="color: orange;font-weight: bold;"> - </span></center>';
       $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(fdiv($aRow['costo_merma'], $aRow['rendi']) * 100, 2, ",", ".").$aRow['currency'].'</span></center>';
     }
@@ -443,16 +459,30 @@ $rResult = $result['rResult'];
       if($aRow['mov'] == 0){
           $mov = $aRow['quantity'];
       }
-      $total_cal = number_format(fdiv(floatval($total_production_cost),floatval($mov)), 2, ",", ".");//calculamos el precio por unidad producida
-      $row[] = '<center><span style="color: orange;font-weight: bold;">'.$total_cal.$aRow['currency'].'</span></center>';
+      if($total_production_cost != 0) {
+        //$total_cal = number_format(fdiv(floatval($total_production_cost),floatval($mov)), 2, ",", ".");//calculamos el precio por unidad producida
+        $row[] = '<center><span style="color: orange;font-weight: bold;">'.$total_production_cost_unit.$aRow['currency'].'</span></center>';
+      }else{
+        $row[] = '<center><span style="color: orange;font-weight: bold;">'.number_format($aRow['costo'], 2, ",", ".").$aRow['currency'].'</span></center>';
+      }
       
     } 
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 2) {
-        $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format($aRow['price_sug_2'], 2, ",", ".").$aRow['currency'].'</span></center>';
-    }else{
-      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format($total_production_cost, 2, ",", ".").$aRow['currency'].'</span></center>';
-      
+      if($value_comp == $_SESSION["item_merma"]){
+        $value_cost_val_2 = $_SESSION[$value_comp];//$aRow['costo'];
+      }else{
+        $value_cost_val_2 = $aRow['costo'];
+      }
+        $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(($value_cost_val_2 * $aRow['mov']), 2, ",", ".").$aRow['currency'].'</span></center>';
+    }
+
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 1) {
+      $mov = $aRow['mov'];
+      if($aRow['mov'] == 0){
+          $mov = $aRow['quantity'];
+      }
+      $row[] = '<center><span style="color: red;font-weight: bold;">'.$aRow['mov'].number_format(($total_production_cost_unit * $mov), 2, ",", ".").$aRow['currency'].'</span></center>';
     }
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
