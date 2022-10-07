@@ -1,5 +1,4 @@
 <?php init_head(); ?>
-
 <div id="wrapper">
    <div class="content">
       <div class="row">
@@ -66,6 +65,12 @@
     function calculatePriceVenta(){
         $('#percentage_gain').val(((($('#price_sale').val() - $('#price_unit').val()) * 100)/$('#price_unit').val()).toFixed(2));
     }
+	
+	function calculatePriceVentaProducto(id){
+		//alert($('#precio_' + id).val());
+		//alert($('#costo_' + id).val().replaceAll(",","."));
+		$('#porcentaje_' + id).val(((($('#precio_' + id).val() - $('#costo_' + id).val().replaceAll(",",".")) * 100)/$('#costo_' + id).val().replaceAll(",",".")).toFixed(2));
+	}
     </script>
         <div>
             <center>
@@ -93,6 +98,14 @@
                               </div>
                     <br><br>
 
+                    <style>
+                        th, td {
+                            white-space: nowrap;
+                            vertical-align:middle !important;
+                        }
+
+                        </style>
+
                       <?php render_datatable(array(
                         _l('id'),
                         "TIPO",
@@ -109,6 +122,9 @@
                         "MERMA",
                         "COSTO UNITARIO",
                         "COSTO",
+						"PRECIO",
+						"%",
+						"",
                         _l('lot_number').'/'._l('quantity_sold'),
                         _l('expiry_date'),
                         _l('note'),

@@ -335,19 +335,19 @@ $rResult = $result['rResult'];
     switch ($aRow[db_prefix().'goods_transaction_detail.status']) {
       case 1:
            //stock_import
-         $row[] = number_format($aRow['old_quantity'], 2, ",", "."); 
+         $row[] = "<center><span style='color: grey; font-weight:bold;border-radius: 5px;'>".number_format($aRow['old_quantity'], 2, ",", ".")."<span></center>"; 
          break;
       case 2:
            //stock_export
-        $row[] = number_format((float)number_format($aRow['old_quantity'], 2, ",", ".") + (float)number_format($aRow['quantity'], 2, ",", "."),  2, ",", ".");
+        $row[] = "<center><span style='color: grey; font-weight:bold;border-radius: 5px;'>".number_format((float)number_format($aRow['old_quantity'], 2, ",", ".") + (float)number_format($aRow['quantity'], 2, ",", "."),  2, ",", ".")."<span></center>";
          break;
       case 3:
            //lost adjustment
-         $row[] = number_format($aRow['old_quantity'], 2, ",", ".");
+         $row[] = "<center><span style='color: grey; font-weight:bold;border-radius: 5px;'>".number_format($aRow['old_quantity'], 2, ",", ".")."<span></center>";
          break;
       case 4:
            //internal_delivery_note
-         $row[] = number_format($aRow['old_quantity'], 2, ",", ".");
+         $row[] = "<center><span style='color: grey; font-weight:bold;border-radius: 5px;'>".number_format($aRow['old_quantity'], 2, ",", ".")."<span></center>";
          break;
        
      } 
@@ -359,26 +359,26 @@ $rResult = $result['rResult'];
          switch ($aRow[db_prefix().'goods_transaction_detail.status']) {
            case 1:
            //stock_import
-              $row[] = "<center><span style='color: white;background-color:#84c529; padding: 10px;font-weight:bold;border-radius: 5px;'>".number_format( (float)$aRow['old_quantity'] + (float)$aRow['quantity'], 2, ",", ".")."<span></center>";
+              $row[] = "<center><span style='color: #84c529; font-weight:bold;border-radius: 5px;'>".number_format( (float)$aRow['old_quantity'] + (float)$aRow['quantity'], 2, ",", ".")."<span></center>";
 
                break;
            case 2:
            //stock_export
-               $row[] = "<center><span style='color: white;background-color:#84c529; padding: 10px;font-weight:bold;border-radius: 5px;'>".number_format( (float)$aRow['old_quantity'], 2, ",", ".")."<span></center>";
+               $row[] = "<center><span style='color:#84c529; font-weight:bold;border-radius: 5px;'>".number_format( (float)$aRow['old_quantity'], 2, ",", ".")."<span></center>";
                break;
            case 3:
            //lost adjustment
-               $row[] = "<center><span style='color: white;background-color:#84c529; padding: 10px;font-weight:bold;border-radius: 5px;'>".number_format( $aRow['quantity'], 2, ",", ".")."<span></center>";
+               $row[] = "<center><span style='color:#84c529; font-weight:bold;border-radius: 5px;'>".number_format( $aRow['quantity'], 2, ",", ".")."<span></center>";
                break;
            case 4:
            //internal_delivery_note
-               $row[] = "<center><span style='color: white;background-color:#84c529; padding: 10px;font-weight:bold;border-radius: 5px;'>".number_format((float)$aRow['old_quantity'] - (float)$aRow['quantity'], 2, ",", ".")."<span></center>";
+               $row[] = "<center><span style='color: #84c529; font-weight:bold;border-radius: 5px;'>".number_format((float)$aRow['old_quantity'] - (float)$aRow['quantity'], 2, ",", ".")."<span></center>";
                break;
        } 
 
     }else{
        //$row[] = $aRow['quantity'];
-       $row[] = "<center><span style='color: white;background-color:#84c529; padding: 10px;font-weight:bold;border-radius: 5px;'>".number_format((float)$aRow['quantity'], 2, ",", ".")."<span></center>";
+       $row[] = "<center><span style='color: #84c529; font-weight:bold;border-radius: 5px;'>".number_format((float)$aRow['quantity'], 2, ",", ".")."<span></center>";
     }
     
     $color = "#84c529";
@@ -476,9 +476,9 @@ $rResult = $result['rResult'];
       }
       if($total_production_cost != 0) {
         //$total_cal = number_format(fdiv(floatval($total_production_cost),floatval($mov)), 2, ",", ".");//calculamos el precio por unidad producida
-        $row[] = '<center><span style="color: orange;font-weight: bold;">'.number_format($total_production_cost_unit, 2, ",", ".").$aRow['currency'].'</span></center>';
+        $row[] = '<input type="hidden" id="costo_'.$aRow['goods_receipt_id'].'" value="'.number_format($total_production_cost_unit, 2, ",", ".").'"><center><span style="border-radius:5px; color: red;padding: 10px; font-weight: bold;">'.number_format($total_production_cost_unit, 2, ",", ".").$aRow['currency'].'</span></center>';
       }else{
-        $row[] = '<center><span style="color: orange;font-weight: bold;">'.number_format($aRow['costo'], 2, ",", ".").$aRow['currency'].'</span></center>';
+        $row[] = '<center><span style="border-radius:5px; color: red;padding: 10px; font-weight: bold;">'.number_format($aRow['costo'], 2, ",", ".").$aRow['currency'].'</span></center>';
       }
       
     } 
@@ -502,8 +502,24 @@ $rResult = $result['rResult'];
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
       $row[] = '<center><span style="color: red;font-weight: bold;"> - </span></center>';
     }
-
-
+	 if($aRow[db_prefix().'goods_transaction_detail.status'] == 1) {
+		$row[] = "<input type='number' id='precio_".$aRow['goods_receipt_id']."' class='form-control' onkeyup='calculatePriceVentaProducto(".$aRow['goods_receipt_id'].")' placeholder='Precio x unidad'/>";
+	 }else{
+		 $row[] = "-";
+	 }
+	 
+	  if($aRow[db_prefix().'goods_transaction_detail.status'] == 1) {
+		$row[] = "<input type='number' id='porcentaje_".$aRow['goods_receipt_id']."' class='form-control' placeholder='Porcentaje' disabled/>";
+	 }else{
+		 $row[] = "-";
+	 }
+	 
+	  if($aRow[db_prefix().'goods_transaction_detail.status'] == 1) {
+		$row[] = "<button class='btn btn-success'>GUARDAR</button>";
+	 }else{
+		 $row[] = "-";
+	 }
+		
         $lot_number ='';
          if(($aRow['lot_number'] != null) && ( $aRow['lot_number'] != '') ){
             $array_lot_number = explode(',', $aRow['lot_number']);
