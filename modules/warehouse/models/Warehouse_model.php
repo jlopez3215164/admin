@@ -96,9 +96,11 @@ class Warehouse_model extends App_Model {
 		$arr_temp['price_sale'] = $price;
 		$arr_temp['rate'] = $price;
 		$arr_temp['profif_ratio'] = $profif_ratio;
+		//$arr_temp['date_price'] = "CURRENT_TIMESTAMP";
 		$this->db->where('id', $id_product);
 		$this->db->update(db_prefix().'items', $arr_temp);
 		if ($this->db->affected_rows() > 0) {
+			$this->db->query("UPDATE tblitems set date_price = CURRENT_TIMESTAMP() where id = ".$id_product);
 			return true;
 		}
 		return false;

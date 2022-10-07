@@ -73,6 +73,15 @@
 		$('#porcentaje_' + id).val(((($('#precio_' + id).val() - $('#costo_' + id).val().replaceAll(",",".")) * 100)/$('#costo_' + id).val().replaceAll(",",".")).toFixed(2));
 	}
 
+    function calculatePriceVentaProductoProcentaje(id){
+		//alert($('#precio_' + id).val());
+		//alert($('#costo_' + id).val().replaceAll(",","."));
+        var gain = ((($('#porcentaje_' + id).val() * $('#costo_' + id).val().replaceAll(",",".")))/100);
+        var costo = $('#costo_' + id).val().replaceAll(",",".");
+        var total = (Number(gain) + Number(costo));
+		$('#precio_' + id).val(total.toFixed(2));
+	}
+
     function sendPrice(id_product, id){
         var price = $("#precio_" + id).val();
         var porcentaje = $("#porcentaje_" + id).val();
@@ -146,6 +155,7 @@
 						"PRECIO",
 						"%",
 						"",
+                        "ULT. ACT. PRECIO",
                         _l('lot_number').'/'._l('quantity_sold'),
                         _l('expiry_date'),
                         _l('note'),
