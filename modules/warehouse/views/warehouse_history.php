@@ -61,7 +61,7 @@
                 </div>
             </div>        
         </div>
-        <input type="text" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
+        <input type="hidden" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
 <script>
     function calculatePriceVenta(){
         $('#percentage_gain').val(((($('#price_sale').val() - $('#price_unit').val()) * 100)/$('#price_unit').val()).toFixed(2));
