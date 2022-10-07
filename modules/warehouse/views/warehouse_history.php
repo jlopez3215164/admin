@@ -61,6 +61,7 @@
                 </div>
             </div>        
         </div>
+        <input type="text" name="<?php echo $this->security->get_csrf_token_name(); ?>" value="<?php echo $this->security->get_csrf_hash(); ?>">
 <script>
     function calculatePriceVenta(){
         $('#percentage_gain').val(((($('#price_sale').val() - $('#price_unit').val()) * 100)/$('#price_unit').val()).toFixed(2));
@@ -71,6 +72,24 @@
 		//alert($('#costo_' + id).val().replaceAll(",","."));
 		$('#porcentaje_' + id).val(((($('#precio_' + id).val() - $('#costo_' + id).val().replaceAll(",",".")) * 100)/$('#costo_' + id).val().replaceAll(",",".")).toFixed(2));
 	}
+
+    function sendPrice(id_product, id){
+        var price = $("#precio_" + id).val();
+        var formData = new FormData();
+          formData.append("csrf_token_name", $('input[name="csrf_token_name"]').val());
+          formData.append("price", price);
+          formData.append("id", id_product);
+      $.ajax({ 
+            url: admin_url + 'warehouse/savePriceProduct', 
+            method: 'post', 
+            data: formData, 
+            contentType: false, 
+            processData: false
+        }).done(function(response) {
+          //var response = JSON.parse(response);
+         alert();
+        });
+    }
     </script>
         <div>
             <center>

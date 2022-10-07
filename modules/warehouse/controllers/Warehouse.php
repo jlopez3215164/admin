@@ -1114,6 +1114,13 @@ class warehouse extends AdminController {
 		redirect(admin_url('warehouse/setting?group=approval_setting'));
 	}
 
+	public function savePriceProduct(){
+		if ($this->input->post()) {
+			$data = $this->input->post();
+			$this->warehouse_model->send_price_product($data['id'], $data['price']);
+		}
+	}
+
 	/**
 	 * get html approval setting
 	 * @param  integer $id

@@ -92,6 +92,16 @@ class Warehouse_model extends App_Model {
 
 	}
 
+	public function send_price_product($id_product, $price) {
+		$arr_temp['price_sale'] = $price;
+		$this->db->where('id', $id_product);
+		$this->db->update(db_prefix().'items', $arr_temp);
+		if ($this->db->affected_rows() > 0) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 *  get commodity type
 	 * @param  boolean $id

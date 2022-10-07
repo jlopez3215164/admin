@@ -22,6 +22,7 @@ $aColumns = [
     '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.goods_receipt_id = tblgoods_transaction_detail.goods_receipt_id order by tblgoods_receipt_detail.id desc limit 1)/((((quantity + old_quantity) - old_quantity)/old_quantity) * 100)) * ((quantity + old_quantity) - old_quantity) ) as price_sug',
     '((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) as price_sug_2',
     '(select profif_ratio from tblitems where commodity_code = tblgoods_transaction_detail.commodity_id) as gain',
+    '(select id from tblitems where commodity_code = tblgoods_transaction_detail.commodity_id) as itemid',
     '(select symbol from tblcurrencies where isdefault = 1 limit 1) as currency',
     '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) * ((select profif_ratio from tblitems where commodity_code = ( select commodity_code from tblitems where id = tblgoods_transaction_detail.commodity_id))/100)) as gain_price',
     '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) + (((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) * ((select profif_ratio from tblitems where commodity_code = ( select commodity_code from tblitems where id = tblgoods_transaction_detail.commodity_id)) /100))) as price_sale',
@@ -515,7 +516,7 @@ $rResult = $result['rResult'];
 	 }
 	 
 	  if($aRow[db_prefix().'goods_transaction_detail.status'] == 1) {
-		$row[] = "<button class='btn btn-success'>GUARDAR</button>";
+		$row[] = "<button class='btn btn-success' onclick='sendPrice(".$aRow['itemid'].", ".$aRow['goods_receipt_id'].")'>GUARDAR</button>";
 	 }else{
 		 $row[] = "-";
 	 }
