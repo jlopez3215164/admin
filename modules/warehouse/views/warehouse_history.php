@@ -75,10 +75,12 @@
 
     function sendPrice(id_product, id){
         var price = $("#precio_" + id).val();
+        var porcentaje = $("#porcentaje_" + id).val();
         var formData = new FormData();
           formData.append("csrf_token_name", $('input[name="csrf_token_name"]').val());
           formData.append("price", price);
           formData.append("id", id_product);
+          formData.append("profif_ratio", porcentaje);
       $.ajax({ 
             url: admin_url + 'warehouse/savePriceProduct', 
             method: 'post', 
@@ -87,7 +89,7 @@
             processData: false
         }).done(function(response) {
           //var response = JSON.parse(response);
-         alert();
+         alert("PRECIO ACTUALIZADO");
         });
     }
     </script>

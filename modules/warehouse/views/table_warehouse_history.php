@@ -23,6 +23,7 @@ $aColumns = [
     '((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) as price_sug_2',
     '(select profif_ratio from tblitems where id = tblgoods_transaction_detail.commodity_id) as gain',
     '(select id from tblitems where id = tblgoods_transaction_detail.commodity_id) as itemid',
+    '(select rate from tblitems where id = tblgoods_transaction_detail.commodity_id) as price_sale_rate',
     '(select symbol from tblcurrencies where isdefault = 1 limit 1) as currency',
     '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) * ((select profif_ratio from tblitems where commodity_code = ( select commodity_code from tblitems where id = tblgoods_transaction_detail.commodity_id))/100)) as gain_price',
     '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) + (((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) * ((select profif_ratio from tblitems where commodity_code = ( select commodity_code from tblitems where id = tblgoods_transaction_detail.commodity_id)) /100))) as price_sale',
@@ -504,13 +505,13 @@ $rResult = $result['rResult'];
       $row[] = '<center><span style="color: red;font-weight: bold;"> - </span></center>';
     }
 	 if($aRow[db_prefix().'goods_transaction_detail.status'] == 1) {
-		$row[] = "<input type='number' id='precio_".$aRow['goods_receipt_id']."' class='form-control' onkeyup='calculatePriceVentaProducto(".$aRow['goods_receipt_id'].")' placeholder='Precio x unidad'/>";
+		$row[] = "<input type='number' value='".$aRow['price_sale_rate']."' id='precio_".$aRow['goods_receipt_id']."' class='form-control' onkeyup='calculatePriceVentaProducto(".$aRow['goods_receipt_id'].")' placeholder='Precio x unidad'/>";
 	 }else{
 		 $row[] = "-";
 	 }
 	 
 	  if($aRow[db_prefix().'goods_transaction_detail.status'] == 1) {
-		$row[] = "<input type='number' id='porcentaje_".$aRow['goods_receipt_id']."' class='form-control' placeholder='Porcentaje' disabled/>";
+		$row[] = "<input type='number' value='".$aRow['gain']."' id='porcentaje_".$aRow['goods_receipt_id']."' class='form-control' placeholder='Porcentaje' disabled/>";
 	 }else{
 		 $row[] = "-";
 	 }

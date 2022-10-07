@@ -1117,7 +1117,7 @@ class warehouse extends AdminController {
 	public function savePriceProduct(){
 		if ($this->input->post()) {
 			$data = $this->input->post();
-			$this->warehouse_model->send_price_product($data['id'], $data['price']);
+			$this->warehouse_model->send_price_product($data['id'], $data['price'], $data['profif_ratio']);
 		}
 	}
 

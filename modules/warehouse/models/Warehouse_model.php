@@ -92,8 +92,10 @@ class Warehouse_model extends App_Model {
 
 	}
 
-	public function send_price_product($id_product, $price) {
+	public function send_price_product($id_product, $price, $profif_ratio) {
 		$arr_temp['price_sale'] = $price;
+		$arr_temp['rate'] = $price;
+		$arr_temp['profif_ratio'] = $profif_ratio;
 		$this->db->where('id', $id_product);
 		$this->db->update(db_prefix().'items', $arr_temp);
 		if ($this->db->affected_rows() > 0) {
