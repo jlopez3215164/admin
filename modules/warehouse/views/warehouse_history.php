@@ -101,12 +101,27 @@
          alert("PRECIO ACTUALIZADO");
         });
     }
+
+    function consolidateProduction(){
+        var formData = new FormData();
+          formData.append("csrf_token_name", $('input[name="csrf_token_name"]').val());
+      $.ajax({ 
+            url: admin_url + 'warehouse/consolidateProduction', 
+            method: 'post', 
+            data: formData, 
+            contentType: false, 
+            processData: false
+        }).done(function(response) {
+          //var response = JSON.parse(response);
+         window.location.reload();
+        });
+    }
     </script>
         <div>
             <center>
 <?php echo "<h1>".$_SESSION["item_merma"]." : ".number_format($_SESSION[$_SESSION["item_merma"]],2,",",".")."</h1>"; ?>
 <h4>PRECIO POR UNIDAD DE MEDIDA PARA ESTE PRODUCTO.<h4/>
-<button class='btn btn-success'>FINALIZAR PRODUCCION PARA ESTE PRODUCTO</button>
+<button class='btn btn-success' onclick="consolidateProduction()">FINALIZAR PRODUCCION PARA ESTE PRODUCTO</button>
 <hr/>
 <div  class="col-md-3 leads-filter-column">
                 <div class="form-group">

@@ -106,6 +106,12 @@ class Warehouse_model extends App_Model {
 		return false;
 	}
 
+
+	public function consolidate_production() {
+		$this->db->query("UPDATE tblgoods_transaction_detail set consolidate = '".$_SESSION["item_merma"]."' where consolidate is NULL");
+		return true;
+	}
+
 	/**
 	 *  get commodity type
 	 * @param  boolean $id

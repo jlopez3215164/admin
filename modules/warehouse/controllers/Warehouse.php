@@ -1121,6 +1121,10 @@ class warehouse extends AdminController {
 		}
 	}
 
+	public function consolidateProduction(){
+		$this->warehouse_model->consolidate_production();
+	}
+
 	/**
 	 * get html approval setting
 	 * @param  integer $id

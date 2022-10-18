@@ -4,7 +4,7 @@ SET
 ALTER TABLE
     tblgoods_transaction_detail
 ADD
-    COLUMN consolidate INT;
+    COLUMN consolidate TEXT;
 SET
     sql_mode = '';
 
