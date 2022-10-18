@@ -477,7 +477,7 @@ $rResult = $result['rResult'];
       if($aRow['mov'] == 0){
           $mov = $aRow['quantity'];
       }
-      if($total_production_cost != 0) {
+      if($total_production_cost_unit != 0) {
         //$total_cal = number_format(fdiv(floatval($total_production_cost),floatval($mov)), 2, ",", ".");//calculamos el precio por unidad producida
         $row[] = '<input type="hidden" id="costo_'.$aRow['goods_receipt_id'].'" value="'.number_format($total_production_cost_unit, 2, ",", ".").'"><center><span style="border-radius:5px; color: red;padding: 10px; font-weight: bold;">'.number_format($total_production_cost_unit, 2, ",", ".").$aRow['currency'].'</span></center>';
       }else{
