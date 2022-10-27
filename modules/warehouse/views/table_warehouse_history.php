@@ -173,6 +173,7 @@ $rResult = $result['rResult'];
     foreach ($rResult as $aRow) {
         $row = [];
 
+        
        
     $row[] = $aRow['id'];
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 1){
@@ -180,6 +181,8 @@ $rResult = $result['rResult'];
     } else {
       $row[] = "<span></span>";
     }
+
+    $row[] = "<input class='form-control' type='checkbox'/>";
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 1){
 
@@ -243,9 +246,9 @@ $rResult = $result['rResult'];
 
               $value_code = $team != null ? get_object_vars($team)['warehouse_code'] : '';
 
-              $str .= 'From: <span class="label label-tag tag-id-1"><span class="tag">' . $value . '</span><span class="hide">, </span></span>&nbsp';
+              $str .= 'Desde: <span class="label label-tag tag-id-1"><span class="tag">' . $value . '</span><span class="hide">, </span></span>&nbsp';
               
-              $str_code .= 'From: <span class="label label-tag tag-id-1"><span class="tag">' . $value_code . '</span><span class="hide">, </span></span>&nbsp';
+              $str_code .= 'Desde: <span class="label label-tag tag-id-1"><span class="tag">' . $value_code . '</span><span class="hide">, </span></span>&nbsp';
 
               $warehouse_name .= $str;
               $warehouse_code .= $str_code;
@@ -266,9 +269,9 @@ $rResult = $result['rResult'];
 
               $value_code1 = $team1 != null ? get_object_vars($team1)['warehouse_code'] : '';
 
-              $str .= '- To: <span class="label label-tag tag-id-1"><span class="tag">' . $value1 . '</span><span class="hide">, </span></span>&nbsp';
+              $str .= '- Para: <span class="label label-tag tag-id-1"><span class="tag">' . $value1 . '</span><span class="hide">, </span></span>&nbsp';
               
-              $str_code .= '- To: <span class="label label-tag tag-id-1"><span class="tag">' . $value_code1 . '</span><span class="hide">, </span></span>&nbsp';
+              $str_code .= '- Para: <span class="label label-tag tag-id-1"><span class="tag">' . $value_code1 . '</span><span class="hide">, </span></span>&nbsp';
 
               $warehouse_name .= $str;
               $warehouse_code .= $str_code;
@@ -431,7 +434,7 @@ $rResult = $result['rResult'];
         //$_SESSION["codigo"] = $value_comp2;
     }
 
-    if($aRow[db_prefix().'goods_transaction_detail.status'] == 1){
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 4){
   $row[] = '<center><span style="color: grey;font-weight: bold;">'.$aRow['unit'].'</span></center>';
     }elseif ($aRow[db_prefix().'goods_transaction_detail.status'] == 2){
       $row[] = '<center><span style="color: grey;font-weight: bold;">'.$aRow['unit_2'].'</span></center>';
@@ -472,7 +475,7 @@ $rResult = $result['rResult'];
       $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(fdiv($aRow['costo_merma'], $aRow['rendi']) * 100, 2, ",", ".").$aRow['currency'].'</span></center>';
     }
 
-    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1){
+    if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 4){
       $mov = $aRow['mov'];
       if($aRow['mov'] == 0){
           $mov = $aRow['quantity'];
@@ -502,7 +505,7 @@ $rResult = $result['rResult'];
       $total_production_cost_unit = 0;
     }
 
-    if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
+    if($aRow[db_prefix().'goods_transaction_detail.status'] == 3 || $aRow[db_prefix().'goods_transaction_detail.status'] == 4) {
       $row[] = '<center><span style="color: red;font-weight: bold;"> - </span></center>';
     }
 	 if($aRow[db_prefix().'goods_transaction_detail.status'] == 1) {

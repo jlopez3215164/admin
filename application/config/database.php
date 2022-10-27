@@ -86,7 +86,7 @@ if (defined('APP_DB_ENCRYPT')) {
 
 $db['default'] = array_merge([
     'dsn'          => '', // Not Supported
-    'hostname'     => APP_DB_HOSTNAME,
+    'hostname'     => APP_DB_HOSTNAME.":33066",
     'username'     => APP_DB_USERNAME,
     'password'     => APP_DB_PASSWORD,
     'database'     => APP_DB_NAME,

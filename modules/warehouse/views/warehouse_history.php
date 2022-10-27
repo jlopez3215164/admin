@@ -155,6 +155,7 @@
                       <?php render_datatable(array(
                         _l('id'),
                         "TIPO",
+                        "",
                         _l('form_code'),
                         _l('commodity_code'),
                         _l('warehouse_code'),
