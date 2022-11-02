@@ -341,19 +341,19 @@ $rResult = $result['rResult'];
     switch ($aRow[db_prefix().'goods_transaction_detail.status']) {
       case 1:
            //stock_import
-         $row[] = "<center><span style='color: grey; font-weight:bold;border-radius: 5px;'>".number_format($aRow['old_quantity'], 2, ",", ".")."<span></center>"; 
+         $row[] = "<center><span style='color: grey; font-weight:bold;border-radius: 5px;'>".number_format($aRow['old_quantity'], 2, ".", ",")."<span></center>"; 
          break;
       case 2:
            //stock_export
-        $row[] = "<center><span style='color: grey; font-weight:bold;border-radius: 5px;'>".number_format((float)number_format($aRow['old_quantity'], 2, ",", ".") + (float)number_format($aRow['quantity'], 2, ",", "."),  2, ",", ".")."<span></center>";
+        $row[] = "<center><span style='color: grey; font-weight:bold;border-radius: 5px;'>".number_format((float)number_format($aRow['old_quantity'], 2, ".", ",") + (float)number_format($aRow['quantity'], 2, ".", ","),  2, ".", ",")."<span></center>";
          break;
       case 3:
            //lost adjustment
-         $row[] = "<center><span style='color: grey; font-weight:bold;border-radius: 5px;'>".number_format($aRow['old_quantity'], 2, ",", ".")."<span></center>";
+         $row[] = "<center><span style='color: grey; font-weight:bold;border-radius: 5px;'>".number_format($aRow['old_quantity'], 2, ".", ",")."<span></center>";
          break;
       case 4:
            //internal_delivery_note
-         $row[] = "<center><span style='color: grey; font-weight:bold;border-radius: 5px;'>".number_format($aRow['old_quantity'], 2, ",", ".")."<span></center>";
+         $row[] = "<center><span style='color: grey; font-weight:bold;border-radius: 5px;'>".number_format($aRow['old_quantity'], 2, ".", ",")."<span></center>";
          break;
        
      } 
@@ -365,26 +365,26 @@ $rResult = $result['rResult'];
          switch ($aRow[db_prefix().'goods_transaction_detail.status']) {
            case 1:
            //stock_import
-              $row[] = "<center><span style='color: #84c529; font-weight:bold;border-radius: 5px;'>".number_format( (float)$aRow['old_quantity'] + (float)$aRow['quantity'], 2, ",", ".")."<span></center>";
+              $row[] = "<center><span style='color: #84c529; font-weight:bold;border-radius: 5px;'>".number_format( (float)$aRow['old_quantity'] + (float)$aRow['quantity'], 2, ".", ",")."<span></center>";
 
                break;
            case 2:
            //stock_export
-               $row[] = "<center><span style='color:#84c529; font-weight:bold;border-radius: 5px;'>".number_format( (float)$aRow['old_quantity'], 2, ",", ".")."<span></center>";
+               $row[] = "<center><span style='color:#84c529; font-weight:bold;border-radius: 5px;'>".number_format( (float)$aRow['old_quantity'], 2, ".", ",")."<span></center>";
                break;
            case 3:
            //lost adjustment
-               $row[] = "<center><span style='color:#84c529; font-weight:bold;border-radius: 5px;'>".number_format( $aRow['quantity'], 2, ",", ".")."<span></center>";
+               $row[] = "<center><span style='color:#84c529; font-weight:bold;border-radius: 5px;'>".number_format( $aRow['quantity'], 2, ".", ",")."<span></center>";
                break;
            case 4:
            //internal_delivery_note
-               $row[] = "<center><span style='color: #84c529; font-weight:bold;border-radius: 5px;'>".number_format((float)$aRow['old_quantity'] - (float)$aRow['quantity'], 2, ",", ".")."<span></center>";
+               $row[] = "<center><span style='color: #84c529; font-weight:bold;border-radius: 5px;'>".number_format((float)$aRow['old_quantity'] - (float)$aRow['quantity'], 2, ".", ",")."<span></center>";
                break;
        } 
 
     }else{
        //$row[] = $aRow['quantity'];
-       $row[] = "<center><span style='color: #84c529; font-weight:bold;border-radius: 5px;'>".number_format((float)$aRow['quantity'], 2, ",", ".")."<span></center>";
+       $row[] = "<center><span style='color: #84c529; font-weight:bold;border-radius: 5px;'>".number_format((float)$aRow['quantity'], 2, ".", ",")."<span></center>";
     }
     
     $color = "#84c529";
@@ -442,18 +442,18 @@ $rResult = $result['rResult'];
       $row[] = '<center><span style="color: grey;font-weight: bold;">'.$aRow['unit_3'].'</span></center>';
     }
   if($aRow['mov'] != 0){
-    $row[] = '<center><span style="color: '.$color.';font-weight: bold;">'.$signo.number_format($aRow['mov'], 2, ",", ".").'</span></center>';
+    $row[] = '<center><span style="color: '.$color.';font-weight: bold;">'.$signo.number_format($aRow['mov'], 2, ".", ",").'</span></center>';
   }else{
-    $row[] = '<center><span style="color: '.$color.';font-weight: bold;">'.$signo.number_format($aRow['quantity'], 2, ",", ".").'</span></center>';
+    $row[] = '<center><span style="color: '.$color.';font-weight: bold;">'.$signo.number_format($aRow['quantity'], 2, ".", ",").'</span></center>';
   }
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 3)
-      $row[] = '<center><span style="color: #84c529;font-weight: bold;">'.number_format($aRow['rendi'], 2, ",", ".").' %</span></center>';
+      $row[] = '<center><span style="color: #84c529;font-weight: bold;">'.number_format($aRow['rendi'], 2, ".", ",").' %</span></center>';
     else
       $row[] = '<center><span style="color: #84c529;font-weight: bold;">-</span></center>';
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 3)
-      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format($aRow['merma'], 2, ",", ".").' %</span></center>';
+      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format($aRow['merma'], 2, ".", ",").' %</span></center>';
     else
       $row[] = '<center><span style="color: red;font-weight: bold;">-</span></center>';
 
@@ -463,7 +463,7 @@ $rResult = $result['rResult'];
       }else{
         $value_cost_val = $aRow['costo'];
       }
-      $row[] = '<center><span style="color: orange;font-weight: bold;">'.number_format($value_cost_val, 2, ",", ".").$aRow['currency'].'</span></center>';
+      $row[] = '<center><span style="color: orange;font-weight: bold;">'.number_format($value_cost_val, 2, ".", ",").$aRow['currency'].'</span></center>';
     }
     //COSTO DE LA MERMA QUE DEFINE TODO
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 3) {
@@ -472,7 +472,7 @@ $rResult = $result['rResult'];
       $_SESSION[$value_comp] = fdiv($aRow['costo_merma'], $aRow['rendi']) * 100;
       $_SESSION["item_merma"] = $value_comp;
       //$row[] = '<center><span style="color: orange;font-weight: bold;"> - </span></center>';
-      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(fdiv($aRow['costo_merma'], $aRow['rendi']) * 100, 2, ",", ".").$aRow['currency'].'</span></center>';
+      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(fdiv($aRow['costo_merma'], $aRow['rendi']) * 100, 2, ".", ",").$aRow['currency'].'</span></center>';
     }
 
     if ($aRow[db_prefix().'goods_transaction_detail.status'] == 1 || $aRow[db_prefix().'goods_transaction_detail.status'] == 4){
@@ -481,10 +481,10 @@ $rResult = $result['rResult'];
           $mov = $aRow['quantity'];
       }
       if($total_production_cost_unit != 0) {
-        //$total_cal = number_format(fdiv(floatval($total_production_cost),floatval($mov)), 2, ",", ".");//calculamos el precio por unidad producida
-        $row[] = '<input type="hidden" id="costo_'.$aRow['goods_receipt_id'].'" value="'.number_format($total_production_cost_unit, 2, ",", ".").'"><center><span style="border-radius:5px; color: red;padding: 10px; font-weight: bold;">'.number_format($total_production_cost_unit, 2, ",", ".").$aRow['currency'].'</span></center>';
+        //$total_cal = number_format(fdiv(floatval($total_production_cost),floatval($mov)), 2, ".", ",");//calculamos el precio por unidad producida
+        $row[] = '<input type="hidden" id="costo_'.$aRow['goods_receipt_id'].'" value="'.number_format($total_production_cost_unit, 2, ".", ",").'"><center><span style="border-radius:5px; color: red;padding: 10px; font-weight: bold;">'.number_format($total_production_cost_unit, 2, ".", ",").$aRow['currency'].'</span></center>';
       }else{
-        $row[] = '<center><span style="border-radius:5px; color: red;padding: 10px; font-weight: bold;">'.number_format($aRow['costo'], 2, ",", ".").$aRow['currency'].'</span></center>';
+        $row[] = '<center><span style="border-radius:5px; color: red;padding: 10px; font-weight: bold;">'.number_format($aRow['costo'], 2, ".", ",").$aRow['currency'].'</span></center>';
       }
       
     } 
@@ -496,11 +496,11 @@ $rResult = $result['rResult'];
         $value_cost_val_2 = $aRow['costo'];
       }
       $value_cost_val_2_final = $value_cost_val_2_final + ($value_cost_val_2 * $aRow['mov']);
-      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(($value_cost_val_2 * $aRow['mov']), 2, ",", ".").$aRow['currency'].'</span></center>';
+      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(($value_cost_val_2 * $aRow['mov']), 2, ".", ",").$aRow['currency'].'</span></center>';
     }
 
     if($aRow[db_prefix().'goods_transaction_detail.status'] == 1) {
-      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(($value_cost_val_2_final), 2, ",", ".").$aRow['currency'].'</span></center>';
+      $row[] = '<center><span style="color: red;font-weight: bold;">'.number_format(($value_cost_val_2_final), 2, ".", ",").$aRow['currency'].'</span></center>';
       $value_cost_val_2_final = 0;
       $total_production_cost_unit = 0;
     }
