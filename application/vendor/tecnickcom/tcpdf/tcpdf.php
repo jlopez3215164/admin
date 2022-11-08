@@ -1937,12 +1937,12 @@ class TCPDF {
 		// set page format and orientation
 		$this->setPageFormat($format, $orientation);
 		// page margins (1 cm)
-		$margin = 28.35 / $this->k;
+		$margin = 0;//AJUSTE MARGEN BARCODE
 		$this->SetMargins($margin, $margin);
 		$this->clMargin = $this->lMargin;
 		$this->crMargin = $this->rMargin;
 		// internal cell padding
-		$cpadding = $margin / 10;
+		$cpadding = 0;//AJUSTE MARGEN BARCODE
 		$this->setCellPaddings($cpadding, 0, $cpadding, 0);
 		// cell margins
 		$this->setCellMargins(0, 0, 0, 0);
@@ -1989,7 +1989,7 @@ class TCPDF {
 		TCPDF_FONTS::utf8Bidi(array(), '', false, $this->isunicode, $this->CurrentFont);
 		// set default font
 		$this->SetFont($this->FontFamily, $this->FontStyle, $this->FontSizePt);
-		$this->setHeaderFont(array($this->FontFamily, $this->FontStyle, $this->FontSizePt));
+		//$this->setHeaderFont(array($this->FontFamily, $this->FontStyle, $this->FontSizePt));
 		$this->setFooterFont(array($this->FontFamily, $this->FontStyle, $this->FontSizePt));
 		// check if PCRE Unicode support is enabled
 		if ($this->isunicode AND (@preg_match('/\pL/u', 'a') == 1)) {
@@ -2309,7 +2309,7 @@ class TCPDF {
 				$bottommargin = $this->bMargin;
 			} else {
 				// default value = 2 cm
-				$bottommargin = 2 * 28.35 / $this->k;
+				$bottommargin = 0;//2 * 28.35 / $this->k;
 			}
 		}
 		$this->SetAutoPageBreak($autopagebreak, $bottommargin);
@@ -3269,7 +3269,7 @@ class TCPDF {
 		// mark this point
 		$this->setPageMark();
 		// print page header
-		$this->setHeader();
+		//$this->setHeader();
 		// restore graphic settings
 		$this->setGraphicVars($gvars);
 		// mark this point

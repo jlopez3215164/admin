@@ -12307,9 +12307,9 @@ class Warehouse_model extends App_Model {
 
 				if($value['commodity_barcode'] != ''){
 					if($display_product_name == 1){
-						$html_child .= '<td class="print-barcode-td-height"><span class="print-item-code print-item-name">'.$description.'</span><br><span class="print-item-code print-item-name">'.$description_sub.'</span><br><span class=" print-item-price">'._l('print_barcode_sale_price').': '.app_format_money($rate_after_tax,$current_id).'</span><span class="print-item"><img class="images_w_table" src="' . $barcode_path . '" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'.$value['commodity_barcode'].'</span></td>';
+						$html_child .= '<td class="print-barcode-td-height"><span class="print-item-code print-item-name">'.$description.'</span><br><span class="print-item-code print-item-name">'.$description_sub.'</span><span class="print-item"><img class="images_w_table" src="' . $barcode_path . '" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'.$value['commodity_barcode'].'</span></td>';
 					}else{
-						$html_child .= '<td class="print-barcode-td-height"><span class="print-item-code print-item-name"></span><br><span class="print-item-code print-item-name">'.$description.'</span><br><span class=" print-item-price">'._l('print_barcode_sale_price').': '.app_format_money($rate_after_tax,$current_id).'</span><span class="print-item"><img class="images_w_table" src="' . $barcode_path . '" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'.$value['commodity_barcode'].'</span></td>';
+						$html_child .= '<td class="print-barcode-td-height"><span class="print-item-code print-item-name"></span><br><span class="print-item-code print-item-name">'.$description.'</span><span class="print-item"><img class="images_w_table" src="' . $barcode_path . '" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'.$value['commodity_barcode'].'</span></td>';
 
 					}
 
@@ -12317,16 +12317,16 @@ class Warehouse_model extends App_Model {
 				}else{
 					if($display_product_name == 1){
 
-						$html_child .= '<td class="print-barcode-td-height"><span class="print-item-code print-item-name">'.$description.'</span><br><span class="print-item-code print-item-name">'.$description_sub.'</span><br><span class=" print-item-price">'._l('print_barcode_sale_price').': '.app_format_money($rate_after_tax,$current_id).'</span><span class="print-item"><img class="images_w_table" src="" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'._l('the_product_has_no_barcode').'</span></td>';
+						$html_child .= '<td class="print-barcode-td-height"><span class="print-item-code print-item-name">'.$description.'</span><br><span class="print-item-code print-item-name">'.$description_sub.'</span><span class="print-item"><img class="images_w_table" src="" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'._l('the_product_has_no_barcode').'</span></td>';
 
 					}else{
-						$html_child .= '<td class="print-barcode-td-height"><span class="print-item-code print-item-name"></span><br><span class="print-item-code print-item-name">'.$description.'</span><br><span class=" print-item-price">'._l('print_barcode_sale_price').': '.app_format_money($rate_after_tax,$current_id).'</span><span class="print-item"><img class="images_w_table" src="" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'._l('the_product_has_no_barcode').'</span></td>';
+						$html_child .= '<td class="print-barcode-td-height"><span class="print-item-code print-item-name"></span><br><span class="print-item-code print-item-name">'.$description.'</span><span class="print-item"><img class="images_w_table" src="" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'._l('the_product_has_no_barcode').'</span></td>';
 
 					}
 				
 				}
 
-				if(($key+1)%4 == 0 ){
+				if(($key+1)%1 == 0 ){//Uno solo por linea
 					$html .= '<tr>'.$html_child.'</tr>';
 
 					if($br_tem%36 == 0){
@@ -12334,7 +12334,7 @@ class Warehouse_model extends App_Model {
 					}
 
 					$html_child='';
-				}elseif(($key+1)%4 != 0 && ($key+1 == count($array_commodity))){
+				}elseif(($key+1)%1 != 0 && ($key+1 == count($array_commodity))){//Uno solo por linea
 					$html .= '<tr>'.$html_child.'</tr>';
 
 					if($br_tem%36 == 0){
@@ -12401,22 +12401,22 @@ class Warehouse_model extends App_Model {
 					if($value['commodity_barcode'] != ''){
 						if($display_product_name == 1){
 
-							$html_child .= '<td><span class="print-item-code print-item-name">'.$description.'</span><br><span class="print-item-code print-item-name ">'.$description_sub.'</span><br><span class=" print-item-price">'._l('print_barcode_sale_price').': '.app_format_money($rate_after_tax,$current_id).'</span><span class="print-item"><img class="images_w_table" src="' . $barcode_path . '" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'.$value['commodity_barcode'].'</span></td>';
+							$html_child .= '<td><span class="print-item-code print-item-name">'.$description.'</span><br><span class="print-item-code print-item-name ">'.$description_sub.'</span><span class="print-item"><img class="images_w_table" src="' . $barcode_path . '" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'.$value['commodity_barcode'].'</span></td>';
 
 						}else{
 
-							$html_child .= '<td><span class="print-item-code print-item-name "></span><br><span class="print-item-code print-item-name">'.$description.'</span><br><span class=" print-item-price">'._l('print_barcode_sale_price').': '.app_format_money($rate_after_tax,$current_id).'</span><span class="print-item"><img class="images_w_table" src="' . $barcode_path . '" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'.$value['commodity_barcode'].'</span></td>';
+							$html_child .= '<td><span class="print-item-code print-item-name "></span><br><span class="print-item-code print-item-name">'.$description.'</span><span class="print-item"><img class="images_w_table" src="' . $barcode_path . '" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'.$value['commodity_barcode'].'</span></td>';
 						}
 					}else{
 						if($display_product_name == 1){
-							$html_child .= '<td><span class="print-item-code print-item-name">'.$description.'</span><br><span class="print-item-code print-item-name ">'.$description_sub.'</span><br><span class=" print-item-price">'._l('print_barcode_sale_price').': '.app_format_money($rate_after_tax,$current_id).'</span><span class="print-item"><img class="images_w_table" src="" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'._l('the_product_has_no_barcode').'</span></td>';
+							$html_child .= '<td><span class="print-item-code print-item-name">'.$description.'</span><br><span class="print-item-code print-item-name ">'.$description_sub.'</span><span class="print-item"><img class="images_w_table" src="" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'._l('the_product_has_no_barcode').'</span></td>';
 						}else{
-							$html_child .= '<td><span class="print-item-code print-item-name "></span><br><span class="print-item-code print-item-name">'.$description.'</span><br><span class=" print-item-price">'._l('print_barcode_sale_price').': '.app_format_money($rate_after_tax,$current_id).'</span><span class="print-item"><img class="images_w_table" src="" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'._l('the_product_has_no_barcode').'</span></td>';
+							$html_child .= '<td><span class="print-item-code print-item-name "></span><br><span class="print-item-code print-item-name">'.$description.'</span><span class="print-item"><img class="images_w_table" src="" alt="' . $value['commodity_barcode'] . '" ></span><span class="print-item-code">'._l('the_product_has_no_barcode').'</span></td>';
 
 						}
 					}
 
-					if(($key+1)%4 == 0 ){
+					if(($key+1)%1 == 0 ){
 						$html .= '<tr>'.$html_child.'</tr>';
 
 						if($br_tem%36 == 0){
@@ -12424,7 +12424,7 @@ class Warehouse_model extends App_Model {
 						}
 
 						$html_child='';
-					}elseif(($key+1)%4 != 0 && ($key+1 == count($array_commodity))){
+					}elseif(($key+1)%1 != 0 && ($key+1 == count($array_commodity))){
 						$html .= '<tr>'.$html_child.'</tr>';
 
 						if($br_tem%36 == 0){
