@@ -28,7 +28,8 @@ class Print_barcode_pdf extends App_pdf {
 		$this->SetMargins(PDF_MARGIN_LEFT-15, PDF_MARGIN_TOP-29, PDF_MARGIN_RIGHT-16, true);//Ajuste impresora freska (zebra)
 		$this->setCellPaddings(0,0,0,0);
 		$this->SetHeaderMargin(0);
-		//$this->SetAutoPageBreak(TRUE, 0);
+		$this->setCellMargins(0, 0, 0, 0);
+		$this->SetAutoPageBreak(true, 0);
 		//$this->SetTopMargin(1);
 
 		# Don't remove these lines - important for the PDF layout
