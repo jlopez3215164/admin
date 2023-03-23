@@ -138,7 +138,7 @@
                                              <div id="color_id_t"></div>   
                                           <div class="form"> 
                                             <div class="col-md-6">
-                                              <?php echo render_input('warehouse_code', 'warehouse_code'); ?>
+                                              <?php echo render_input('warehouse_code', 'warehouse_code', '', '', ['maxlength' => 100]); ?>
                                             </div>
 
                                             <div class="col-md-6">
@@ -149,13 +149,15 @@
                                                         $min_p =[];
                                                         $min_p['min']='0';
                                                         $min_p['required']='true';
+                                                        $min_p['step']= 1;
+                                                        $min_p['maxlength']= 10;
 
                                                      ?>
                                                 <?php echo render_input('order','order',html_entity_decode($mint_point_f),'number', $min_p) ?>
                                             </div>
                                             
                                             <div class="col-md-6">
-                                              <?php echo render_textarea('warehouse_address', 'warehouse_address', '', ['rows' =>5]); ?>
+                                              <?php echo render_textarea('warehouse_address', 'warehouse_address', '', ['rows' =>5, ]); ?>
                                             </div>
 
                                             <div class="col-md-6">
@@ -185,8 +187,8 @@
                                             </div>
 
                                             <div class="col-md-6">
-                                              <input data-can-view="" type="checkbox" class="capability" name="display" checked>
-                                              <label for="contracts_view" class="pt-2">
+                                              <input data-can-view="" type="checkbox" class="capability" name="display"  id="display" checked>
+                                              <label for="display" class="pt-2">
                                                       <?php echo _l('display'); ?>               
                                                     </label>
                                             </div>

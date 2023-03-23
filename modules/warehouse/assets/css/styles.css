@@ -208,3 +208,7 @@ img.images_w_table {
     overflow-x: hidden !important;
     overflow-y: auto !important;
   }
+
+  input.wh_input_none{
+    background: 0 0 !important;
+  }

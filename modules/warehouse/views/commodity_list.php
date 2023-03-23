@@ -37,8 +37,24 @@
 
                         <?php } ?>
                     </div>
-                    
-                    <div class=" col-md-2">
+                  </div>
+                  <div class="row">
+                    <div class=" col-md-3">
+                      <div class="form-group">
+                      <select name="warehouse_filter[]" id="warehouse_filter" class="selectpicker" multiple="true" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('warehouse_filter'); ?>">
+
+                          <?php foreach($warehouse_filter as $warehouse) { ?>
+                            <option value="<?php echo html_entity_decode($warehouse['warehouse_id']); ?>"><?php echo html_entity_decode($warehouse['warehouse_name']); ?></option>
+                            <?php } ?>
+                        </select>
+                        </div>
+                    </div>
+                    <div class=" col-md-3">
+                      <?php $this->load->view('warehouse/item_include/item_select', ['select_name' => 'commodity_filter[]', 'id_name' => 'commodity_filter', 'multiple' => true, 'data_none_selected_text' => 'commodity']); ?>
+                    </div>
+                    <div class=" col-md-3">
+                      <div class="form-group">
+
                       <select name="item_filter[]" id="item_filter" class="selectpicker" multiple="true"  data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('tags'); ?>">
 
                            <?php foreach($item_tags as $item_f) { ?>
@@ -46,9 +62,11 @@
                             <?php } ?>
 
                         </select>
+                      </div>
                     </div>
 
-                    <div class=" col-md-2">
+                    <div class=" col-md-3">
+                      <div class="form-group">
                       <select name="alert_filter" id="alert_filter" class="selectpicker"  data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('alert_filter'); ?>">
 
                             <option value=""></option>
@@ -58,26 +76,9 @@
                             <option value="2"><?php echo _l('1_month_before_expiration_date') ; ?></option>
 
                         </select>
+                      </div>
                     </div>
 
-                    <div class=" col-md-2">
-                      <select name="warehouse_filter[]" id="warehouse_filter" class="selectpicker" multiple="true" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('warehouse_filter'); ?>">
-
-                          <?php foreach($warehouse_filter as $warehouse) { ?>
-                            <option value="<?php echo html_entity_decode($warehouse['warehouse_id']); ?>"><?php echo html_entity_decode($warehouse['warehouse_name']); ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                    <div class=" col-md-2">
-                      <div class="form-group">
-                        <select name="commodity_filter[]" id="commodity_filter" class="selectpicker" data-live-search="true" multiple="true" data-width="100%" data-none-selected-text="<?php echo _l('commodity_filter'); ?>">
-
-                            <?php foreach($commodity_filter as $commodity) { ?>
-                              <option value="<?php echo html_entity_decode($commodity['id']); ?>"><?php echo html_entity_decode($commodity['description']); ?></option>
-                              <?php } ?>
-                          </select>
-                        </div>
-                    </div>
                     
                     
                    
@@ -94,13 +95,87 @@
                                  <h4 class="modal-title"><?php echo _l('bulk_actions'); ?></h4>
                               </div>
                               <div class="modal-body">
-                                 <?php if(has_permission('warehouse','','delete') || is_admin()){ ?>
                                  <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" name="mass_delete" id="mass_delete">
-                                    <label for="mass_delete"><?php echo _l('mass_delete'); ?></label>
-                                 </div>
-                                
+                                  <div class="row">
+
+                                 <?php if(has_permission('warehouse','','delete') || is_admin()){ ?>
+                                  <div class="col-md-4">
+                                    <div class="form-group">
+                                      <input type="checkbox" name="mass_delete" id="mass_delete">
+                                      <label for="mass_delete"><?php echo _l('mass_delete'); ?></label>
+                                    </div>
+                                  </div>
                                  <?php } ?>
+
+                                   
+                                  </div>
+
+                                  <div class="row">
+                                    <?php if(has_permission('warehouse','','create') || is_admin()){ ?>
+                                  <div class="col-md-4">
+                                    <div class="form-group">
+                                      <input type="checkbox" name="clone_items" id="clone_items">
+                                      <label for="clone_items"><?php echo _l('clone_this_items'); ?></label>
+                                    </div>
+                                  </div>
+                                 <?php } ?>
+                                    
+                                  </div>
+
+                                 <?php if(has_permission('warehouse','','edit') || is_admin()){ ?>
+                                  <div class="row">
+                                    <div class="col-md-5">
+                                      <div class="form-group">
+
+                                        <input type="checkbox" name="change_item_selling_price" id="change_item_selling_price" >
+                                        <label for="change_item_selling_price"><?php echo _l('change_item_selling_price'); ?></label>
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="form-group">
+
+                                        <div class="input-group" id="discount-total">
+                                          <input type="number" class="form-control text-right" min="0" max="100" name="selling_price" value="">
+                                          <div class="input-group-addon">
+                                            <div class="dropdown">
+                                             <span class="discount-type-selected">
+                                              %
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                  </div>
+                                </div>
+
+                                <div class="row">
+                                  <div class="col-md-5">
+                                    <div class="form-group">
+
+                                      <input type="checkbox" name="change_item_purchase_price" id="change_item_purchase_price">
+                                      <label for="change_item_purchase_price"><?php echo _l('change_item_purchase_price'); ?></label>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="form-group">
+
+                                      <div class="input-group" id="discount-total">
+                                        <input type="number" class="form-control text-right" min="0" max="100" name="b_purchase_price" value="">
+                                        <div class="input-group-addon">
+                                          <div class="dropdown">
+                                           <span class="discount-type-selected">
+                                            %
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                                 <?php } ?>
+                                 
+                                 </div>
                               </div>
                               <div class="modal-footer">
                                  <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo _l('close'); ?></button>
@@ -180,14 +255,7 @@
 
                                  <div class="row display-select-item hide ">
                                   <div class=" col-md-12">
-                                      <div class="form-group">
-                                        <select name="item_select_print_barcode[]" id="item_select_print_barcode" class="selectpicker" data-live-search="true" multiple="true" data-width="100%" data-none-selected-text="<?php echo _l('select_item_print_barcode'); ?>">
-
-                                            <?php foreach($commodity_filter as $commodity) { ?>
-                                              <option value="<?php echo html_entity_decode($commodity['id']); ?>"><?php echo html_entity_decode($commodity['description']); ?></option>
-                                              <?php } ?>
-                                          </select>
-                                        </div>
+                                    <?php $this->load->view('warehouse/item_include/item_select', ['select_name' => 'item_select_print_barcode[]', 'id_name' => 'item_select_print_barcode', 'multiple' => true, 'data_none_selected_text' => 'select_item_print_barcode']); ?> 
                                   </div>
                                   </div>
                                 
@@ -212,8 +280,19 @@
                      <a href="#"  onclick="staff_export_item(); return false;" data-toggle="modal" data-table=".table-table_commodity_list" data-target="#leads_export_item" class=" hide bulk-actions-btn table-btn"><?php echo _l('export_item'); ?></a>
 
                      <a href="#"  onclick="print_barcode_bulk_actions(); return false;" data-toggle="modal" data-table=".table-table_commodity_list" data-target="#print_barcode_item" class=" hide print_barcode-bulk-actions-btn table-btn"><?php echo _l('print_barcode'); ?></a>
-                     
 
+                     <!-- search all simple product and variation product -->
+                     <div class="col-md-12">
+                      <div class="form-group pull-right">
+                        <div class="checkbox checkbox-primary">
+                          <input  type="checkbox" id="filter_all_simple_variation" name="filter_all_simple_variation" >
+                          <label for="filter_all_simple_variation"><?php echo _l('search_all_simple_variation_product'); ?> <i class="fa fa-question-circle i_tooltip" data-toggle="tooltip" title="" data-original-title="<?php echo _l('search_all_simple_variation_tooltip'); ?>"></i>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
                       <?php 
                       $table_data = array(
                                         '<span class="hide"> - </span><div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all" data-to-table="table_commodity_list"><label></label></div>',
@@ -228,10 +307,12 @@
                                           _l('unit_name'),
                                           _l('rate'),
                                           _l('purchase_price'),
-                                          _l('tax'),
+                                          _l('tax_1'),
+                                          _l('tax_2'),
                                           _l('status'),                         
                                           _l('minimum_stock'),                         
-                                          _l('maximum_stock'),                         
+                                          _l('maximum_stock'),
+                                          _l('final_price'),                         
                                         );
 
                       $cf = get_custom_fields('items',array('show_on_table'=>1));
@@ -248,7 +329,7 @@
                              'data-default-order'=>get_table_last_order('table_commodity_list'),
                            )); ?>
 
-
+                      </div>
                       </div>
 
 
@@ -339,11 +420,11 @@
                     </li>
 
                     <!-- TODO -->
-                    <!-- <li role="presentation">
+                    <li role="presentation">
                        <a href="#variation" aria-controls="variation" role="tab" data-toggle="tab" aria-controls="variation">
                        <i class="fa fa-bars menu-icon"></i>&nbsp;<?php echo _l('variation'); ?>
                        </a>
-                    </li> -->
+                    </li>
 
                     <li role="presentation">
                        <a href="#custom_fields" aria-controls="custom_fields" role="tab" data-toggle="tab" aria-controls="custom_fields">
@@ -360,14 +441,17 @@
               
                 <!-- interview process start -->
                   <div role="tabpanel" class="tab-pane active" id="interview_infor">
-                        <div class="row hide">
+                        <div class="row parent_item_hide">
                           <div class=" col-md-12">
-                            <div class="form-group">
+                            <div id="parent_item_html">
+                              
+                            </div>
+                            <!-- <div class="form-group">
                               <label for="parent_id" class="control-label"><?php echo _l('parent_item'); ?></label>
                               <select name="parent_id" id="parent_id" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="">
                                 
                               </select>
-                            </div>
+                            </div> -->
 
                           </div>
                         </div>
@@ -383,14 +467,14 @@
                             </div>
 
                             <div class="row">
-                               <div class="col-md-4">
+                               <div class="col-md-6">
                                      <?php echo render_input('commodity_barcode', 'commodity_barcode','','text'); ?>
                                 </div>
-                              <div class="col-md-4">
+                              <div class="col-md-3">
                                 <a href="#" class="pull-right display-block input_method"><i class="fa fa-question-circle skucode-tooltip"  data-toggle="tooltip" title="" data-original-title="<?php echo _l('commodity_sku_code_tooltip'); ?>"></i></a>
                                 <?php echo render_input('sku_code', 'sku_code','',''); ?>
                               </div>
-                              <div class="col-md-4">
+                              <div class="col-md-3">
                                 <?php echo render_input('sku_name', 'sku_name'); ?>
                               </div>
                             </div>
@@ -449,8 +533,11 @@
                                    ?>
                                      <?php echo render_input('profif_ratio','_profit_rate_p','','number',$attr); ?>
                                 </div>
-                                <div class="col-md-6">
-                                     <?php echo render_select('tax',$taxes,array('id','name'),'taxes'); ?>
+                                <div class="col-md-3">
+                                     <?php echo render_select('tax',$taxes,array('id','name'),'tax_1'); ?>
+                                </div>
+                                <div class="col-md-3">
+                                     <?php echo render_select('tax2',$taxes,array('id','name'),'tax_2'); ?>
                                 </div>
                             </div>
 
@@ -459,8 +546,8 @@
 
                                     <?php 
                                     $attr = array();
-                                    $attr = ['data-type' => 'currency'];
-                                     echo render_input('purchase_price', 'purchase_price','', 'text', $attr); ?>
+                                    //$attr = ['data-type' => 'currency'];
+                                     echo render_input('purchase_price', 'purchase_price','', 'number', $attr); ?>
                                   
                                 </div>
                                 <div class="col-md-6">
@@ -468,8 +555,8 @@
                                      <?php $premium_rates = isset($premium_rates) ? $premium_rates : '' ?>
                                     <?php 
                                     $attr = array();
-                                     $attr = ['data-type' => 'currency'];
-                                     echo render_input('rate', 'rate','', 'text', $attr); ?>
+                                     //$attr = ['data-type' => 'currency'];
+                                     echo render_input('rate', 'rate','', 'number', $attr); ?>
 
 
                                 </div>
@@ -526,7 +613,7 @@
                         </div>
 
                         <div class="row">
-                          <div class="col-md-12">
+                          <div class="col-md-6">
                               <div class="form-group">
                                 <div class="checkbox checkbox-primary">
                                   <input  type="checkbox" id="without_checking_warehouse" name="without_checking_warehouse" value="without_checking_warehouse">
@@ -535,7 +622,33 @@
                                   </label>
                                 </div>
                               </div>
-                          </div>  
+                          </div>
+
+                          <div class="col-md-3 col-sm-6">
+                           <div class="form-group">
+                            <div class="checkbox checkbox-primary">
+                              <input  type="checkbox" id="can_be_sold" name="can_be_sold" value="can_be_sold" >
+                              <label for="can_be_sold"><?php echo _l('can_be_sold'); ?></label>
+                            </div>
+                            <div class="checkbox checkbox-primary <?php if(!get_status_modules_wh('purchase')){echo ' hide';} ?>">
+                              <input  type="checkbox" id="can_be_purchased" name="can_be_purchased" value="can_be_purchased" >
+                              <label for="can_be_purchased"><?php echo _l('can_be_purchased'); ?></label>
+                            </div>
+                            
+                          </div>
+                        </div>  
+                        <div class="col-md-3 col-sm-6">
+                          <div class="form-group">
+                            <div class="checkbox checkbox-primary">
+                              <input  type="checkbox" id="can_be_inventory" name="can_be_inventory" value="can_be_inventory" >
+                              <label for="can_be_inventory"><?php echo _l('can_be_inventory'); ?></label>
+                            </div>
+                            <div class="checkbox checkbox-primary <?php if(!get_status_modules_wh('manufacturing')){echo ' hide';} ?>">
+                              <input  type="checkbox" id="can_be_manufacturing" name="can_be_manufacturing" value="can_be_manufacturing" >
+                              <label for="can_be_manufacturing"><?php echo _l('can_be_manufacturing'); ?></label>
+                            </div>
+                          </div>
+                        </div>  
                         </div>  
 
                         
@@ -558,7 +671,7 @@
 
                   <!-- TODO -->
                   <!-- variation -->
-                  <!-- <div role="tabpanel" class="tab-pane " id="variation">
+                  <div role="tabpanel" class="tab-pane " id="variation">
                       <div class="list_approve">
                         <div id="item_approve">
                           <div class="col-md-11">
@@ -584,7 +697,7 @@
                         </div>
                       </div>
                     </div>
-                  </div> -->
+                  </div>
 
                   <!-- custome fields -->
                   <div role="tabpanel" class="tab-pane" id="custom_fields">
@@ -686,8 +799,11 @@
        <?php echo form_hidden('warehouse_id'); ?>
        <?php echo form_hidden('commodity_id'); ?>
        <?php echo form_hidden('expiry_date'); ?>
+       <?php echo form_hidden('parent_item_filter', 'true'); ?>
+       <?php echo form_hidden('filter_all_simple_variation_value'); ?>
 
 
+<div id="modal_wrapper"></div>
 
 <?php init_tail(); ?>
 <?php require 'modules/warehouse/assets/js/commodity_list_js.php';?>

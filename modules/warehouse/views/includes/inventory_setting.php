@@ -70,6 +70,27 @@
 
 <div class="row">
   <div class="col-md-12">
+      <h5 class="no-margin font-bold h5-color"><?php echo _l('wh_packing_list') ?></h5>
+      <hr class="hr-color">
+    </div>
+</div>
+
+<div class="form-group">
+  <label><?php echo _l('packing_list_number_prefix'); ?></label>
+  <div class="form-group" app-field-wrapper="packing_list_number_prefix">
+    <input type="text" id="packing_list_number_prefix" name="packing_list_number_prefix" class="form-control" value="<?php echo get_warehouse_option('packing_list_number_prefix'); ?>"></div>
+</div>
+
+<div class="form-group">
+  <label> <?php echo _l('next_packing_list_number'); ?></label>
+<i class="fa fa-question-circle i_tooltip" data-toggle="tooltip" title="" data-original-title="<?php echo _l('next_delivery_received_mumber_tooltip'); ?>"></i>
+
+  <div  class="form-group" app-field-wrapper="next_packing_list_number">
+    <input type="number" min="0" id="next_packing_list_number" name="next_packing_list_number" class="form-control" value="<?php echo get_warehouse_option('next_packing_list_number'); ?>"></div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
       <h5 class="no-margin font-bold h5-color"><?php echo _l('item_sku_prefix') ?></h5>
       <hr class="hr-color">
     </div>

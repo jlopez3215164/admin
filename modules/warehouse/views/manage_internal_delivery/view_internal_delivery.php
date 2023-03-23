@@ -82,15 +82,15 @@
 
                       <?php 
                         $_data='';
-                         $_data .= '<a href="' . admin_url('staff/profile/' . $internal_delivery->staff_id) . '">' . staff_profile_image($internal_delivery->staff_id, [
+                         $_data .= '<a href="' . admin_url('staff/profile/' . $internal_delivery->addedfrom) . '">' . staff_profile_image($internal_delivery->addedfrom, [
                 'staff-profile-image-small',
                 ]) . '</a>';
-                      $_data .= ' <a href="' . admin_url('staff/profile/' . $internal_delivery->staff_id) . '">' . get_staff_full_name($internal_delivery->staff_id) . '</a>';
+                      $_data .= ' <a href="' . admin_url('staff/profile/' . $internal_delivery->addedfrom) . '">' . get_staff_full_name($internal_delivery->addedfrom) . '</a>';
 
                        ?>
 
 
-                    <td><?php echo get_staff_full_name($_data) ; ?></td>
+                    <td><?php echo html_entity_decode($_data) ; ?></td>
                  </tr>
 
                 <tr class="project-overview">
@@ -149,7 +149,7 @@
                               <?php 
                               foreach ($internal_delivery_detail as $internal_delivery_key => $internal_delivery_value) {
 
-                            
+                              $internal_delivery_key++;
                              $availale_quantity = (isset($internal_delivery_value) ? $internal_delivery_value['available_quantity'] : '');
                              $quantities = (isset($internal_delivery_value) ? $internal_delivery_value['quantities'] : '');
 
@@ -159,18 +159,26 @@
                              $commodity_code = get_commodity_name($internal_delivery_value['commodity_code']) != null ? get_commodity_name($internal_delivery_value['commodity_code'])->commodity_code : '';
                              $commodity_name = get_commodity_name($internal_delivery_value['commodity_code']) != null ? get_commodity_name($internal_delivery_value['commodity_code'])->description : '';
 
-                             $unit_name = get_unit_type($internal_delivery_value['unit_id']) != null ? get_unit_type($internal_delivery_value['unit_id'])->unit_name : '';
+                            $unit_name ='';
+                             if(is_numeric($internal_delivery_value['unit_id'])){
+                               $unit_name = get_unit_type($internal_delivery_value['unit_id']) != null ? get_unit_type($internal_delivery_value['unit_id'])->unit_name : '';
+
+                             }
+
 
                               $from_stock_name = get_warehouse_name($internal_delivery_value['from_stock_name']) != null ? get_warehouse_name($internal_delivery_value['from_stock_name'])->warehouse_name : '';
 
                               $to_stock_name = get_warehouse_name($internal_delivery_value['to_stock_name']) != null ? get_warehouse_name($internal_delivery_value['to_stock_name'])->warehouse_name : '';
 
-
+                              $commodity_name = $internal_delivery_value['commodity_name'];
+                              if(strlen($commodity_name) == 0){
+                                $commodity_name = wh_get_item_variatiom($internal_delivery_value['commodity_code']);
+                              }
                             ?>
           
                               <tr>
                               <td ><?php echo html_entity_decode($internal_delivery_key) ?></td>
-                                  <td ><?php echo html_entity_decode($commodity_code .'-'.$commodity_name) ?></td>
+                                  <td ><?php echo html_entity_decode($commodity_name) ?></td>
                                   <td ><?php echo html_entity_decode($from_stock_name) ?></td>
                                   <td ><?php echo html_entity_decode($to_stock_name) ?></td>
                                   <td ><?php echo html_entity_decode($unit_name) ?></td>
@@ -188,19 +196,16 @@
                         </div>
                      </div>
 
-                    <div class="col-md-3 pull-right panel-padding">
-                        <table class="table border table-striped table-margintop">
-                            <tbody>
-                                <tr class="project-overview">
-                                  <?php $total_amount = isset($internal_delivery) ?  $internal_delivery->total_amount : 0 ;?>
-                                  <td ><?php echo render_input('total_amount','total_amount',app_format_money((float)$total_amount,''),'',array('disabled' => 'true')) ?>
-                                    
-                                  </td>
-                               </tr>
-
-                               
-                                </tbody>
-                        </table>
+                     <div class="col-md-3 pull-right panel-padding">
+                      <table class="table text-right table-margintop">
+                        <tbody>
+                          <tr class="project-overview">
+                            <?php $total_amount = isset($internal_delivery) ?  $internal_delivery->total_amount : 0 ;?>
+                            <td class="td_style"><span class="bold"><?php echo _l('total_amount'); ?></span></td>
+                            <td><?php echo app_format_money((float)$total_amount, $base_currency); ?></td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
 
                         
@@ -232,7 +237,12 @@
                 {
                   $staff_name .= ' or ';
                 }
-                $staff_name .= $this->staff_model->get($val)->firstname;
+
+                $staff_approval = $this->staff_model->get($val);
+                if($staff_approval){
+                  $staff_name .= $staff_approval->firstname.' '.$staff_approval->lastname;
+                }
+
               }
               echo html_entity_decode($staff_name); 
               ?></p>
@@ -258,7 +268,12 @@
                 {
                   $staff_name .= ' or ';
                 }
-                $staff_name .= $this->staff_model->get($val)->firstname;
+
+                $staff_approval = $this->staff_model->get($val);
+                if($staff_approval){
+                  $staff_name .= $staff_approval->firstname.' '.$staff_approval->lastname;
+                }
+                
               }
               echo html_entity_decode($staff_name); 
               ?></p>
@@ -351,7 +366,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo _l('cancel'); ?></button>
-           <button onclick="sign_request(<?php echo html_entity_decode($internal_delivery->id); ?>);" data-loading-text="<?php echo _l('wait_text'); ?>" autocomplete="off" class="btn btn-success"><?php echo _l('e_signature_sign'); ?></button>
+           <button onclick="sign_request(<?php echo html_entity_decode($internal_delivery->id); ?>);" autocomplete="off" class="btn btn-success sign_request_class"><?php echo _l('e_signature_sign'); ?></button>
           </div>
 
 

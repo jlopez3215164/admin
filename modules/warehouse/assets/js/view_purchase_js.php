@@ -13,7 +13,12 @@ var croppedCtx;
     data_send_mail.rel_type = '1';
     
     data_send_mail.addedfrom = <?php echo html_entity_decode($goods_receipt->addedfrom); ?>;
-    $.post(admin_url+'warehouse/send_mail', data_send_mail).done(function(response){
+
+    $.get(admin_url+'warehouse/send_mail', data_send_mail).done(function(response){
+      response = JSON.parse(response);
+
+    }).fail(function(error) {
+
     });
   <?php } ?>
 
@@ -112,12 +117,23 @@ var croppedCtx;
       }
     });
     signaturePad.clear();
+    $('input[name="signature"]').val('');
     
   }
 
   function sign_request(id){
     "use strict";
-    change_request_approval_status(id,1, true);
+    var signature_val = $('input[name="signature"]').val();
+    if(signature_val.length > 0){
+      change_request_approval_status(id,1, true);
+      $('.sign_request_class').prop('disabled', true);
+      $('.sign_request_class').html('<?php echo _l('wait_text'); ?>');
+      $('.clear').prop('disabled', true);
+    }else{
+      alert_float('warning', '<?php echo _l('please_sign_the_form'); ?>');
+      $('.sign_request_class').prop('disabled', false);
+      $('.clear').prop('disabled', false);
+    }
   }
   function approve_request(id){
     "use strict";

@@ -12,6 +12,7 @@ $aColumns = [
     'address',
     'staff_id',
     'approval',
+    'delivery_status',
     ];
 $sIndexColumn = 'id';
 $sTable       = db_prefix().'goods_delivery';
@@ -44,7 +45,7 @@ if($this->ci->input->post('invoice_id')){
 }
 
 
-$result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, ['id','date_add','date_c','goods_delivery_code','total_money']);
+$result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, ['id','date_add','date_c','goods_delivery_code','total_money', 'type_of_delivery']);
 
 $output  = $result['output'];
 $rResult = $result['rResult'];
@@ -73,7 +74,14 @@ foreach ($rResult as $aRow) {
             $_data = '';
             if($aRow['invoice_id']){
 
-               $_data = format_invoice_number($aRow['invoice_id']).get_invoice_company_projecy($aRow['invoice_id']);
+                $type_of_delivery='';
+                if($aRow['type_of_delivery'] == 'partial'){
+                    $type_of_delivery .= '( <span class="text-danger">'._l($aRow['type_of_delivery']).'</span> )';
+                }elseif($aRow['type_of_delivery'] == 'total'){
+                    $type_of_delivery .= '( <span class="text-success">'._l($aRow['type_of_delivery']).'</span> )';
+                }
+
+               $_data = format_invoice_number($aRow['invoice_id']).get_invoice_company_projecy($aRow['invoice_id']).$type_of_delivery;
 
             }
 
@@ -106,11 +114,11 @@ foreach ($rResult as $aRow) {
 
 
             if ((has_permission('warehouse', '', 'delete') || is_admin()) && ($aRow['approval'] == 0)) {
-                $name .= ' | <a href="' . admin_url('warehouse/delete_goods_delivery/' . $aRow['id'] ).'" class="text-danger" >' . _l('delete') . '</a>';
+                $name .= ' | <a href="' . admin_url('warehouse/delete_goods_delivery/' . $aRow['id'] ).'" class="text-danger _delete" >' . _l('delete') . '</a>';
             }
             if(get_warehouse_option('revert_goods_receipt_goods_delivery') == 1 ){
                 if ((has_permission('warehouse', '', 'delete') || is_admin()) && ($aRow['approval'] == 1)) {
-                    $name .= ' | <a href="' . admin_url('warehouse/revert_goods_delivery/' . $aRow['id'] ).'" class="text-danger" >' . _l('delete_after_approval') . '</a>';
+                    $name .= ' | <a href="' . admin_url('warehouse/revert_goods_delivery/' . $aRow['id'] ).'" class="text-danger _delete" >' . _l('delete_after_approval') . '</a>';
                 }
             }
             
@@ -133,6 +141,8 @@ foreach ($rResult as $aRow) {
              }elseif($aRow['approval'] == -1){
                 $_data = '<span class="label label-tag tag-id-1 label-tab3"><span class="tag">'._l('reject').'</span><span class="hide">, </span></span>&nbsp';
              }
+        }elseif($aColumns[$i] == 'delivery_status'){
+            $_data = render_delivery_status_html($aRow['id'], 'delivery', $aRow['delivery_status']);
         }
    
 

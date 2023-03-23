@@ -7,6 +7,22 @@
       <hr class="hr-color" >
     </div>
 </div>
+
+<div class="row mb-4">   
+  <div class="col-md-12">
+    <!-- filter -->
+    <div class="row filter_by">
+
+      <div class="col-md-3 pull-right">
+        <?php echo render_input('inventory_filter','','', 'text', ['placeholder' => 'Search...']); ?>   
+      </div>
+
+    </div>
+    <!-- filter -->
+  </div>
+
+</div>
+
  <?php echo form_open_multipart(admin_url('warehouse/update_inventory_min'), array('id'=>'update_inventory')); ?>
     <div class="form"> 
       <div id="inventory_min" class="hot handsontable htColumnHeaders">

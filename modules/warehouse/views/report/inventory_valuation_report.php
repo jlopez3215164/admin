@@ -3,6 +3,7 @@
 <div class="row">
     <div class="col-md-12 pull-right">
       <div class=" col-md-4">
+        <div class="form-group">
           <label><?php echo _l('warehouse_name') ?></label>
           <select name="warehouse_filter[]" id="warehouse_filter" class="selectpicker" multiple="true" data-live-search="true" data-width="100%" data-none-selected-text="" data-actions-box="true">
 
@@ -10,6 +11,7 @@
                 <option value="<?php echo html_entity_decode($warehouse['warehouse_id']); ?>"><?php echo html_entity_decode($warehouse['warehouse_name']); ?></option>
                 <?php } ?>
             </select>
+            </div>
         </div>
 
       <div class="col-md-3">
@@ -36,6 +38,7 @@
             <p><h3 class="bold text-center"><?php echo mb_strtoupper(_l('inventory_valuation_report')); ?></h3></p>
         
             <div class="col-md-12">
+              <div class="table-responsive">
              <table class="table table-bordered">
               <tbody>
                <tr>
@@ -77,6 +80,7 @@
                 </tr>
               </tbody>
             </table>
+          </div>
           </div>
 
 

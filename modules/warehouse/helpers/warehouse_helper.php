@@ -256,15 +256,22 @@ function get_commodity_name($id = false)
 function get_status_inventory($commodity, $inventory)
 {
     $CI           = & get_instance();
+    
+    $status=false;
+    $inventory_min=0;
+
     $CI->db->where('commodity_id', $commodity);
-
     $result = $CI->db->get(db_prefix() . 'inventory_commodity_min')->row();
-
-    if($result != null){
-        return $inventory >= (float)get_object_vars($result)['inventory_number_min'] ? true : false;
-    }else{
-        return true;
+    if($result){
+        $inventory_min = $result->inventory_number_min;
     }
+
+    if((float)$inventory < (float)$inventory_min){
+        $status = false;
+    }else{
+        $status = true;
+    }
+    return $status;
 
 }
 
@@ -566,7 +573,7 @@ function get_warehouse_by_commodity($commodity_id )
     $CI           = & get_instance();
 
     if (is_numeric($commodity_id)) {
-        $sql ='SELECT distinct warehouse_id FROM '.db_prefix().'inventory_manage where inventory_number > 0 AND commodity_id = "'.$commodity_id.'"';
+        $sql ='SELECT distinct warehouse_id FROM '.db_prefix().'inventory_manage where inventory_number >= 0 AND commodity_id = "'.$commodity_id.'"';
 
         return $CI->db->query($sql)->result_array();
     }
@@ -1310,4 +1317,531 @@ function wh_get_warehouse_address($id)
     }
     return $address;
 
+}
+
+/**
+ * wh get item variatiom
+ * @param  [type] $id 
+ * @return [type]     
+ */
+function wh_get_item_variatiom($id)
+{
+    $CI           = & get_instance();
+
+    $CI->db->where('id', $id);
+    $item_value = $CI->db->get(db_prefix() . 'items')->row();
+
+    $name = '';
+    if($item_value){
+        $CI->load->model('warehouse/warehouse_model');
+        $new_item_value = $CI->warehouse_model->row_item_to_variation($item_value);
+
+        $name .= $item_value->commodity_code.'_'.$new_item_value->new_description;
+    }
+
+    return $name;
+}
+
+/**
+ * get inventory quantity by variation
+ * @param  [type] $id 
+ * @return [type]     
+ */
+function get_inventory_quantity_by_variation($id)
+{
+    $CI           = & get_instance();
+
+    //check have child item
+    $CI->db->where('parent_id', $id);
+    $child_item = $CI->db->get(db_prefix() . 'items')->result_array();
+
+    if(count($child_item) > 0){
+        //get total child quantity
+        $sql_where = "SELECT sum(inventory_number) as inventory_number FROM ".db_prefix()."inventory_manage
+WHERE commodity_id IN ( select id FROM ".db_prefix()."items where parent_id = ".$id.")" ;
+
+        $item_value = $CI->db->query($sql_where)->row(); 
+
+        return (float)$item_value->inventory_number;
+        
+    }else{
+        //get parent quantity
+        $sql = 'SELECT sum(inventory_number) as inventory_number FROM ' . db_prefix() . 'inventory_manage
+        where ' . db_prefix() . 'inventory_manage.commodity_id = ' . $id . ' group by ' . db_prefix() . 'inventory_manage.commodity_id';
+
+        $item_value = $CI->db->query($sql)->row(); 
+
+        if($item_value){
+            return (float)$item_value->inventory_number;
+        }
+
+        return 0;
+
+    }
+
+
+}
+
+/**
+ * check item have variation
+ * @param  [type] $id 
+ * @return [type]     
+ */
+function check_item_have_variation($id)
+{
+    $CI           = & get_instance();
+
+    //check have child item
+    $CI->db->where('parent_id', $id);
+    $child_item = $CI->db->get(db_prefix() . 'items')->result_array();
+
+    if(count($child_item) > 0){
+        return true;
+    }else{
+        return false;
+    }
+
+}
+
+/**
+ * get inventory by warehouse variation
+ * @param  [type] $id 
+ * @return [type]     
+ */
+function get_inventory_by_warehouse_variation($id)
+{
+    $CI           = & get_instance();
+
+    //get parent quantity
+    $sql_where = "SELECT sum(inventory_number) as inventory_number, warehouse_id FROM ".db_prefix()."inventory_manage
+WHERE commodity_id IN ( select id FROM ".db_prefix()."items where parent_id = ".$id.") group by warehouse_id" ;
+
+    $item_value = $CI->db->query($sql_where)->result_array(); 
+
+    return $item_value;
+}
+
+/**
+ * { row warehouse options exist }
+ *
+ * @param      <type>   $name   The name
+ *
+ * @return     integer  ( 1 or 0 )
+ */
+function row_warehouse_tbl_options_exist($name) {
+    $CI = &get_instance();
+    $i = count($CI->db->query('Select * from ' . db_prefix() . 'options where name = ' . $name)->result_array());
+    if ($i == 0) {
+        return 0;
+    }
+    if ($i > 0) {
+        return 1;
+    }
+}
+
+function wh_get_item_taxes($table, $itemid)
+{
+    $CI = &get_instance();
+    $CI->db->where('itemid', $itemid);
+    $CI->db->where('rel_type', 'internal_transfer');
+    $taxes = $CI->db->get(db_prefix() . 'item_tax')->result_array();
+    $i     = 0;
+    foreach ($taxes as $tax) {
+        $taxes[$i]['taxname'] = $tax['taxname'] . '|' . $tax['taxrate'];
+        $i++;
+    }
+
+    // return $taxes;
+    return '';
+}
+
+function wh_convert_item_taxes($tax, $tax_rate, $tax_name)
+{
+    /*taxrate taxname
+    5.00    TAX5
+    id      rate        name
+    2|1 ; 6.00|10.00 ; TAX5|TAX10%*/
+    $CI           = & get_instance();
+    $taxes = [];
+    if($tax != null && strlen($tax) > 0){
+        $arr_tax_id = explode('|', $tax);
+        if($tax_name != null && strlen($tax_name) > 0){
+            $arr_tax_name = explode('|', $tax_name);
+            $arr_tax_rate = explode('|', $tax_rate);
+            foreach ($arr_tax_name as $key => $value) {
+                $taxes[]['taxname'] = $value . '|' .  $arr_tax_rate[$key];
+            }
+        }elseif($tax_rate != null && strlen($tax_rate) > 0){
+            $CI->load->model('warehouse/warehouse_model');
+            $arr_tax_id = explode('|', $tax);
+            $arr_tax_rate = explode('|', $tax_rate);
+            foreach ($arr_tax_id as $key => $value) {
+                $_tax_name = $CI->warehouse_model->get_tax_name($value);
+                if(isset($arr_tax_rate[$key])){
+                    $taxes[]['taxname'] = $_tax_name . '|' .  $arr_tax_rate[$key];
+                }else{
+                    $taxes[]['taxname'] = $_tax_name . '|' .  $CI->warehouse_model->tax_rate_by_id($value);
+
+                }
+            }
+        }else{
+            $CI->load->model('warehouse/warehouse_model');
+            $arr_tax_id = explode('|', $tax);
+            $arr_tax_rate = explode('|', $tax_rate);
+            foreach ($arr_tax_id as $key => $value) {
+                $_tax_name = $CI->warehouse_model->get_tax_name($value);
+                $_tax_rate = $CI->warehouse_model->tax_rate_by_id($value);
+                $taxes[]['taxname'] = $_tax_name . '|' .  $_tax_rate;
+            } 
+        }
+
+    }
+
+    return $taxes;
+}
+
+/**
+ * wh get unit name
+ * @param  boolean $id 
+ * @return [type]      
+ */
+function wh_get_unit_name($id = false)
+{
+    $CI           = & get_instance();
+    if (is_numeric($id)) {
+        $CI->db->where('unit_type_id', $id);
+
+        $unit = $CI->db->get(db_prefix() . 'ware_unit_type')->row();
+        if($unit){
+            return $unit->unit_name;
+        }
+        return '';
+    }
+}
+
+/**
+ * wh get unit id
+ * @param  [type] $unit_name 
+ * @return [type]            
+ */
+function wh_get_unit_id($unit_name)
+{
+    $CI           = & get_instance();
+    $CI->db->where('unit_name', $unit_name);
+    $unit = $CI->db->get(db_prefix() . 'ware_unit_type')->row();
+    if($unit){
+        return $unit->unit_type_id;
+    }
+    return null;
+}
+
+/**
+ * wh get delivery code
+ * @param  [type] $id 
+ * @return [type]     
+ */
+function wh_get_delivery_code($id)
+{
+    $CI           = & get_instance();
+    $goods_delivery_code = '';
+    if (is_numeric($id)) {
+        $CI->db->where('id', $id);
+        $goods_delivery = $CI->db->get(db_prefix() . 'goods_delivery')->row();
+        if($goods_delivery){
+            $goods_delivery_code = $goods_delivery->goods_delivery_code;
+        }
+    }
+    return $goods_delivery_code;
+}
+
+/**
+ * wh render taxes html
+ * @param  [type] $item_tax 
+ * @param  [type] $width    
+ * @return [type]           
+ */
+function wh_render_taxes_html($item_tax, $width)
+{
+    $itemHTML = '';
+    $itemHTML .= '<td align="right" width="' . $width . '%">';
+
+    if(is_array($item_tax) && isset($item_tax)){
+        if (count($item_tax) > 0) {
+            foreach ($item_tax as $tax) {
+
+                $item_tax = '';
+                if ( get_option('remove_tax_name_from_item_table') == false || multiple_taxes_found_for_item($item_tax)) {
+                    $tmp      = explode('|', $tax['taxname']);
+                    $item_tax = $tmp[0] . ' ' . app_format_number($tmp[1]) . '%<br />';
+                } else {
+                    $item_tax .= app_format_number($tax['taxrate']) . '%';
+                }
+                $itemHTML .= $item_tax;
+            }
+        } else {
+            $itemHTML .=  app_format_number(0) . '%';
+        }
+    }
+    $itemHTML .= '</td>';
+
+    return $itemHTML;
+}
+
+/**
+ * packing list status
+ * @param  string $status 
+ * @return [type]         
+ */
+function delivery_list_status($status='')
+{
+
+    $statuses = [
+        [
+            'id'             => 'ready_for_packing',
+            'color'          => '#28b8daed',
+            'name'           => _l('wh_ready_for_packing'),
+            'order'          => 1,
+            'filter_default' => true,
+        ],
+        [
+            'id'             => 'ready_to_deliver',
+            'color'          => '#03A9F4',
+            'name'           => _l('wh_ready_to_deliver'),
+            'order'          => 2,
+            'filter_default' => true,
+        ],
+        [
+            'id'             => 'delivery_in_progress',
+            'color'          => '#2196f3',
+            'name'           => _l('wh_delivery_in_progress'),
+            'order'          => 3,
+            'filter_default' => true,
+        ],
+        [
+            'id'             => 'delivered',
+            'color'          => '#3db8da',
+            'name'           => _l('wh_delivered'),
+            'order'          => 4,
+            'filter_default' => true,
+        ],
+        [
+            'id'             => 'received',
+            'color'          => '#84c529',
+            'name'           => _l('wh_received'),
+            'order'          => 5,
+            'filter_default' => false,
+        ],
+        [
+            'id'             => 'returned',
+            'color'          => '#d71a1a',
+            'name'           => _l('wh_returned'),
+            'order'          => 6,
+            'filter_default' => false,
+        ],
+        [
+            'id'             => 'not_delivered',
+            'color'          => '#ffa500',
+            'name'           => _l('wh_not_delivered'),
+            'order'          => 7,
+            'filter_default' => false,
+        ],
+    ];
+
+    usort($statuses, function ($a, $b) {
+        return $a['order'] - $b['order'];
+    });
+
+    return $statuses;
+}
+
+/**
+ * packing list status
+ * @param  string $status 
+ * @return [type]         
+ */
+function packing_list_status($status='')
+{
+
+    $statuses = [
+
+        [
+            'id'             => 'ready_to_deliver',
+            'color'          => '#03A9F4',
+            'name'           => _l('wh_ready_to_deliver'),
+            'order'          => 2,
+            'filter_default' => true,
+        ],
+        [
+            'id'             => 'delivery_in_progress',
+            'color'          => '#2196f3',
+            'name'           => _l('wh_delivery_in_progress'),
+            'order'          => 3,
+            'filter_default' => true,
+        ],
+        [
+            'id'             => 'delivered',
+            'color'          => '#3db8da',
+            'name'           => _l('wh_delivered'),
+            'order'          => 4,
+            'filter_default' => true,
+        ],
+        [
+            'id'             => 'received',
+            'color'          => '#84c529',
+            'name'           => _l('wh_received'),
+            'order'          => 5,
+            'filter_default' => false,
+        ],
+        [
+            'id'             => 'returned',
+            'color'          => '#d71a1a',
+            'name'           => _l('wh_returned'),
+            'order'          => 6,
+            'filter_default' => false,
+        ],
+        [
+            'id'             => 'not_delivered',
+            'color'          => '#ffa500',
+            'name'           => _l('wh_not_delivered'),
+            'order'          => 7,
+            'filter_default' => false,
+        ],
+    ];
+
+    usort($statuses, function ($a, $b) {
+        return $a['order'] - $b['order'];
+    });
+
+    return $statuses;
+
+    return $status;
+}
+
+/**
+ * render delivery status html
+ * @param  string $status 
+ * @return [type]         
+ */
+function render_delivery_status_html($id, $type, $status_value = '', $ChangeStatus = true)
+{
+    $status          = get_delivery_status_by_id($status_value, $type);
+
+    if($type == 'delivery'){
+        $task_statuses = delivery_list_status();
+    }else{
+        $task_statuses = packing_list_status();
+    }
+    $outputStatus    = '';
+
+    $outputStatus .= '<span class="inline-block label" style="color:' . $status['color'] . ';border:1px solid ' . $status['color'] . '" task-status-table="' . $status_value . '">';
+    $outputStatus .= $status['name'];
+    $canChangeStatus = (has_permission('warehouse', '', 'edit') || is_admin());
+
+    if ($canChangeStatus && $ChangeStatus) {
+        $outputStatus .= '<div class="dropdown inline-block mleft5 table-export-exclude">';
+        $outputStatus .= '<a href="#" style="font-size:14px;vertical-align:middle;" class="dropdown-toggle text-dark" id="tableTaskStatus-' . $id . '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+        $outputStatus .= '<span data-toggle="tooltip" title="' . _l('ticket_single_change_status') . '"><i class="fa fa-caret-down" aria-hidden="true"></i></span>';
+        $outputStatus .= '</a>';
+
+        $outputStatus .= '<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="tableTaskStatus-' . $id . '">';
+        foreach ($task_statuses as $taskChangeStatus) {
+            if ($status_value != $taskChangeStatus['id']) {
+                $outputStatus .= '<li>
+                <a href="#" onclick="delivery_status_mark_as(\'' . $taskChangeStatus['id'] . '\',' . $id . ',\'' . $type . '\'); return false;">
+                ' . _l('task_mark_as', $taskChangeStatus['name']) . '
+                </a>
+                </li>';
+            }
+        }
+        $outputStatus .= '</ul>';
+        $outputStatus .= '</div>';
+    }
+
+    $outputStatus .= '</span>';
+
+    return $outputStatus;
+}
+
+/**
+ * get delivery status by id
+ * @param  [type] $id 
+ * @return [type]     
+ */
+function get_delivery_status_by_id($id, $type)
+{
+    $CI       = &get_instance();
+    $statuses = delivery_list_status();
+
+    if($type == 'delivery'){
+        $status = [
+            'id'         => 0,
+            'color'   => '#989898',
+            'color' => '#989898',
+            'name'       => _l('wh_ready_for_packing'),
+            'order'      => 1,
+        ];
+    }else{
+        $status = [
+            'id'         => 0,
+            'color'   => '#989898',
+            'color' => '#989898',
+            'name'       => _l('wh_ready_to_deliver'),
+            'order'      => 1,
+        ];
+    }
+
+    foreach ($statuses as $s) {
+        if ($s['id'] == $id) {
+            $status = $s;
+
+            break;
+        }
+    }
+
+    return $status;
+}
+
+/**
+ * [wh shipment status
+ * @return [type] 
+ */
+function wh_shipment_status()
+{
+    $status=[];
+    $status[]=[
+        'name' => 'confirmed_order',
+        'label' => 'confirmed_order',
+        'order' => 1,
+    ];
+    $status[]=[
+        'name' => 'processing_order',
+        'label' => 'processing_order',
+        'order' => 2,
+
+    ];
+    $status[]=[
+        'name' => 'quality_check',
+        'label' => 'quality_check',
+        'order' => 3,
+
+    ];
+    $status[]=[
+        'name' => 'product_dispatched',
+        'label' => 'product_dispatched',
+        'order' => 4,
+
+    ];
+    $status[]=[
+        'name' => 'product_delivered',
+        'label' => 'product_delivered',
+        'order' => 5,
+
+    ];
+    
+    return $status;
+}
+
+function wh_get_shipment_image_qrcode($id)
+{
+    return $id;
 }

@@ -152,7 +152,7 @@
                               <?php 
                               foreach ($goods_receipt_detail as $receipt_key => $receipt_value) {
 
-                            
+                                $receipt_key++;
                              $quantities = (isset($receipt_value) ? $receipt_value['quantities'] : '');
                              $unit_price = (isset($receipt_value) ? $receipt_value['unit_price'] : '');
                              $unit_price = (isset($receipt_value) ? $receipt_value['unit_price'] : '');
@@ -161,19 +161,27 @@
                              $commodity_code = get_commodity_name($receipt_value['commodity_code']) != null ? get_commodity_name($receipt_value['commodity_code'])->commodity_code : '';
                              $commodity_name = get_commodity_name($receipt_value['commodity_code']) != null ? get_commodity_name($receipt_value['commodity_code'])->description : '';
 
-                             $unit_name = get_unit_type($receipt_value['unit_id']) != null ? get_unit_type($receipt_value['unit_id'])->unit_name : '';
+                             $unit_name ='';
+                             if(is_numeric($receipt_value['unit_id'])){
+                               $unit_name = (get_unit_type($receipt_value['unit_id']) != null && isset(get_unit_type($receipt_value['unit_id'])->unit_name)) ? get_unit_type($receipt_value['unit_id'])->unit_name : '';
+
+                             }
 
                               $warehouse_code = get_warehouse_name($receipt_value['warehouse_id']) != null ? get_warehouse_name($receipt_value['warehouse_id'])->warehouse_name : '';
                               $tax_money =(isset($receipt_value) ? $receipt_value['tax_money'] : '');
                               $expiry_date =(isset($receipt_value) ? $receipt_value['expiry_date'] : '');
                               $lot_number =(isset($receipt_value) ? $receipt_value['lot_number'] : '');
+                              $commodity_name = $receipt_value['commodity_name'];
+                              if(strlen($commodity_name) == 0){
+                                $commodity_name = wh_get_item_variatiom($receipt_value['commodity_code']);
+                              }
 
 
                             ?>
           
                               <tr>
                               <td ><?php echo html_entity_decode($receipt_key) ?></td>
-                                  <td ><?php echo html_entity_decode($commodity_code .'-'.$commodity_name) ?></td>
+                                  <td ><?php echo html_entity_decode($commodity_name) ?></td>
                                   <td ><?php echo html_entity_decode($warehouse_code) ?></td>
                                   <td ><?php echo html_entity_decode($unit_name) ?></td>
                                   <td ></td>
@@ -190,47 +198,44 @@
                         </div>
                      </div>
 
-                    <div class="col-md-3 pull-right panel-padding">
-                        <table class="table border table-striped table-margintop">
-                            <tbody>
-                                <tr class="project-overview">
-                                  <?php $total_goods_money = isset($goods_receipt) ?  $goods_receipt->total_goods_money : 0 ;?>
-                                  <td ><?php echo render_input('total_goods_money','total_goods_money',app_format_money((float)$total_goods_money,''),'',array('disabled' => 'true')) ?>
-                                    
-                                  </td>
-                               </tr>
+                     <div class="col-md-6 col-md-offset-6">
+                      <table class="table text-right table-margintop">
+                        <tbody>
+                          <tr class="project-overview" id="subtotal">
+                            <td class="td_style"><span class="bold"><?php echo _l('total_goods_money'); ?></span>
+                            </td>
+                            <?php $total_goods_money = (isset($goods_receipt) ? $goods_receipt->total_goods_money : '');?>
+                            <td><?php echo app_format_money((float)$total_goods_money, $base_currency); ?></td>
+                          </tr>
 
-                               <tr class="project-overview">
-                                 <?php $total_money = isset($goods_receipt) ?  $goods_receipt->total_money : 0 ;?>
-                                  <td ><?php echo render_input('total_money','total_money',app_format_money((float)$total_money,''),'',array('disabled' => 'true')) ?>
-                                    
-                                  </td>
+                          <tr class="project-overview">
+                            <td class="td_style"><span class="bold"><?php echo _l('value_of_inventory'); ?></span>
+                            </td>
+                            <?php $value_of_inventory = (isset($goods_receipt) ? $goods_receipt->value_of_inventory : '');?>
+                            <td><?php echo app_format_money((float)$value_of_inventory, $base_currency); ?></td>
+                          </tr>
+                          
+                          <?php if(isset($goods_receipt) && $tax_data['html_currency'] != ''){
+                            echo html_entity_decode($tax_data['html_currency']);
+                          } ?>
+                          
+                          <tr class="project-overview">
+                            <td class="td_style"><span class="bold"><?php echo _l('total_tax_money'); ?></span>
+                            </td>
+                            <?php $total_tax_money = (isset($goods_receipt) ? $goods_receipt->total_tax_money : '');?>
+                            <td><?php echo app_format_money((float)$total_tax_money, $base_currency); ?></td>
+                          </tr>
 
-                               </tr>
-                                </tbody>
-                        </table>
+                          <tr class="project-overview">
+                            <td class="td_style"><span class="bold"><?php echo _l('total_money'); ?></span>
+                            </td>
+                            <?php $total_money = (isset($goods_receipt) ? $goods_receipt->total_money : '');?>
+                            <td><?php echo app_format_money((float)$total_money, $base_currency); ?></td>
+
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
-
-                        <div class="col-md-3 pull-right  panel-padding" >
-                            <table class="table border table-striped table-margintop" >
-                              <tbody>
-                                 <tr class="project-overview">
-                                  <?php $total_tax_money = isset($goods_receipt) ?  $goods_receipt->total_tax_money : 0 ;?>
-                                    <td ><?php echo render_input('total_tax_money','total_tax_money',app_format_money((float)$total_tax_money,''),'',array('disabled' => 'true')) ?>
-                                      
-                                    </td>
-
-                                 </tr>
-                                 <tr class="project-overview">
-                                        <?php $value_of_inventory = isset($goods_receipt) ?  $goods_receipt->value_of_inventory : 0 ;?>
-                                    <td ><?php echo render_input('value_of_inventory','value_of_inventory',app_format_money((float)$value_of_inventory,''),'',array('disabled' => 'true')) ?>
-                                      
-                                    </td>
-                                 </tr>
-                                 
-                                  </tbody>
-                          </table>
-                        </div>
 
 
                      <div class="col-md-12">
@@ -259,7 +264,9 @@
                 {
                   $staff_name .= ' or ';
                 }
-                $staff_name .= $this->staff_model->get($val)->firstname;
+                if($this->staff_model->get($val)){
+                  $staff_name .= $this->staff_model->get($val)->full_name;
+                }
               }
               echo html_entity_decode($staff_name); 
               ?></p>
@@ -287,7 +294,9 @@
                 {
                   $staff_name .= ' or ';
                 }
-                $staff_name .= $this->staff_model->get($val)->firstname;
+                if($this->staff_model->get($val)){
+                  $staff_name .= $this->staff_model->get($val)->full_name;
+                }
               }
               echo html_entity_decode($staff_name); 
               ?></p>
@@ -383,7 +392,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo _l('cancel'); ?></button>
-           <button onclick="sign_request(<?php echo html_entity_decode($goods_receipt->id); ?>);" data-loading-text="<?php echo _l('wait_text'); ?>" autocomplete="off" class="btn btn-success"><?php echo _l('e_signature_sign'); ?></button>
+           <button onclick="sign_request(<?php echo html_entity_decode($goods_receipt->id); ?>);"  autocomplete="off" class="btn btn-success sign_request_class"><?php echo _l('e_signature_sign'); ?></button>
           </div>
 
 

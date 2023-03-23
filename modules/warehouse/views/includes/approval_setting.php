@@ -20,20 +20,22 @@
 	<tbody>
 	<?php foreach($approval_setting as $value){ ?>
 		<tr>
-		   <td><?php echo html_entity_decode($value['id']); ?></td>
-		   <td><?php echo html_entity_decode($value['name']); ?></td>
-		   <?php 
-		   	$related ='';
-		   	if($value['related'] == 1){
-		   		$related = _l('stock_import');
-		   	}elseif($value['related'] == 2){
-		   		$related = _l('stock_export');
+			<td><?php echo html_entity_decode($value['id']); ?></td>
+			<td><?php echo html_entity_decode($value['name']); ?></td>
+			<?php 
+			$related ='';
+			if($value['related'] == 1){
+				$related = _l('stock_import');
+			}elseif($value['related'] == 2){
+				$related = _l('stock_export');
 
-		   	}elseif($value['related'] == 3){
-		   		$related = _l('loss_adjustment');
-		   	}elseif($value['related'] == 4){
-		   		$related = _l('internal_delivery_note');
-		   	}
+			}elseif($value['related'] == 3){
+				$related = _l('loss_adjustment');
+			}elseif($value['related'] == 4){
+				$related = _l('internal_delivery_note');
+			}elseif($value['related'] == 5){
+				$related = _l('wh_packing_list');
+			}
 
 		    ?>
 		   <td><?php echo html_entity_decode($related); ?></td>
@@ -79,6 +81,7 @@
 								1 => ['id' => '2', 'name' => _l('stock_export')],
 								2 => ['id' => '3', 'name' => _l('loss_adjustment')],
 								3 => ['id' => '4', 'name' => _l('internal_delivery_note')],
+								4 => ['id' => '5', 'name' => _l('wh_packing_list')],
 								
 							]; ?>
 

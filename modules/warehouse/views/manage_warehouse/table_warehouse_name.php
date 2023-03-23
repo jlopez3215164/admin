@@ -6,7 +6,7 @@ $aColumns = [
 	'warehouse_code',
 	'warehouse_name',
 	'warehouse_address',
-	'1',
+	db_prefix().'warehouse.order as wh_order',
 	'display',
 	'note',
 ];
@@ -118,15 +118,8 @@ $rResult = $result['rResult'];
 
 				$_data = $address;
 
-			} elseif ($aColumns[$i] == '1') {
-                $warehouse_order = get_warehouse_name($aRow['warehouse_id']);
-
-                $order ='';
-                if($warehouse_order){
-                    $order  .= $warehouse_order->order;
-                }
-
-				$_data = $order;
+			} elseif ($aColumns[$i] == 'wh_order') {
+				$_data = $aRow['wh_order'];
 
 			} elseif ($aColumns[$i] == 'display') {
 

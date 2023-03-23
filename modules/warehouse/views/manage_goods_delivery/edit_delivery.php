@@ -157,6 +157,7 @@
                  <th  colspan="1" class="text-center"><?php echo _l('quantity') ?></th>
                  <th align="right" colspan="1"><?php echo _l('rate') ?></th>
                  <th align="right" colspan="1"><?php echo _l('subtotal') ?></th>
+                 <th align="right" colspan="1"><?php echo _l('subtotal_after_tax') ?></th>
                  <th align="right" colspan="1"><?php echo _l('discount(%)').'(%)' ?></th>
                  <th align="right" colspan="1"><?php echo _l('discount(money)') ?></th>
                  <th align="right" colspan="1"><?php echo _l('lot_number').'/'._l('quantity') ?></th>
@@ -173,9 +174,9 @@
                  <th></th>
                  <th></th>
                </tr>
-
+               <?php $subtotal = 0 ; ?>
                <?php foreach (json_decode($goods_delivery_detail) as $receipt_key => $receipt_value) {
-
+                $receipt_key++;
                  $quantities = (isset($receipt_value) ? $receipt_value->quantities : '');
                  $unit_price = (isset($receipt_value) ? $receipt_value->unit_price : '');
                  $total_money = (isset($receipt_value) ? $receipt_value->total_money : '');
@@ -191,6 +192,8 @@
                  $commodity_name = get_commodity_name($receipt_value->commodity_code) != null ? get_commodity_name($receipt_value->commodity_code)->description : '';
 
                  $warehouse_name ='';
+                 $subtotal += (float)$receipt_value->quantities * (float)$receipt_value->unit_price;
+                 $item_subtotal = (float)$receipt_value->quantities * (float)$receipt_value->unit_price;
 
                  if(isset($receipt_value->warehouse_id) && ($receipt_value->warehouse_id !='')){
                   $arr_warehouse = explode(',', $receipt_value->warehouse_id);
@@ -245,11 +248,12 @@
                 ?>
                 <tr>
                  <td><?php echo html_entity_decode($receipt_key) ?></td>
-                 <td ><?php echo html_entity_decode($commodity_code.'_'.$commodity_name) ?></td>
+                 <td ><?php echo html_entity_decode(wh_get_item_variatiom($receipt_value->commodity_code)) ?></td>
                  <td ><?php echo html_entity_decode($warehouse_name) ?></td>
                  <td ><?php echo html_entity_decode($unit_name) ?></td>
                  <td class="text-right"><?php echo html_entity_decode($quantities) ?></td>
                  <td class="text-right"><?php echo app_format_money((float)$unit_price,'') ?></td>
+                 <td class="text-right"><?php echo app_format_money((float)$item_subtotal,'') ?></td>
                  <td class="text-right"><?php echo app_format_money((float)$total_money,'') ?></td>
                  <td class="text-right"><?php echo app_format_money((float)$discount,'') ?></td>
                  <td class="text-right"><?php echo app_format_money((float)$discount_money,'') ?></td>
@@ -266,37 +270,59 @@
 
        </div>
 
-       <table class="table">
-        <tbody>
-          <tr>
-            <td class="bold width_27" ><?php echo _l('subtotal')  ?> :</td>
+       <div class="row pull-right mbot10">
+        <div class="col-md-12 ">
+         <table class="table">
+          <tbody>
+              <tr>
+                <td class="bold width_27" ><?php echo _l('subtotal')  ?> :</td>
+                <td><?php echo app_format_money((float)$subtotal, $base_currency); ?></td>
+              </tr>
+              <?php if(isset($goods_delivery) && $tax_data['html_currency'] != ''){
+                echo html_entity_decode($tax_data['html_currency']);
+              } ?>
+            <tr>
+              <?php
+              $total_discount = 0 ;
+              if(isset($goods_delivery)){
+                $total_discount += (float)$goods_delivery->total_discount  + (float)$goods_delivery->additional_discount;
+              }
+              ?>
+              <td class="bold width_27" ><?php echo  _l('total_discount')  ?>:</td>
+              <td><?php echo app_format_money((float)$total_discount, $base_currency); ?></td>
+            </tr>
 
-            <td><?php echo  app_format_money((float) $goods_delivery->total_money, '')  ?></td>
-          </tr>
-
-          <tr>
-            <td class="bold width_27" ><?php echo  _l('total_discount')  ?>:</td>
-
-            <td><?php echo  app_format_money((float) $goods_delivery->total_discount, '')  ?></td>
-          </tr>
-
-          <tr>
-            <td class="bold width_27" ><?php echo  _l('total_money')  ?> :</td>
-
-            <td><?php echo app_format_money((float) $goods_delivery->after_discount, '') ?></td>
-          </tr>
+            <tr>
+              <td class="bold width_27" ><?php echo  _l('total_money')  ?> :</td>
+              <?php
+              $after_discount = isset($goods_delivery) ?  $goods_delivery->after_discount : 0 ;
+              if($goods_delivery->after_discount == null){
+                $after_discount = $goods_delivery->total_money;
+              }
+              ?>
+              <td><?php echo app_format_money((float)$after_discount, $base_currency); ?></td>
+            </tr>
 
 
-          <tr></tr>
+            <tr></tr>
 
-        </tbody>
-      </table> <br>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+
+
+      <br>
 
 
       <div class="row">
+        <div class="col-md-12 ">
         <div class="col-md-4 pull-right">
           <p><span class="span-font-style"><?php echo _l('days').' ......... '._l('month').' ......... '._l('year') .' .......... '; ?></p>
           </div>
+        </div>
         </div>
         <br>
         <div class="row">
@@ -342,7 +368,7 @@
                                <p class="text-uppercase text-muted no-mtop bold">
                                 <?php
                                 $staff_name = '';
-                                $st = _l('status_0');
+                                $st = _l('not_yet_approve');
                                 $color = 'warning';
                                 foreach ($value['staffid'] as $key => $val) {
                                   if($staff_name != '')
@@ -466,11 +492,11 @@
                     $stt = 1;
                     foreach ($list_approve_status as $key => $value) {
                      $value['staffid'] = explode(', ',$value['staffid']);
-                     $approve = '<span class="label label status-border-color inline-block project-status-' . $goods_delivery->approval . '" >' . _l('status_0') . '</span>';
+                     $approve = '<span class="label label-tag tag-id-1 label-tab2" >' . _l('not_yet_approve') . '</span>';
                      if($value['approve'] == 1){
-                      $approve = '<span class="label label inline-block status-border-color1 project-status-' . $goods_delivery->approval . '" >' . _l('status_1') . '</span>';
+                      $approve = '<span class="label label-tag tag-id-1 label-tab1" >' . _l('approved') . '</span>';
                     }elseif ($value['approve'] == -1) {
-                      $approve = '<span class="label label status-border-color2 inline-block project-status-' . $goods_delivery->approval . '" >' . _l('status_-1') . '</span>';
+                      $approve = '<span class="label label-tag tag-id-1 label-tab3" >' . _l('reject') . '</span>';
                     }
                     $staff_name = '';
                     foreach ($value['staffid'] as $key => $val) {
@@ -533,7 +559,7 @@
       </div>
 
 
-      <div class="col-md-12 ">
+      <div class="col-md-12 hide">
 
         <h5 class="no-margin font-bold h4-color"><i class="fa fa-clone menu-icon menu-icon" aria-hidden="true"></i> <?php echo _l('stock_export_detail'); ?></h5>
         <hr class="hr-color">
@@ -588,7 +614,12 @@
 
         </tr>
         <tr class="project-overview">
-         <?php $after_discount = isset($goods_delivery) ?  $goods_delivery->after_discount : 0 ;?>
+          <?php
+          $after_discount = isset($goods_delivery) ?  $goods_delivery->after_discount : 0 ;
+          if($goods_delivery->after_discount == null){
+            $after_discount = $goods_delivery->total_money;
+          }
+          ?>
          <td ><?php echo render_input('after_discount','total_money',$after_discount,'',array('disabled' => 'true')) ?>
 
 
@@ -608,7 +639,7 @@
 
 <hr>
 <div class="modal-footer">
-  <a href="<?php echo admin_url('warehouse/manage_delivery'); ?>"class="btn btn-default pull-right mright10 display-block"><?php echo _l('close'); ?></a>
+  <a href="<?php echo admin_url('warehouse/manage_delivery'); ?>"class="btn btn-default pull-right mright10 display-block close_button"><?php echo _l('close'); ?></a>
 </div>
 
 
@@ -639,7 +670,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo _l('cancel'); ?></button>
-    <button onclick="sign_request(<?php echo html_entity_decode($goods_delivery->id); ?>);" data-loading-text="<?php echo _l('wait_text'); ?>" autocomplete="off" class="btn btn-success"><?php echo _l('e_signature_sign'); ?></button>
+    <button onclick="sign_request(<?php echo html_entity_decode($goods_delivery->id); ?>);" autocomplete="off" class="btn btn-success sign_request_class"><?php echo _l('e_signature_sign'); ?></button>
   </div>
 </div>
 </div>

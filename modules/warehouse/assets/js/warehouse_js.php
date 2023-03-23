@@ -3,11 +3,12 @@
     appValidateForm($('#add_warehouse'), {
         warehouse_code: 'required',
         warehouse_name: 'required',
+        order: 'required',
         
     });
     
   var table_warehouse_name = $('table.table-table_warehouse_name');
-  var _table_api = initDataTable(table_warehouse_name, admin_url+'warehouse/table_warehouse_name', [0], [0], '',  [1, 'desc']);
+  var _table_api = initDataTable(table_warehouse_name, admin_url+'warehouse/table_warehouse_name', [0], [0], '',  [3, 'asc']);
 
 
 var warehouse_type_value = {};
@@ -338,5 +339,12 @@ setTimeout(function(){
        
   }
 
+  $('#warehouse_code').on('keypress', function() {
+    var warehouse_code = $('input[name="warehouse_code"]').val();
+    if(warehouse_code.length >= 100){
+        alert_float('warning', "<?php echo _l('Maximum_length_warehouse_code_is_100_words') ; ?>", 200);
+    }
+  });
+  
 
 </script>

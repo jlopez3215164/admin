@@ -3,6 +3,7 @@
 <div class="row">
     <!-- <div class="col-md-12 "> -->
         <div class=" col-md-3">
+          <div class="form-group">
           <label><?php echo _l('warehouse_name') ?></label>
           <select name="warehouse_filter[]" id="warehouse_filter" class="selectpicker" multiple="true" data-live-search="true" data-width="100%" data-none-selected-text="" data-actions-box="true">
 
@@ -10,18 +11,11 @@
                 <option value="<?php echo html_entity_decode($warehouse['warehouse_id']); ?>"><?php echo html_entity_decode($warehouse['warehouse_name']); ?></option>
                 <?php } ?>
             </select>
+            </div>
         </div>
 
         <div class=" col-md-3 ">
-          <div class="form-group">
-            <label><?php echo _l('commodity'); ?>  </label>
-            <select name="commodity_filter[]" id="commodity_filter" class="selectpicker" data-live-search="true" multiple="true" data-width="100%" data-none-selected-text="" data-actions-box="true">
-
-                <?php foreach($commodity_filter as $commodity) { ?>
-                  <option value="<?php echo html_entity_decode($commodity['id']); ?>"><?php echo html_entity_decode($commodity['description']); ?></option>
-                  <?php } ?>
-              </select>
-          </div>
+          <?php $this->load->view('warehouse/item_include/item_select', ['select_name' => 'commodity_filter[]', 'id_name' => 'commodity_filter', 'multiple' => false,  'label_name' => 'commodity']); ?>
         </div>
 
       <div class="col-md-2">
@@ -58,6 +52,7 @@
             <p><h3 class="bold text-center"><?php echo mb_strtoupper(_l('stock_summary_report')); ?></h3></p>
 
             <div class="col-md-12">
+              <div class="table-responsive">
              <table class="table table-bordered">
               <tbody>
                <tr>
@@ -113,6 +108,7 @@
                 </tr>
               </tbody>
             </table>
+          </div>
           </div>
 
            
