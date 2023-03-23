@@ -607,9 +607,10 @@ if (!$CI->db->field_exists('group_id' ,db_prefix() . 'wh_sub_group')) {
 
 //versio 1.0.8 
 //update Set the selling price rule according to profit ratio
-  
-  add_option('warehouse_selling_price_rule_profif_ratio', 0, 1);
-
+  if (warehouse_row_options_exist('"warehouse_selling_price_rule_profif_ratio"') == 0){
+      $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("warehouse_selling_price_rule_profif_ratio", "0", "1");
+    ');
+  }
 
   if (!$CI->db->field_exists('profif_ratio' ,db_prefix() . 'items')) { 
       $CI->db->query('ALTER TABLE `' . db_prefix() . "items`
@@ -618,19 +619,43 @@ if (!$CI->db->field_exists('group_id' ,db_prefix() . 'wh_sub_group')) {
   } 
 
   /*value 0 purchase price, 1 selling price*/
+  $CI = &get_instance();
+  if (warehouse_row_options_exist('"profit_rate_by_purchase_price_sale"') == 0){
+      $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("profit_rate_by_purchase_price_sale", "0", "1");
+    ');
+  }
+
+  $CI = &get_instance();
+  if (warehouse_row_options_exist('"warehouse_the_fractional_part"') == 0){
+      $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("warehouse_the_fractional_part", "0", "1");
+    ');
+  }
   
-  add_option('profit_rate_by_purchase_price_sale', 0, 1);
-  add_option('warehouse_the_fractional_part', 0, 1);
-  add_option('warehouse_integer_part', 0, 1);
+  $CI = &get_instance();
+  if (warehouse_row_options_exist('"warehouse_integer_part"') == 0){
+      $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("warehouse_integer_part", "0", "1");
+    ');
+  }
 
   //version 1.0.9
   //update auto create goods received note when create purchase order ( approval)
   //update auto create goods delivery note when create invoices ( paid)
+    if (warehouse_row_options_exist('"auto_create_goods_received"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("auto_create_goods_received", "0", "1");
+      ');
+    }
 
-  add_option('auto_create_goods_received', 0, 1);
-  add_option('auto_create_goods_delivery', 0, 1);
-  add_option('goods_receipt_warehouse', 0, 1);
 
+    if (warehouse_row_options_exist('"auto_create_goods_delivery"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("auto_create_goods_delivery", "0", "1");
+      ');
+    }
+
+
+    if (warehouse_row_options_exist('"goods_receipt_warehouse"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("goods_receipt_warehouse", "", "1");
+      ');
+    }
 
   if ($CI->db->field_exists('warehouse_id' ,db_prefix() . 'goods_transaction_detail')) { 
       $CI->db->query('ALTER TABLE `' . db_prefix() . "goods_transaction_detail`
@@ -646,7 +671,10 @@ if (!$CI->db->field_exists('group_id' ,db_prefix() . 'wh_sub_group')) {
     ;");
   }
 
-  add_option('barcode_with_sku_code', 0, 1);
+  if (warehouse_row_options_exist('"barcode_with_sku_code"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("barcode_with_sku_code", "0", "1");
+      ');
+    }
     
   if (!$CI->db->field_exists('long_descriptions' ,db_prefix() . 'items')) { 
     $CI->db->query('ALTER TABLE `' . db_prefix() . "items`
@@ -654,21 +682,45 @@ if (!$CI->db->field_exists('group_id' ,db_prefix() . 'wh_sub_group')) {
     ;");
   }
 
-  add_option('revert_goods_receipt_goods_delivery', 0, 1);
+   if (warehouse_row_options_exist('"revert_goods_receipt_goods_delivery"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("revert_goods_receipt_goods_delivery", "0", "1");
+      ');
+    }
 
     if (!$CI->db->field_exists('without_checking_warehouse' ,db_prefix() . 'items')) { 
       $CI->db->query('ALTER TABLE `' . db_prefix() . "items`
-          ADD COLUMN `without_checking_warehouse` int(11) NULL default 0
+          ADD COLUMN `without_checking_warehouse` int(11) NULL default 1
       ;");
     }  
 
     //version 1.1.2
-  add_option('cancelled_invoice_reverse_inventory_delivery_voucher', 0, 1);
-  add_option('uncancelled_invoice_create_inventory_delivery_voucher', 0, 1);
-  add_option('inventory_auto_operations_hour', 0, 1);
-  add_option('automatically_send_items_expired_before', 0, 1);
-  add_option('inventorys_cronjob_active', 0, 1);
-  add_option('inventory_cronjob_notification_recipients', '', 1);
+     if (warehouse_row_options_exist('"cancelled_invoice_reverse_inventory_delivery_voucher"') == 0){
+            $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("cancelled_invoice_reverse_inventory_delivery_voucher", "0", "1");
+          ');
+        }
+
+    if (warehouse_row_options_exist('"uncancelled_invoice_create_inventory_delivery_voucher"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("uncancelled_invoice_create_inventory_delivery_voucher", "0", "1");
+      ');
+    }
+
+    if (warehouse_row_options_exist('"inventory_auto_operations_hour"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("inventory_auto_operations_hour", "0", "1");
+      ');
+    }
+    if (warehouse_row_options_exist('"automatically_send_items_expired_before"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("automatically_send_items_expired_before", "0", "1");
+      ');
+    }
+
+    if (warehouse_row_options_exist('"inventorys_cronjob_active"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("inventorys_cronjob_active", "0", "1");
+      ');
+    }
+    if (warehouse_row_options_exist('"inventory_cronjob_notification_recipients"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("inventory_cronjob_notification_recipients", "", "1");
+      ');
+    }
 
   create_email_template('Inventory warning', 'Hi {staff_name}! <br /><br />This is a inventory warning<br />{<span 12pt="">notification_content</span>}. <br /><br />Regards.', 'inventory_warning', 'Inventory warning (Sent to staff)', 'inventory-warning-to-staff');
 
@@ -681,11 +733,25 @@ if (!$CI->db->field_exists('group_id' ,db_prefix() . 'wh_sub_group')) {
   }
 
   //update inventory setting prefix
+    if (warehouse_row_options_exist('"inventory_received_number_prefix"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("inventory_received_number_prefix", "NK", "1");
+      ');
+    }
 
-  add_option('inventory_received_number_prefix', 'NK', 1);
-  add_option('next_inventory_received_mumber', 1, 1);
-  add_option('inventory_delivery_number_prefix', 'XK', 1);
-  add_option('next_inventory_delivery_mumber', 1, 1);
+    if (warehouse_row_options_exist('"next_inventory_received_mumber"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("next_inventory_received_mumber", "1", "1");
+      ');
+    }
+
+    if (warehouse_row_options_exist('"inventory_delivery_number_prefix"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("inventory_delivery_number_prefix", "XK", "1");
+      ');
+    }
+
+    if (warehouse_row_options_exist('"next_inventory_delivery_mumber"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("next_inventory_delivery_mumber", "1", "1");
+      ');
+    }
 
     //add internal delivery note, function
     if (!$CI->db->table_exists(db_prefix() . 'internal_delivery_note')) {
@@ -725,9 +791,15 @@ if (!$CI->db->field_exists('group_id' ,db_prefix() . 'wh_sub_group')) {
         ) ENGINE=InnoDB DEFAULT CHARSET=" . $CI->db->char_set . ';');
     }
 
-    add_option('internal_delivery_number_prefix', 'ID', 1);
-    add_option('next_internal_delivery_mumber', 1, 1);
+    if (warehouse_row_options_exist('"internal_delivery_number_prefix"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("internal_delivery_number_prefix", "ID", "1");
+      ');
+    }
 
+    if (warehouse_row_options_exist('"next_internal_delivery_mumber"') == 0){
+        $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("next_internal_delivery_mumber", "1", "1");
+      ');
+    }
 
     if (!$CI->db->field_exists('from_stock_name' ,db_prefix() . 'goods_transaction_detail')) { 
       $CI->db->query('ALTER TABLE `' . db_prefix() . "goods_transaction_detail`
@@ -736,7 +808,10 @@ if (!$CI->db->field_exists('group_id' ,db_prefix() . 'wh_sub_group')) {
       ;");
     }
 
-    add_option('item_sku_prefix', '', 1);
+    if (warehouse_row_options_exist('"item_sku_prefix"') == 0){
+          $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("item_sku_prefix", "", "1");
+        ');
+      }  
 
           //current version on eoffice 1.1.3
       //maximum stock
@@ -783,9 +858,15 @@ if (!$CI->db->field_exists('group_id' ,db_prefix() . 'wh_sub_group')) {
       }
 
       /*Required PO selected  when create goods received voucher*/
-
-    add_option('goods_receipt_required_po', 0, 1);
-    add_option('goods_delivery_required_po', 0, 1);
+      if (warehouse_row_options_exist('"goods_receipt_required_po"') == 0){
+          $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("goods_receipt_required_po", "0", "1");
+        ');
+      }
+      
+      if (warehouse_row_options_exist('"goods_delivery_required_po"') == 0){
+          $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("goods_delivery_required_po", "0", "1");
+        ');
+      }
 
       //Goods delivery
       if (!$CI->db->field_exists('project' ,db_prefix() . 'goods_delivery')) { 
@@ -900,8 +981,10 @@ if (!$CI->db->field_exists('group_id' ,db_prefix() . 'wh_sub_group')) {
       }
       
       //version_116
-    add_option('goods_delivery_pdf_display', 0, 1);
-
+      if (warehouse_row_options_exist('"goods_delivery_pdf_display"') == 0){
+          $CI->db->query('INSERT INTO `tbloptions` (`name`,`value`, `autoload`) VALUES ("goods_delivery_pdf_display", "0", "1");
+        ');
+      }
 
       if (!$CI->db->field_exists('city' ,db_prefix() . 'warehouse')) { 
         $CI->db->query('ALTER TABLE `' . db_prefix() . "warehouse`
@@ -947,225 +1030,3 @@ if (!$CI->db->field_exists('group_id' ,db_prefix() . 'wh_sub_group')) {
         ;");
       }
       
-          //version_118x
-
-    add_option('display_product_name_when_print_barcode', 0, 1);
-    add_option('show_item_cf_on_pdf', 0, 1);
-
-
-      //version_118x add activity log for Delivery note
-      if (!$CI->db->table_exists(db_prefix() . 'wh_goods_delivery_activity_log')) {
-        $CI->db->query('CREATE TABLE `' . db_prefix() . "wh_goods_delivery_activity_log` (
-          `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-          `rel_id` int NULL ,
-          `rel_type` varchar(100) NULL ,
-          `description` mediumtext NULL,
-          `additional_data` text NULL,
-          `date` datetime NULL,
-          `staffid` int(11) NULL,
-          `full_name` varchar(100) NULL,
-
-          PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=" . $CI->db->char_set . ';');
-      }
-      //version_118x add create inventory delivery was partial from invoice, add column
-      if (!$CI->db->field_exists('wh_delivered_quantity' ,db_prefix() . 'itemable')) { 
-        $CI->db->query('ALTER TABLE `' . db_prefix() . "itemable`
-          ADD COLUMN `wh_delivered_quantity` DECIMAL(15,2)  DEFAULT '0'
-          ;");
-      }
-
-      if (!$CI->db->field_exists('type_of_delivery' ,db_prefix() . 'goods_delivery')) { 
-        $CI->db->query('ALTER TABLE `' . db_prefix() . "goods_delivery`
-          ADD COLUMN `type_of_delivery` VARCHAR(100)  NULL DEFAULT 'total'
-          ;");
-      }
-
-
-// Version 122 update tax
-if (!$CI->db->field_exists('tax_rate' ,db_prefix() . 'goods_receipt_detail')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "goods_receipt_detail`
-      ADD COLUMN `tax_rate` TEXT NULL
-  ;");
-}
-
-if (!$CI->db->field_exists('sub_total' ,db_prefix() . 'goods_receipt_detail')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "goods_receipt_detail`
-      ADD COLUMN `sub_total` DECIMAL(15,2) NULL DEFAULT '0'
-  ;");
-}
-
-if (!$CI->db->field_exists('tax_name' ,db_prefix() . 'goods_receipt_detail')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "goods_receipt_detail`
-      ADD COLUMN `tax_name` TEXT NULL
-  ;");
-}
-
-if (!$CI->db->field_exists('commodity_name' ,db_prefix() . 'internal_delivery_note_detail')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "internal_delivery_note_detail`
-      ADD COLUMN `commodity_name` TEXT NULL
-  ;");
-}
-
-if (!$CI->db->field_exists('commodity_name' ,db_prefix() . 'wh_loss_adjustment_detail')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "wh_loss_adjustment_detail`
-      ADD COLUMN `commodity_name` TEXT NULL
-  ;");
-}
-if (!$CI->db->field_exists('tax_rate' ,db_prefix() . 'goods_delivery_detail')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "goods_delivery_detail`
-      ADD COLUMN `tax_rate` TEXT NULL,
-      ADD COLUMN `tax_name` TEXT NULL,
-      ADD COLUMN `sub_total` DECIMAL(15,2) NULL DEFAULT '0'
-  ;");
-}
-if (!$CI->db->field_exists('additional_discount' ,db_prefix() . 'goods_delivery')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "goods_delivery`
-      ADD COLUMN `additional_discount` DECIMAL(15,2) NULL DEFAULT '0'
-  ;");
-}
-
-if (!$CI->db->field_exists('sub_total' ,db_prefix() . 'goods_delivery')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "goods_delivery`
-      ADD COLUMN `sub_total` DECIMAL(15,2) NULL DEFAULT '0'
-  ;");
-}
-
-// Version 123
-add_option('goods_delivery_pdf_display_outstanding', 0, 1);
-add_option('goods_delivery_pdf_display_warehouse_lotnumber_bottom_infor', 0, 1);
-
-//Version 124
-  add_option('packing_list_number_prefix', 'PL', 1);
-  add_option('next_packing_list_number', 1, 1);
-
-if (!$CI->db->table_exists(db_prefix() . 'wh_packing_lists')) {
-  $CI->db->query('CREATE TABLE `' . db_prefix() . "wh_packing_lists` (
-
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `delivery_note_id` INT(11) NULL,
-    `packing_list_number` VARCHAR(100) NULL,
-    `packing_list_name` VARCHAR(200) NULL,
-    `width` DECIMAL(15,2) NULL DEFAULT '0.00',
-    `height` DECIMAL(15,2) NULL DEFAULT '0.00',
-    `lenght` DECIMAL(15,2) NULL DEFAULT '0.00',
-    `weight` DECIMAL(15,2) NULL DEFAULT '0.00',
-    `volume` DECIMAL(15,2) NULL DEFAULT '0.00',
-    `clientid` INT(11) NULL,
-    `subtotal` DECIMAL(15,2) NULL DEFAULT '0.00',
-    `total_amount` DECIMAL(15,2) NULL DEFAULT '0.00',
-    `discount_total` DECIMAL(11) NULL DEFAULT '0.00',
-    `additional_discount` DECIMAL(11) NULL DEFAULT '0.00',
-    `total_after_discount` DECIMAL(11) NULL DEFAULT '0.00',
-    `billing_street` varchar(200) DEFAULT NULL,
-    `billing_city` varchar(100) DEFAULT NULL,
-    `billing_state` varchar(100) DEFAULT NULL,
-    `billing_zip` varchar(100) DEFAULT NULL,
-    `billing_country` int(11) DEFAULT NULL,
-    `shipping_street` varchar(200) DEFAULT NULL,
-    `shipping_city` varchar(100) DEFAULT NULL,
-    `shipping_state` varchar(100) DEFAULT NULL,
-    `shipping_zip` varchar(100) DEFAULT NULL,
-    `shipping_country` int(11) DEFAULT NULL,
-    `client_note` TEXT NULL,
-    `admin_note` TEXT NULL,
-    `approval` INT(11) NULL DEFAULT 0,
-    `datecreated` DATETIME NULL,
-    `staff_id` INT(11) NULL,
-
-    PRIMARY KEY (`id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=" . $CI->db->char_set . ';');
-}
-
-if (!$CI->db->table_exists(db_prefix() . 'wh_packing_list_details')) {
-  $CI->db->query('CREATE TABLE `' . db_prefix() . "wh_packing_list_details` (
-
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `packing_list_id` INT(11) NOT NULL,
-    `delivery_detail_id` INT(11) NULL,
-    `commodity_code` INT(11) NULL,
-    `commodity_name` TEXT NULL,
-    `quantity` DECIMAL(15,2) NULL DEFAULT '0.00',
-    `unit_id` INT(11) NULL,
-    `unit_price` DECIMAL(15,2) NULL DEFAULT '0.00',
-    `sub_total` DECIMAL(15,2) NULL DEFAULT '0.00',
-    `tax_id`  TEXT NULL,
-    `tax_rate`  TEXT NULL,
-    `tax_name`  TEXT NULL,
-    `total_amount` DECIMAL(15,2) NULL DEFAULT '0.00',
-    `discount` DECIMAL(11) NULL DEFAULT '0.00',
-    `discount_total` DECIMAL(11) NULL DEFAULT '0.00',
-    `total_after_discount` DECIMAL(11) NULL DEFAULT '0.00',
-
-    PRIMARY KEY (`id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=" . $CI->db->char_set . ';');
-}
-
-if (!$CI->db->field_exists('packing_qty' ,db_prefix() . 'goods_delivery_detail')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "goods_delivery_detail`
-      ADD COLUMN `packing_qty` DECIMAL(15,2) NULL DEFAULT '0.00'
-  ;");
-}
-
-if (!$CI->db->field_exists('type_of_packing_list' ,db_prefix() . 'wh_packing_lists')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "wh_packing_lists`
-      ADD COLUMN `type_of_packing_list` VARCHAR(100)  NULL DEFAULT 'total'
-  ;");
-}
-
-if (!$CI->db->field_exists('delivery_status' ,db_prefix() . 'wh_packing_lists')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "wh_packing_lists`
-      ADD COLUMN `delivery_status` VARCHAR(100)  NULL DEFAULT 'wh_ready_to_deliver'
-  ;");
-}
-
-if (!$CI->db->field_exists('delivery_status' ,db_prefix() . 'goods_delivery')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "goods_delivery`
-      ADD COLUMN `delivery_status` VARCHAR(100)  NULL DEFAULT 'ready_for_packing'
-  ;");
-}
-
-// purchase, => can_be_purchased
-// inventory => can_be_inventory
-// loyalty => can_be_sold
-// omni_sale => can_be_sold
-// sale_invoice => can_be_sold
-// manufacturing order => can_be_manufacturing
-// affiliate => can_be_sold
-
-if (!$CI->db->field_exists('can_be_sold' ,db_prefix() . 'items')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "items`
-  ADD COLUMN `can_be_sold` VARCHAR(100) NULL DEFAULT 'can_be_sold'
-  ;");
-}
-if (!$CI->db->field_exists('can_be_purchased' ,db_prefix() . 'items')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "items`
-  ADD COLUMN `can_be_purchased` VARCHAR(100) NULL DEFAULT 'can_be_purchased' 
-  ;");
-}
-if (!$CI->db->field_exists('can_be_manufacturing' ,db_prefix() . 'items')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "items`
-  ADD COLUMN `can_be_manufacturing` VARCHAR(100) NULL DEFAULT 'can_be_manufacturing' 
-  ;");
-}
-
-if (!$CI->db->field_exists('can_be_inventory' ,db_prefix() . 'items')) { 
-  $CI->db->query('ALTER TABLE `' . db_prefix() . "items`
-  ADD COLUMN `can_be_inventory` VARCHAR(100) NULL DEFAULT 'can_be_inventory' 
-  ;");
-}
-
-//add shipment on Omnisales module
-if (!$CI->db->table_exists(db_prefix() . 'wh_omni_shipments')) {
-  $CI->db->query('CREATE TABLE `' . db_prefix() . "wh_omni_shipments` (
-
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `cart_id` INT(11) NULL,
-    `shipment_number` VARCHAR(100) NULL,
-    `planned_shipping_date` DATETIME NULL,
-    `shipment_status` VARCHAR(50) NULL,
-    `datecreated` DATETIME NULL,
-
-    PRIMARY KEY (`id`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=" . $CI->db->char_set . ';');
-}

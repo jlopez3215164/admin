@@ -17,7 +17,9 @@
 
     $.each(ProposalServerParams, function(i, obj) {
         $('select' + obj).on('change', function() {  
-            table_inventory_stock.DataTable().ajax.reload();
+            table_inventory_stock.DataTable().ajax.reload()
+                .columns.adjust()
+                .responsive.recalc();
         });
     });
 
@@ -31,7 +33,9 @@
    var  _table_api = initDataTable(table_view_commodity_detail, admin_url+'warehouse/table_view_commodity_detail', [], [], ProposalServerParams);
     $.each(ProposalServerParams, function(i, obj) {
         $('select' + obj).on('change', function() {  
-            table_view_commodity_detail.DataTable().ajax.reload();
+            table_view_commodity_detail.DataTable().ajax.reload()
+                .columns.adjust()
+                .responsive.recalc();
         });
     });
 
@@ -51,12 +55,13 @@ var ProposalServerParams = {
 
     $.each(ProposalServerParams, function(i, obj) {
         $('select' + obj).on('change', function() {  
-            table_warehouse_history.DataTable().ajax.reload();
+            table_warehouse_history.DataTable().ajax.reload()
+                .columns.adjust()
+                .responsive.recalc();
         });
     });
 
-    init_ajax_search('items','#item_select_print_barcode.ajax-search',undefined,admin_url+'warehouse/wh_commodity_code_search_all');
-    
+
 })(jQuery);
 
 </script>

@@ -1,4 +1,4 @@
-/*.panel-primary {
+.panel-primary {
       border-color: #b75a33;
   }
   .panel-primary>.panel-heading {
@@ -9,14 +9,11 @@
   .table>tbody>tr>td{
     border-top: 1px solid #d8341b;
   }
-td.border {
-    background-color: #ff0000a6 !important;
-    text-align: right;
+  .border {
+  background-color: #ff0000a6 !important;
+  text-align: right;
 }
-td.border-none {
+.border-none {
   background-color: none !important;
   text-align: right;
-}*/
-.input-group-select .input-group-addon{
-  opacity: 1;
 }

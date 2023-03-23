@@ -55,7 +55,7 @@ foreach ($rResult as $aRow) {
             }
 
             if ((has_permission('warehouse', '', 'delete') || is_admin()) && ($aRow['approval'] == 0)) {
-                $name .= ' | <a href="' . admin_url('warehouse/delete_internal_delivery/' . $aRow['id'] ).'" class="text-danger _delete" >' . _l('delete') . '</a>';
+                $name .= ' | <a href="' . admin_url('warehouse/delete_internal_delivery/' . $aRow['id'] ).'" class="text-danger" >' . _l('delete') . '</a>';
             }
             
 

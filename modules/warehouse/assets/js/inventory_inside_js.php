@@ -13,20 +13,25 @@
 
     $.each(ProposalServerParams, function(i, obj) {
         $('select' + obj).on('change', function() {  
-            table_inventory_inside.DataTable().ajax.reload();
+            table_inventory_inside.DataTable().ajax.reload()
+                .columns.adjust()
+                .responsive.recalc();
         });
     });
 
     $('#profit_rate_search').on('change', function() {
-                 table_inventory_inside.DataTable().ajax.reload();
+                 table_inventory_inside.DataTable().ajax.reload()
+                .columns.adjust()
+                .responsive.recalc();
       });
 
     $('#warehouse_filter').on('change', function() {
-                 table_inventory_inside.DataTable().ajax.reload();
+                 table_inventory_inside.DataTable().ajax.reload()
+                .columns.adjust()
+                .responsive.recalc();
       });
 
-    // Maybe items ajax search
-    init_ajax_search('items','#commodity_filter.ajax-search',undefined,admin_url+'warehouse/wh_commodity_code_search_all');
+
 
 
 })(jQuery);

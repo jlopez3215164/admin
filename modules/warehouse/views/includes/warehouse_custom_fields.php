@@ -51,7 +51,7 @@
                         $warehouse_name_value = '';
                     }
 
-                    $list_warehouse_name .= '<li class="text-success mbot10 mtop"><a href="#"  class="text-left">'.$warehouse_name_value. '</a></li>';
+                    $list_warehouse_name .= '<li class="text-success mbot10 mtop"><a href="#"  style="text-align: left;">'.$warehouse_name_value. '</a></li>';
 
                     
             }

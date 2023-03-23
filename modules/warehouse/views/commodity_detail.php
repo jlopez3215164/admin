@@ -37,14 +37,7 @@
                     <td class="bold"><?php echo _l('sku_name'); ?></td>
                     <td><?php echo html_entity_decode($commodites->sku_name) ; ?></td>
                  </tr>
-                 <tr class="project-overview">
-                    <td class="bold"><?php echo _l('tax_1'); ?></td>
-                    <td><?php echo html_entity_decode($commodites->tax) != '' && get_tax_rate($commodites->tax) != null ? get_tax_rate($commodites->tax)->name : '';  ?></td>
-                 </tr> 
-                 <tr class="project-overview">
-                    <td class="bold"><?php echo _l('tax_2'); ?></td>
-                    <td><?php echo html_entity_decode($commodites->tax2) != '' && get_tax_rate($commodites->tax2) != null ? get_tax_rate($commodites->tax2)->name : '';  ?></td>
-                 </tr> 
+                 
                 
 
                 </tbody>

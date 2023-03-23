@@ -15,14 +15,18 @@
   
 
   $('select[name="type_filter"],select[name="status_filter"]').on('change', function() {
-     $('.table-loss_adjustment').DataTable().ajax.reload();
+     $('.table-loss_adjustment').DataTable().ajax.reload()
+                      .columns.adjust()
+                      .responsive.recalc();
   });
   
 })(jQuery);
 
 function filter_date(el){
   "use strict";
-  $('.table-loss_adjustment').DataTable().ajax.reload();
+  $('.table-loss_adjustment').DataTable().ajax.reload()
+                .columns.adjust()
+                .responsive.recalc();
 
 }
 

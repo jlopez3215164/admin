@@ -32,7 +32,7 @@
 
                  <tr class="project-overview">
                     <td class="bold" width="30%"><?php echo _l('type'); ?></td>
-                    <td><?php echo _l($loss_adjustment->type) ; ?></td>
+                    <td><?php echo html_entity_decode($loss_adjustment->type) ; ?></td>
                  </tr>
                   <tr class="project-overview">
                     <td class="bold" width="30%"><?php echo _l('add_from'); ?></td>
@@ -61,7 +61,7 @@
         </div>
 
         <!-- approval infor -->
-        <div class="col-md-6 panel-padding">
+        <div class="col-md-6">
                                <div class="col-md-12">
                       <div class="project-overview-right">
     <?php if(count($list_approve_status) > 0){ ?>
@@ -90,9 +90,7 @@
                 {
                   $staff_name .= ' or ';
                 }
-                if($this->staff_model->get($val)){
-                  $staff_name .= $this->staff_model->get($val)->full_name;
-                }
+                $staff_name .= $this->staff_model->get($val)->firstname;
               }
               echo html_entity_decode($staff_name); 
               ?></p>
@@ -125,7 +123,7 @@
                 $staff = $this->staff_model->get($val);
 
                 if($staff){
-                  $staff_name .= $staff->full_name;
+                  $staff_name .= $staff->firstname;
                 }
               }
               }
@@ -197,10 +195,7 @@
                      </div>     
 
         </div>
-                  
-               </div>
-               <br>
-               <div class="row">
+                  <div class="row">
                      <div class="col-md-12">
                         <div class="table-responsive">
                            <table class="table items items-preview estimate-items-preview" data-type="estimate">
@@ -220,32 +215,25 @@
                                 
                               <?php 
                               foreach ($loss_adjustment_detail as $detail_key => $detail_value) {
-                                $detail_key++;
+
                              $available_quantity = (isset($detail_value) ? $detail_value['current_number'] : '');
                              $stock_quantity = (isset($detail_value) ? $detail_value['updates_number'] : '');
 
                              $commodity_code = get_commodity_name($detail_value['items']) != null ? get_commodity_name($detail_value['items'])->commodity_code : '';
                              $commodity_name = get_commodity_name($detail_value['items']) != null ? get_commodity_name($detail_value['items'])->description : '';
 
-                             $unit_name ='';
-                             if(is_numeric($detail_value['unit'])){
-                               $unit_name = get_unit_type($detail_value['unit']) != null ? get_unit_type($detail_value['unit'])->unit_name : '';
+                             $unit_name = get_unit_type($detail_value['unit']) != null ? get_unit_type($detail_value['unit'])->unit_name : '';
 
-                             }
-                             
                              
                               $expiry_date =(isset($detail_value) ? $detail_value['expiry_date'] : '');
                               $lot_number =(isset($detail_value) ? $detail_value['lot_number'] : '');
-                              $commodity_name = $detail_value['commodity_name'];
-                              if(strlen($commodity_name) == 0){
-                                $commodity_name = wh_get_item_variatiom($detail_value['items']);
-                              }
+
 
                             ?>
           
                               <tr>
                               <td ><?php echo html_entity_decode($detail_key) ?></td>
-                                  <td ><?php echo html_entity_decode($commodity_name) ?></td>
+                                  <td ><?php echo html_entity_decode($commodity_code .'-'.$commodity_name) ?></td>
                                   <td ><?php echo html_entity_decode($unit_name) ?></td>
                                   <td class="text-right"><?php echo html_entity_decode($lot_number) ?></td>
                                   <td class="text-right"><?php echo _d($expiry_date) ?></td>
@@ -267,7 +255,7 @@
                                      
                     
                   </div>
-
+               </div>
             </div>
 
             
@@ -275,7 +263,7 @@
 
         <div class="modal-footer">
 
-            <a href="<?php echo admin_url('warehouse/loss_adjustment'); ?>"class="btn btn-default pull-right mright10 display-block close_button"><?php echo _l('close'); ?></a>
+            <a href="<?php echo admin_url('warehouse/loss_adjustment'); ?>"class="btn btn-default pull-right mright10 display-block"><?php echo _l('close'); ?></a>
         </div>
 
          <div class="modal fade" id="add_action" tabindex="-1" role="dialog">
@@ -295,7 +283,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo _l('cancel'); ?></button>
-           <button onclick="sign_request(<?php echo html_entity_decode($loss_adjustment->id); ?>);" autocomplete="off" class="btn btn-success sign_request_class"><?php echo _l('e_signature_sign'); ?></button>
+           <button onclick="sign_request(<?php echo html_entity_decode($loss_adjustment->id); ?>);" data-loading-text="<?php echo _l('wait_text'); ?>" autocomplete="off" class="btn btn-success"><?php echo _l('e_signature_sign'); ?></button>
           </div>
 
 
