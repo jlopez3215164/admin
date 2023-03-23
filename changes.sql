@@ -52,8 +52,9 @@ CREATE TABLE `tbl_orion_pos` (
   `password_database` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `status` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `deposit_id` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- orion_zeus.tbl_orion_pos_detail_sale definition
 
@@ -64,5 +65,6 @@ CREATE TABLE `tbl_orion_pos_detail_sale` (
   `price` decimal(18,4) DEFAULT NULL,
   `cost` decimal(18,4) DEFAULT NULL,
   `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `orion_pos_id` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
