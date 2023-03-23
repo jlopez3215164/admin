@@ -182,7 +182,6 @@ var signaturePad;
       "use strict";
     changes.forEach(([row, col, prop, oldValue, newValue]) => {
       if(col == 'commodity_code' && oldValue != ''){
-        
         $.post(admin_url + 'warehouse/commodity_code_change/'+oldValue ).done(function(response){
           response = JSON.parse(response);
             
@@ -298,14 +297,7 @@ function send_request_approve(id){
       data_send_mail.rel_type = '2';
       // data_send_mail rel_type : '1' stock_export ;
       data_send_mail.addedfrom = <?php echo html_entity_decode($goods_delivery->addedfrom); ?>;
-
-      $('.close_button').attr( "disabled", "disabled" );
-      $.get(admin_url+'warehouse/send_mail', data_send_mail).done(function(response){
-        response = JSON.parse(response);
-        $('.close_button').removeAttr('disabled')
-
-      }).fail(function(error) {
-
+      $.post(admin_url+'warehouse/send_mail', data_send_mail).done(function(response){
       });
     <?php } ?>
 
@@ -404,24 +396,13 @@ function send_request_approve(id){
       }
     });
     signaturePad.clear();
-    $('input[name="signature"]').val('');
     
   }
+
   function sign_request(id){
     "use strict";
-    var signature_val = $('input[name="signature"]').val();
-    if(signature_val.length > 0){
-      change_request_approval_status(id,1, true);
-      $('.sign_request_class').prop('disabled', true);
-      $('.sign_request_class').html('<?php echo _l('wait_text'); ?>');
-      $('.clear').prop('disabled', true);
-    }else{
-      alert_float('warning', '<?php echo _l('please_sign_the_form'); ?>');
-      $('.sign_request_class').prop('disabled', false);
-      $('.clear').prop('disabled', false);
-    }
+    change_request_approval_status(id,1, true);
   }
-
   function approve_request(id){
     "use strict";
     change_request_approval_status(id,1);

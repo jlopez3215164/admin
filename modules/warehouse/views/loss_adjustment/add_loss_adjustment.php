@@ -11,18 +11,15 @@
         $id = '';
         if(isset($loss_adjustment)){
           $id = $loss_adjustment->id;
-          echo form_hidden('isedit');
         }
        ?>
       <input type="hidden" name="id" value="<?php echo html_entity_decode($id); ?>">
 			<div class="col-md-12">
         <div class="panel_s accounting-template estimate">
          <div class="panel-body">
-          <div class="row">
-           <div class="col-md-12">
-            <h4 class="no-margin font-bold"><i class="fa fa-adjust menu-icon" aria-hidden="true"></i><?php echo _l('loss_adjustment'); ?></h4>
-             <hr>
-           </div>
+         <div class="col-md-12">
+           <h4><?php echo _l('loss_adjustment'); ?></h4>
+           <hr>
          </div>
          <div class="row">
                <div class="col-md-4">
@@ -61,48 +58,43 @@
                             
          </div>
        </div>
-
-       <div class="panel-body mtop10 invoice-item">
-            <div class="row">
-              <div class="col-md-4">
-                <?php $this->load->view('warehouse/item_include/main_item_select'); ?>
-              </div>
-            </div>
-
-            <div class="table-responsive s_table ">
-              <table class="table invoice-items-table items table-main-invoice-edit has-calculations no-mtop">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th width="40%" align="left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_description_new_lines_notice'); ?>"></i> <?php echo _l('invoice_table_item_heading'); ?></th>
-                    <th width="17%" align="right"><?php echo _l('lot_number'); ?></th>
-                    <th width="17%" align="right"><?php echo _l('expiry_date'); ?></th>
-                    <th width="13%" align="right" class="qty"><?php echo _l('available_quantity'); ?></th>
-                    <th width="13%" align="right" class="qty"><?php echo _l('stock_quantity'); ?></th>
-
-                    <th align="center"><i class="fa fa-cog"></i></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php echo $loss_adjustment_row_template; ?>
-                </tbody>
-              </table>
-            </div>
-            <div id="removed-items"></div>
+        <div class="panel-body mtop10">
+        <div class="col-md-12">
+        <p class="bold" ><?php echo _l('loss_adjustment_detail'); ?></p>
+        <hr />
+        <div class="row">
+         <div class="mleft10 hot handsontable htColumnHeaders" id="example">
           </div>
+         </div>
+         <?php echo form_hidden('pur_order_detail'); ?>
+         <div class="clearfix"></div>
+         <br><br>
+         <div class="row">
+              <div class="col-md-12">
+                <?php echo render_textarea('reason','reason',$reason) ?>
+            </div>
+         </div>
+           
+         <div class="col-md-4 col-md-offset-8">
 
+         </div> 
+        </div>
+        </div>
         <div class="row">
           <div class="col-md-12 mtop15">
-             <div class="panel-body bottom-transaction">
-
-                <?php echo render_textarea('reason','reason',$reason,array(),array(),'mtop15'); ?>
-
                 <div class="btn-bottom-toolbar text-right">
-                  <a href="<?php echo admin_url('warehouse/loss_adjustment'); ?>"class="btn btn-default text-right mright5"><?php echo _l('close'); ?></a>
+                  <a href="<?php echo admin_url('warehouse/loss_adjustment'); ?>" class="btn btn-danger"><?php echo _l('close'); ?></a>&nbsp;&nbsp;&nbsp;
                   <?php if(isset($loss_adjustment) && $loss_adjustment->status == 0){ ?>
+                    <?php  ?>
+<!--                       <?php if (is_admin() || has_permission('warehouse', '', 'edit')) { ?>
+
+                      <button type="button" id="adjusted" data-id="<?php echo html_entity_decode($loss_adjustment->id); ?>" class="btn btn-primary"><?php echo _l('adjustment'); ?></button>
+                    <?php } ?> -->
+
+                    <?php  ?>
 
                     <?php if (has_permission('warehouse', '', 'create') || is_admin() || has_permission('warehouse', '', 'edit')) { ?>
-                    <button type="button" class="btn-tr save_detail btn btn-info ">
+                    <button type="button" class="btn-tr save_detail btn btn-info mleft10 ">
                     <?php echo _l('submit'); ?>
                     </button>
                      <?php } ?>
@@ -111,18 +103,15 @@
                   <?php 
                     if(!isset($loss_adjustment)){ ?>
                       <?php if (has_permission('warehouse', '', 'create') || is_admin() || has_permission('warehouse', '', 'edit')) { ?>
-                       <button type="button" class="btn-tr save_detail btn btn-info ">
+                       <button type="button" class="btn-tr save_detail btn btn-info mleft10 ">
                                 <?php echo _l('submit'); ?>
                        </button>
                      <?php } ?>
                   <?php } ?>
                 </div>
-             </div>
-               <div class="btn-bottom-pusher"></div>
+             <div class="btn-bottom-pusher"></div>
           </div>
         </div>
-
-
         </div>
 
 			</div>

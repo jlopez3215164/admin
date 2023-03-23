@@ -5,7 +5,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 /*
 Module Name: Warehouse
 Description: Module manage warehouse, stock imported, stock export, Loss and adjustment,report...
-Version: 1.2.5
+Version: 1.1.7
 Requires at least: 2.3.*
 Author: GreenTech Solutions
 Author URI: https://codecanyon.net/user/greentech_solutions
@@ -17,7 +17,6 @@ define('WAREHOUSE_STOCK_IMPORT_MODULE_UPLOAD_FOLDER', module_dir_path(WAREHOUSE_
 define('WAREHOUSE_STOCK_EXPORT_MODULE_UPLOAD_FOLDER', module_dir_path(WAREHOUSE_MODULE_NAME, 'uploads/stock_export/'));
 define('WAREHOUSE_LOST_ADJUSTMENT_MODULE_UPLOAD_FOLDER', module_dir_path(WAREHOUSE_MODULE_NAME, 'uploads/lost_adjustment/'));
 define('WAREHOUSE_INTERNAL_DELIVERY_MODULE_UPLOAD_FOLDER', module_dir_path(WAREHOUSE_MODULE_NAME, 'uploads/internal_delivery/'));
-define('WAREHOUSE_PACKING_LIST_MODULE_UPLOAD_FOLDER', module_dir_path(WAREHOUSE_MODULE_NAME, 'uploads/packing_lists/'));
 define('WAREHOUSE_PROPOSAL_UPLOAD_FOLDER', module_dir_path(WAREHOUSE_MODULE_NAME, 'uploads/proposal/'));
 define('WAREHOUSE_ITEM_UPLOAD', module_dir_path(WAREHOUSE_MODULE_NAME, 'uploads/item_img/'));
 
@@ -25,7 +24,8 @@ define('WAREHOUSE_PRINT_ITEM', 'modules/warehouse/uploads/print_item/');
 define('WAREHOUSE_EXPORT_ITEM', 'modules/warehouse/uploads/export_item/');
 define('WAREHOUSE_IMPORT_ITEM_ERROR', 'modules/warehouse/uploads/import_item_error/');
 define('WAREHOUSE_IMPORT_OPENING_STOCK', 'modules/warehouse/uploads/import_opening_stock_error/');
-define('REVISION', 125);
+define('REVISION', 117);
+
 //true display: brand, model, series in settings menu
 define('ACTIVE_BRAND_MODEL_SERIES', false);
 define('ACTIVE_PROPOSAL', true);
@@ -48,22 +48,16 @@ define('COMMODITY_EXPORT', FCPATH );
 
 hooks()->add_filter('create_goods_receipt', 'warehouse_create_goods_receipt');
 hooks()->add_action('after_invoice_added', 'warehouse_create_goods_delivery');
-//inventory received
-hooks()->add_action('task_related_to_select', 'inventory_received_related_to_select'); // Old
-//hooks()->add_filter('before_return_relation_values', 'inventory_received_relation_values', 10, 2); // Old
-hooks()->add_filter('before_return_relation_data', 'inventory_received_relation_data', 10, 4); // Old
-hooks()->add_action('task_modal_rel_type_select', 'inventory_received_task_modal_rel_type_select'); // new
-hooks()->add_filter('relation_values', 'inventory_received_get_relation_values', 10, 2); // new
-hooks()->add_filter('get_relation_data', 'inventory_received_get_relation_data', 10, 4); // new
+//inventory received 
+hooks()->add_action('task_related_to_select', 'inventory_received_related_to_select');
+hooks()->add_filter('before_return_relation_values', 'inventory_received_relation_values', 10, 2);
+hooks()->add_filter('before_return_relation_data', 'inventory_received_relation_data', 10, 4);
 hooks()->add_filter('tasks_table_row_data', 'inventory_received_add_table_row', 10, 3);
 
 //invetory delivery
-hooks()->add_action('task_related_to_select', 'inventory_delivery_related_to_select'); // Old
-//hooks()->add_filter('before_return_relation_values', 'inventory_delivery_relation_values', 10, 2); // Old
-hooks()->add_filter('before_return_relation_data', 'inventory_delivery_relation_data', 10, 4); // Old
-hooks()->add_action('task_modal_rel_type_select', 'inventory_delivery_task_modal_rel_type_select'); // new
-hooks()->add_filter('relation_values', 'inventory_delivery_get_relation_values', 10, 2); // new
-hooks()->add_filter('get_relation_data', 'inventory_delivery_get_relation_data', 10, 4); // new
+hooks()->add_action('task_related_to_select', 'inventory_delivery_related_to_select');
+hooks()->add_filter('before_return_relation_values', 'inventory_delivery_relation_values', 10, 2);
+hooks()->add_filter('before_return_relation_data', 'inventory_delivery_relation_data', 10, 4);
 hooks()->add_filter('tasks_table_row_data', 'inventory_delivery_add_table_row', 10, 3);
 
 //cancelled the invoice
@@ -88,19 +82,6 @@ hooks()->add_action('after_invoice_updated', 'wh_update_goods_delivery');
 
 //warehouse add customfield
 hooks()->add_action('after_custom_fields_select_options','init_warehouse_customfield');
-
-//warehouse before admin view create invoice: display available quantity
-hooks()->add_filter('before_admin_view_create_invoice', 'wh_before_admin_view_create_invoice');
-hooks()->add_filter('admin_invoice_ajax_search_item', 'wh_admin_invoice_ajax_search_item', 10, 2);
-
-//display Shipment in order detail of omnisale
-hooks()->add_action('omni_order_detail_header', 'omni_order_detail_add_button_header');
-hooks()->add_action('omni_sales_after_invoice_added', 'wh_omni_sales_after_invoice_added');
-hooks()->add_action('omni_sales_after_delivery_note_added', 'wh_omni_sales_after_delivery_note_added');
-
-//hook purchase module 
-hooks()->add_action('after_purchase_order_add', 'wh_after_purchase_order_add');
-hooks()->add_action('after_purchase_order_approve', 'wh_after_purchase_order_add');
 
 
 if(ACTIVE_PROPOSAL_OLD_CUSTOMER){
@@ -145,8 +126,8 @@ hooks()->add_filter('proposals_table_sql_columns', 'wh_proposal_table_sql_column
 hooks()->add_filter('proposals_table_filter_columns', 'wh_proposal_add_filter_column', 10, 2);
 hooks()->add_action('proposals_manage_add_input', 'wh_proposals_manage_add_input');
 hooks()->add_action('proposals_manage_add_li', 'wh_proposals_manage_add_li');
-
 }
+
 
 /**
 * Register activation module hook
@@ -214,19 +195,11 @@ function warehouse_module_init_menu_items()
         ]);
 
         $CI->app_menu->add_sidebar_children_item('warehouse', [
-            'slug'     => 'wa_manage_packing_list',
-            'name'     => _l('wh_packing_lists'),
-            'icon'     => 'fa fa-inbox',
-            'href'     => admin_url('warehouse/manage_packing_list'),
-            'position' => 4,
-        ]);
-
-        $CI->app_menu->add_sidebar_children_item('warehouse', [
             'slug'     => 'wa_manage_internal_delivery',
             'name'     => _l('internal_delivery_note'),
             'icon'     => 'fa fa-rss-square',
             'href'     => admin_url('warehouse/manage_internal_delivery'),
-            'position' => 5,
+            'position' => 3,
         ]);
         
 
@@ -235,24 +208,15 @@ function warehouse_module_init_menu_items()
             'name'     => _l('loss_adjustment'),
             'icon'     => 'fa fa-adjust',
             'href'     => admin_url('warehouse/loss_adjustment'),
-            'position' => 6,
+            'position' => 4,
         ]);
-
-        // $CI->app_menu->add_sidebar_children_item('warehouse', [
-        //     'slug'     => 'wa_manage_order_return',
-        //     'name'     => _l('wh_order_returns'),
-        //     'icon'     => 'fa fa-reply-all',
-        //     'href'     => admin_url('warehouse/manage_order_return'),
-        //     'position' => 7,
-        // ]);
-        
 
         $CI->app_menu->add_sidebar_children_item('warehouse', [
             'slug'     => 'wa_manage_warehouse',
             'name'     => _l('_warehouse'),
             'icon'     => 'fa fa-home menu-icon',
             'href'     => admin_url('warehouse/warehouse_mange'),
-            'position' => 7,
+            'position' => 4,
         ]);
 
         if(ACTIVE_PROPOSAL_OLD_CUSTOMER){
@@ -273,7 +237,7 @@ function warehouse_module_init_menu_items()
             'name'     => _l('warehouse_history'),
             'icon'     => 'fa fa-calendar menu-icon',
             'href'     => admin_url('warehouse/warehouse_history'),
-            'position' => 8,
+            'position' => 5,
         ]);
 
         $CI->app_menu->add_sidebar_children_item('warehouse', [
@@ -281,7 +245,7 @@ function warehouse_module_init_menu_items()
             'name'     => _l('report'),
             'icon'     => 'fa fa-area-chart menu-icon',
             'href'     => admin_url('warehouse/manage_report'),
-            'position' => 8,
+            'position' => 6,
         ]);
         
 
@@ -312,7 +276,6 @@ function warehouse_load_js(){
          echo '<script src="' . module_dir_url(WAREHOUSE_MODULE_NAME, 'assets/plugins/handsontable/chosen.jquery.js') . '"></script>';
          echo '<script src="' . module_dir_url(WAREHOUSE_MODULE_NAME, 'assets/plugins/handsontable/handsontable-chosen-editor.js') . '"></script>';
          echo '<script src="' . module_dir_url(WAREHOUSE_MODULE_NAME, 'assets/plugins/signature_pad.min.js') . '"></script>';
-         echo '<script src="' . module_dir_url(WAREHOUSE_MODULE_NAME, 'assets/js/deactivate_hotkey.js') . '?v=' . REVISION . '"></script>';
      }
 
     if (!(strpos($viewuri, '/admin/warehouse/setting?group=approval_setting') === false)) {
@@ -456,7 +419,7 @@ function warehouse_add_head_components(){
        
     }   
 
-    if (!(strpos($viewuri, '/admin/warehouse/setting?group=rule_sale_price') === false) || !(strpos($viewuri, '/admin/warehouse/setting') === false)) {
+    if (!(strpos($viewuri, '/admin/warehouse/setting?group=rule_sale_price') === false)) {
        echo '<link href="' . module_dir_url(WAREHOUSE_MODULE_NAME, 'assets/css/rule_sale_price.css')  .'?v=' . REVISION. '"  rel="stylesheet" type="text/css" />';
        
     }
@@ -481,19 +444,7 @@ function warehouse_add_head_components(){
     if (!(strpos($viewuri, '/admin/warehouse/import_xlsx_commodity') === false)) {
        echo '<link href="' . module_dir_url(WAREHOUSE_MODULE_NAME, 'assets/css/import_opening_stock.css')  .'?v=' . REVISION. '"  rel="stylesheet" type="text/css" />'; 
     }
-    
-    if (!(strpos($viewuri, '/admin/warehouse/goods_delivery') === false) || !(strpos($viewuri, '/admin/warehouse/manage_goods_receipt') === false)) {
-       echo '<link href="' . module_dir_url(WAREHOUSE_MODULE_NAME, 'assets/css/goods_delivery.css')  .'?v=' . REVISION. '"  rel="stylesheet" type="text/css" />'; 
-    }
      
-    if (!(strpos($viewuri, '/admin/warehouse/commodity_list') === false)) {
-       echo '<link href="' . module_dir_url(WAREHOUSE_MODULE_NAME, 'assets/css/add_opening_stock.css')  .'?v=' . REVISION. '"  rel="stylesheet" type="text/css" />'; 
-    }
-
-    if (!(strpos($viewuri, '/admin/warehouse/shipment_detail') === false)) {
-       echo '<link href="' . module_dir_url(WAREHOUSE_MODULE_NAME, 'assets/css/shipments/order_status.css')  .'?v=' . REVISION. '"  rel="stylesheet" type="text/css" />'; 
-    }
-
 
 
 }
@@ -1075,7 +1026,7 @@ function proposal_relation_data($data, $type, $rel_id, $q)
 
     if ($type == 'customer_lead') {
 
-        return   $data = $CI->warehouse_model->get_client_lead($q, $rel_id);
+        return   $data = $CI->warehouse_model->get_client_lead($rel_id, $q);
         
         
     }
@@ -1535,266 +1486,4 @@ function wh_proposals_manage_add_li()
 {
     get_instance()->load->view('warehouse/proposal/wh_proposals_manage_add_li');
 
-}
-
-/**
- * { filter items list }
- *
- * @param        $data   The data
- */
-function filter_items_list_wh($data){
-
-    $CI = &get_instance();
-    $CI->load->model('warehouse/warehouse_model');
-    
-    foreach($data as $group_id => $items){
-        foreach($items as $key => $item){
-            if($item['parent_id'] == 0 || $item['parent_id'] == null || $item['parent_id'] == ''){
-                $child_items = $CI->warehouse_model->get_product_by_parent_id($item['id']);
-                if(count($child_items) > 0){
-                    unset($data[$group_id][$key]);
-                }
-            }
-        }
-    }
-
-    return $data;
-}
-
-/**
- * inventory received task modal rel type select
- * @param  object $value
- * @return string
- */
-function inventory_received_task_modal_rel_type_select($value) {
-    $selected = '';
-    if (isset($value) && isset($value['rel_type']) && $value['rel_type'] == 'stock_import') {
-        $selected = 'selected';
-    }
-    echo "<option value='stock_import' " . $selected . ">" .
-    _l('stock_import') . "
-                           </option>";
-
-}
-
-/**
- * inventory received get relation values description
- * @param  object $values
- * @param  object $relation
- * @return
- */
-function inventory_received_get_relation_values($values, $relation = null) {
-    if ($values['type'] == 'stock_import') {
-        if (is_array($relation)) {
-            $values['id'] = $relation['id'];
-            $values['name'] = $relation['goods_receipt_code'];
-        } else {
-            $values['id'] = $relation->id;
-            $values['name'] = $relation->goods_receipt_code;
-        }
-        $values['link'] = admin_url('warehouse/manage_purchase/' . $values['id']);
-    }
-
-    return $values;
-}
-
-/**
- * inventory received get relation data
- * @param  object $data
- * @param  object $obj
- * @return
- */
-function inventory_received_get_relation_data($data, $obj) {
-    $type = $obj['type'];
-    $rel_id = $obj['rel_id'];
-    $CI = &get_instance();
-    $CI->load->model('warehouse/warehouse_model');
-
-    if ($type == 'stock_import') {
-        if ($rel_id != '') {
-            $data = $CI->warehouse_model->get_goods_receipt($rel_id);
-        } else {
-            $data = [];
-        }
-    }
-
-    return $data;
-}
-
-/**
- * inventory delivery task modal rel type select
- * @param  object $value
- * @return string
- */
-function inventory_delivery_task_modal_rel_type_select($value) {
-    $selected = '';
-    if (isset($value) && isset($value['rel_type']) && $value['rel_type'] == 'stock_export') {
-        $selected = 'selected';
-    }
-    echo "<option value='stock_export' " . $selected . ">" .
-    _l('stock_export') . "
-                           </option>";
-
-}
-
-/**
- * inventory delivery get relation values description
- * @param  object $values
- * @param  object $relation
- * @return
- */
-function inventory_delivery_get_relation_values($values, $relation = null) {
-    if ($values['type'] == 'stock_export') {
-        if (is_array($relation)) {
-            $values['id'] = $relation['id'];
-            $values['name'] = $relation['goods_delivery_code'];
-        } else {
-            $values['id'] = $relation->id;
-            $values['name'] = $relation->goods_delivery_code;
-        }
-        $values['link'] = admin_url('warehouse/manage_delivery/' . $values['id']);
-    }
-
-    return $values;
-}
-
-/**
- * inventory delivery get relation data
- * @param  object $data
- * @param  object $obj
- * @return
- */
-function inventory_delivery_get_relation_data($data, $obj) {
-
-    $type = $obj['type'];
-    $rel_id = $obj['rel_id'];
-    $CI = &get_instance();
-    $CI->load->model('warehouse/warehouse_model');
-
-    if ($type == 'stock_export') {
-        if ($rel_id != '') {
-            $data = $CI->warehouse_model->get_goods_delivery($rel_id);
-        } else {
-            $data = [];
-        }
-    }
-    return $data;
-}
-
-/**
- * wh before admin view create invoice
- * @param  [type] $items 
- * @return [type]        
- */
-function wh_before_admin_view_create_invoice($items) {
-    if(count($items) > 0){
-        $CI = &get_instance();
-        $CI->load->model('warehouse/warehouse_model');
-        $items = $CI->warehouse_model->wh_get_grouped('can_be_sold');
-        return $items;
-    }
-    return $items;
-}
-
-/**
- * wh admin invoice ajax search item
- * @param  [type] $data 
- * @return [type]       
- */
-function wh_admin_invoice_ajax_search_item($data, $search) {
-    $CI = &get_instance();
-    $CI->load->model('warehouse/warehouse_model');
-    $data = $CI->warehouse_model->wh_commodity_code_search($search, 'rate', 'can_be_sold');
-    return $data;
-}
-
-/**
- * omni order detail add button header
- * @param  [type] $order 
- * @return [type]        
- */
-function omni_order_detail_add_button_header($order){
-    if(get_status_modules_wh('omni_sales')){
-    //check status
-        $CI = &get_instance();
-        $CI->load->model('omni_sales/omni_sales_model');
-        $CI->load->model('warehouse/warehouse_model');
-        $cart = $CI->omni_sales_model->get_cart($order->id);
-        $shipment = $CI->warehouse_model->get_shipment_by_order($order->id);
-        if(($cart && $cart->status > 0) || isset($shipment)){
-            if(isset($shipment)){
-                echo '<a href="'.admin_url('warehouse/shipment_detail/' .$order->id).'" class="btn btn-primary mleft5 pull-right"  data-toggle="tooltip" data-title="'._l('wh_shipment_tooltip').'">'._l('wh_shipment').'</a>';
-            }
-        }
-    }
-}
-
-/**
- * wh omni sales after invoice added
- * @param  [type] $order_id 
- * @return [type]           
- */
-function wh_omni_sales_after_invoice_added($order_id)
-{
-    if(is_numeric($order_id)){
-        $CI = &get_instance();
-        $CI->load->model('warehouse/warehouse_model');
-
-        //create shipment info from order
-        $CI->warehouse_model->create_shipment_from_order($order_id);
-    }
-    return true;
-}
-
-/**
- * wh omni sales after delivery note added
- * @param  [type] $order_id 
- * @return [type]           
- */
-function wh_omni_sales_after_delivery_note_added($order_id)
-{
-    if($order_id){
-        $CI = &get_instance();
-        $CI->load->model('warehouse/warehouse_model');
-        $shipment = $CI->warehouse_model->get_shipment_by_order($order_id);
-        $shipment_id = 0;
-
-        if($shipment){
-            $shipment_id = $shipment->id;
-            $shipment_log = _l('inventory_delivery_voucher_have_been_created');
-            $CI->warehouse_model->log_wh_activity($shipment->id, 'shipment', $shipment_log);
-        }else{
-            $shipment_id = $CI->warehouse_model->create_shipment_from_order($order_id);
-            if(is_numeric($shipment_id)){
-                $shipment_log = _l('inventory_delivery_voucher_have_been_created');
-                $CI->warehouse_model->log_wh_activity($shipment_id, 'shipment', $shipment_log);
-            }
-        }
-
-        $CI->warehouse_model->update_shipment_status($shipment_id, ['shipment_status' => 'processing_order']);
-    }
-    return true;
-}
-
-/**
- * wh after purchase order add
- * @param  [type] $purchase_order_id 
- * @return [type]                    
- */
-function wh_after_purchase_order_add($purchase_order_id)
-{
-    if(get_status_modules_wh('purchase')){
-        $CI = &get_instance();
-        $CI->load->model('purchase/purchase_model');
-        $pur_order = $CI->purchase_model->get_pur_order($purchase_order_id);
-
-        if(isset($pur_order) && (int)$pur_order->approve_status == 2 && (get_warehouse_option('auto_create_goods_received') == 1) && (get_warehouse_option('goods_receipt_warehouse') != '') && (get_warehouse_option('goods_receipt_warehouse') != '0')){
-            //purchase order is approval
-            $CI = &get_instance();
-            $CI->load->model('warehouse/warehouse_model');
-
-            $CI->warehouse_model->auto_create_goods_receipt_with_purchase_order(['id' => $purchase_order_id]);
-        }
-        return true;
-    }
 }

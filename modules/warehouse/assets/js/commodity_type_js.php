@@ -51,19 +51,12 @@ var commodity_type_value = {};
           allowRemoveRow: true,
           columnHeaderHeight: 40,
 
-          colWidths: [40, 40, 100, 30, 30, 140],
+          colWidths: [40, 100, 30, 30, 140],
           rowHeights: 30,
           rowHeaderWidth: [44],
-          hiddenColumns: {
-            columns: [0],
-            indicators: true
-          },
+
 
           columns: [
-                      {
-                        type: 'text',
-                        data: 'commodity_type_id'
-                      },
                       {
                         type: 'text',
                         data: 'commondity_code'
@@ -92,13 +85,11 @@ var commodity_type_value = {};
 
 
           colHeaders: true,
-          nestedHeaders: [{
-                          "1":"<?php echo _l('commodity_type_id') ?>",
-                          "2":"<?php echo _l('commodity_type_code') ?>",
-                          "3":"<?php echo _l('commodity_type_name') ?>",
-                          "4":"<?php echo _l('order') ?>",
-                          "5":"<?php echo _l('display') ?>",
-                          "6":"<?php echo _l('note') ?>",
+          nestedHeaders: [{"1":"<?php echo _l('commodity_type_code') ?>",
+                            "2":"<?php echo _l('commodity_type_name') ?>",
+                            "3":"<?php echo _l('order') ?>",
+                           "4":"<?php echo _l('display') ?>",
+                           "5":"<?php echo _l('note') ?>",
                           }],
 
           data: [
@@ -175,20 +166,12 @@ var commodity_type_value = {};
         manualRowResize: true,
         manualColumnResize: true,
         columnHeaderHeight: 40,
-        colWidths: [40, 40, 100, 30, 30, 140],
+        colWidths: [40, 100, 30, 30, 140],
         rowHeights: 30,
 
         rowHeaderWidth: [44],
-        hiddenColumns: {
-          columns: [0],
-          indicators: true
-        },
 
         columns: [
-                    {
-                      type: 'text',
-                      data: 'commodity_type_id'
-                    },
                     {
                       type: 'text',
                       data: 'commondity_code',
@@ -218,16 +201,14 @@ var commodity_type_value = {};
                   ],
 
         colHeaders: true,
-        nestedHeaders: [{
-                          "1":"<?php echo _l('commodity_type_id') ?>",
-                          "2":"<?php echo _l('commodity_type_code') ?>",
-                          "3":"<?php echo _l('commodity_type_name') ?>",
-                          "4":"<?php echo _l('order') ?>",
-                          "5":"<?php echo _l('display') ?>",
-                          "6":"<?php echo _l('note') ?>",
+        nestedHeaders: [{"1":"<?php echo _l('commodity_type_code') ?>",
+                      "2":"<?php echo _l('commodity_type_name') ?>",
+                      "3":"<?php echo _l('order') ?>",
+                      "4":"<?php echo _l('display') ?>",
+                      "5":"<?php echo _l('note') ?>",
                     }], 
 
-        data: [{"commodity_type_id":id,"commondity_code":commondity_code,"commondity_name":commondity_name,"order":order,"display":display,"note":note}],
+        data: [{"commondity_code":commondity_code,"commondity_name":commondity_name,"order":order,"display":display,"note":note}],
 
       });
        commodity_type_value = commodity_type;
@@ -244,7 +225,7 @@ var commodity_type_value = {};
         
       }else{
 
-        $('input[name="hot_commodity_type"]').val(JSON.stringify(commodity_type_value.getData()));
+        $('input[name="hot_commodity_type"]').val(commodity_type_value.getData());
         $('#add_commodity_type').submit(); 
 
       }

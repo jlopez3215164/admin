@@ -76,7 +76,7 @@
 }
 
 .card .card-block {
-    padding: 20px;
+    padding: 25px;
 }
 
 .order-card i {
@@ -104,12 +104,3 @@ select.selectpicker.form-control {
   display: block !important;
   }
 
-  table.table{
-    margin-top: 10px;
-  }
-
-.table{
-        width: 100%;
-    max-width: 100%;
-    margin-bottom: 10px;
-}

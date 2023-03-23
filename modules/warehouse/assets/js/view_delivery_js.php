@@ -14,12 +14,7 @@ var croppedCtx;
     data_send_mail.rel_type = '2';
    
     data_send_mail.addedfrom = <?php echo html_entity_decode($goods_delivery->addedfrom); ?>;
-
-    $.get(admin_url+'warehouse/send_mail', data_send_mail).done(function(response){
-      response = JSON.parse(response);
-
-    }).fail(function(error) {
-
+    $.post(admin_url+'warehouse/send_mail', data_send_mail).done(function(response){
     });
   <?php } ?>
 
@@ -134,25 +129,13 @@ var croppedCtx;
       }
     });
     signaturePad.clear();
-    $('input[name="signature"]').val('');
     
   }
-  
+
   function sign_request(id){
     "use strict";
-    var signature_val = $('input[name="signature"]').val();
-    if(signature_val.length > 0){
-      change_request_approval_status(id,1, true);
-      $('.sign_request_class').prop('disabled', true);
-      $('.sign_request_class').html('<?php echo _l('wait_text'); ?>');
-      $('.clear').prop('disabled', true);
-    }else{
-      alert_float('warning', '<?php echo _l('please_sign_the_form'); ?>');
-      $('.sign_request_class').prop('disabled', false);
-      $('.clear').prop('disabled', false);
-    }
+    change_request_approval_status(id,1, true);
   }
-
   function approve_request(id){
     "use strict";
     change_request_approval_status(id,1);
@@ -261,43 +244,6 @@ function accept_action() {
 
   $('#send_goods_delivery').modal('show');
  }
-
-  // Manually add goods delivery activity
-    $("#wh_enter_activity").on('click', function() {
-      "use strict"; 
-
-        var message = $('#wh_activity_textarea').val();
-        var goods_delivery_id = $('input[name="_attachment_sale_id"]').val();
-
-        if (message === '') { return; }
-        $.post(admin_url + 'warehouse/wh_add_activity', {
-            goods_delivery_id: goods_delivery_id,
-            activity: message,
-            rel_type: 'delivery',
-        }).done(function(response) {
-            response = JSON.parse(response);
-            if(response.status == true){
-              alert_float('success', response.message);
-              init_goods_delivery(goods_delivery_id)
-            }else{
-              alert_float('danger', response.message);
-            }
-        }).fail(function(data) {
-            alert_float('danger', data.message);
-        });
-    });
-
-function delete_wh_activitylog(wrapper, id) {
-      "use strict"; 
-
-    if (confirm_delete()) {
-        requestGetJSON('warehouse/delete_activitylog/' + id).done(function(response) {
-            if (response.success === true || response.success == 'true') { $(wrapper).parents('.feed-item').remove(); }
-        }).fail(function(data) {
-            alert_float('danger', data.responseText);
-        });
-    }
-}
 
 
 

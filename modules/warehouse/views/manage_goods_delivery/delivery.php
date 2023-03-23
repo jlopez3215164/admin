@@ -7,34 +7,34 @@
       <div class="row">
          <div class="col-md-12" id="small-table">
             <div class="panel_s">
-                  <?php echo form_open_multipart(admin_url('warehouse/goods_delivery'), array('id'=>'add_goods_delivery')); ?>
                <div class="panel-body">
 
                   <div class="row">
                      <div class="col-md-12">
-                      <h4 class="no-margin font-bold "><i class="fa fa-object-ungroup menu-icon" aria-hidden="true"></i> <?php echo _l($title); ?></h4>
-                      <hr>
+                      <h4 class="no-margin font-bold h4-color"><i class="fa fa-clone menu-icon menu-icon" aria-hidden="true"></i> <?php echo _l($title); ?></h4>
+                      <hr class="hr-color">
                     </div>
                   </div>
 
+                  <?php echo form_open_multipart(admin_url('warehouse/goods_delivery'), array('id'=>'add_goods_delivery')); ?>
                     <?php 
                     $id = '';
-                    $additional_discount = 0;
                     if(isset($goods_delivery)){
                       $id = $goods_delivery->id;
-                      echo form_hidden('isedit');
-                      $additional_discount = $goods_delivery->additional_discount;
                     }
                    ?>
                 <input type="hidden" name="id" value="<?php echo html_entity_decode($id); ?>">
+
                 <input type="hidden" name="edit_approval" value="<?php echo html_entity_decode($edit_approval); ?>">
+
                 <input type="hidden" name="save_and_send_request" value="false">
-                <input type="hidden" name="additional_discount" value="<?php echo html_entity_decode($additional_discount); ?>">
 
                 <!-- start -->
                 <div class="row" >
                   <div class="col-md-12">
-                     <div class="row">
+                     <div class="panel panel-primary">
+                      <div class="panel-heading"><?php echo _l('general_infor') ?></div>
+                      <div class="panel-body">
 
                         <div class="col-md-6">
                           <?php $goods_delivery_code = isset($goods_delivery)? $goods_delivery->goods_delivery_code: (isset($goods_code) ? $goods_code : '');?>
@@ -82,7 +82,7 @@
                           </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-6">
 
                           <div class="form-group">
                           <label for="customer_code"><?php echo _l('customer_name'); ?></label>
@@ -97,7 +97,7 @@
                         </div>
 
 
-                      <div class=" col-md-3">
+                      <div class=" col-md-6">
                           <?php $to = (isset($goods_delivery) ? $goods_delivery->to_ : '');
                           echo render_input('to_','receiver',$to, '',$disabled) ?>
                       </div>
@@ -108,7 +108,7 @@
 
                   <?php if(ACTIVE_PROPOSAL == true){ ?>
 
-                    <div class="col-md-3 form-group <?php if($pr_orders_status == false){ echo 'hide';} ;?>" >
+                    <div class="col-md-6 form-group <?php if($pr_orders_status == false){ echo 'hide';} ;?>" >
                       <label for="project"><?php echo _l('project'); ?></label>
                         <select name="project" id="project" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
                           <option value=""></option>
@@ -121,7 +121,7 @@
                         </select>
                     </div>
 
-                    <div class="col-md-3 form-group <?php if($pr_orders_status == false){ echo 'hide';} ;?>" >
+                    <div class="col-md-6 form-group <?php if($pr_orders_status == false){ echo 'hide';} ;?>" >
                       <label for="type"><?php echo _l('type_label'); ?></label>
                         <select name="type" id="type" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
                           <option value=""></option>
@@ -130,7 +130,7 @@
                         </select>
                     </div>
 
-                    <div class="col-md-3 form-group <?php if($pr_orders_status == false){ echo 'hide';} ;?>" >
+                    <div class="col-md-6 form-group <?php if($pr_orders_status == false){ echo 'hide';} ;?>" >
                       <label for="department"><?php echo _l('department'); ?></label>
                         <select name="department" id="department" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
                           <option value=""></option>
@@ -144,7 +144,7 @@
                         </select>
                     </div>
 
-                    <div class="col-md-3 form-group <?php if($pr_orders_status == false){ echo 'hide';} ;?>" >
+                    <div class="col-md-6 form-group <?php if($pr_orders_status == false){ echo 'hide';} ;?>" >
                       <label for="requester"><?php echo _l('requester'); ?></label>
                         <select name="requester" id="requester" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('ticket_settings_none_assigned'); ?>">
                           <option value=""></option>
@@ -161,7 +161,7 @@
 
                   <?php } ?>
 
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                       <a href="#" class="pull-right display-block input_method"><i class="fa fa-question-circle skucode-tooltip"  data-toggle="tooltip" title="" data-original-title="<?php echo _l('goods_delivery_warehouse_tooltip'); ?>"></i></a>
 
                       <div class="form-group">
@@ -179,7 +179,7 @@
 
                     
                      
-                      <div class=" col-md-3">
+                      <div class=" col-md-6">
                         <div class="form-group">
                           <label for="staff_id" class="control-label"><?php echo _l('salesman'); ?></label>
                             <select name="staff_id" class="selectpicker" id="staff_id" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>" <?php if($edit_approval == 'true'){ echo 'disabled';} ; ?>> 
@@ -193,36 +193,28 @@
                       </div>
 
                  
-                    <div class="col-md-3 form-group" >
+                    <div class="col-md-6 form-group" >
                       <?php $invoice_no = (isset($goods_delivery) ? $goods_delivery->invoice_no : '');
                           echo render_input('invoice_no','invoice_no',$invoice_no, '',$disabled) ?>
 
                     </div>
 
+                      <div class=" col-md-12">
+                          <?php $description = (isset($goods_delivery) ? $goods_delivery->description : '');
+                          echo render_textarea('description','note_',$description) ?>
+                      </div>
+
+
+                      </div>
+                    </div>
                   </div>
 
                   
                   </div>
                     
                     <!-- start  -->
-                   <!--  <div class="col-md-12 ">
-                      
-                        <div class="row <?php if(isset($goods_delivery)){ echo " hide" ;} ?>">
-                        <div class="col-md-12">
-                          <div class="col-md-1">
-                            <div class="onoffswitch">
-                              <input type="checkbox"  name="onoffswitch" class="onoffswitch-checkbox" id="switch_barcode_scanners">
-                              <label class="onoffswitch-label" for="switch_barcode_scanners"></label>
-                            </div>
-                          </div>
-                          <div class="col-md-11">
-                            <span>
-                            <?php echo _l('get_item_via_barcode_scanners'); ?>
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
+                    <div class="col-md-12 ">
+                        <h5 class="no-margin font-bold h4-color" ><i class="fa fa-clone menu-icon menu-icon" aria-hidden="true"></i> <?php echo _l('stock_export_detail'); ?></h5>
                         <hr class="hr-color">
 
                           <div class="panel-body ">
@@ -233,7 +225,7 @@
                              <ul class="nav nav-tabs nav-tabs-horizontal mbot15" role="tablist">
                                <li role="presentation" class="active">
                                    <a href="#commodity" aria-controls="commodity" role="tab" data-toggle="tab" aria-controls="commodity" id="ac_commodity">
-                                   <span class="glyphicon glyphicon-align-justify"></span>&nbsp;<?php echo _l('stock_export_detail'); ?>
+                                   <span class="glyphicon glyphicon-align-justify"></span>&nbsp;<?php echo _l('commodity'); ?>
                                    </a>
                                 </li>
                               </ul>
@@ -276,12 +268,7 @@
 
                                        </tr>
                                        <tr class="project-overview">
-                                        <?php
-                                        $after_discount = isset($goods_delivery) ?  $goods_delivery->after_discount : 0 ;
-                                        if(isset($goods_delivery) && $goods_delivery->after_discount == null){
-                                          $after_discount = $goods_delivery->total_money;
-                                        }
-                                        ?>
+                                        <?php $after_discount = (isset($goods_delivery) ? $goods_delivery->after_discount : ''); ?>
                                           <td ><?php echo render_input('after_discount','total_money', app_format_money((float)$after_discount,''),'',array('disabled' => 'true')) ?>
                                             <?php echo form_hidden('after_discount', $after_discount ); ?>
                                             
@@ -297,10 +284,10 @@
 
                           </div>
 
-                          </div> -->
+                          </div>
 
                   <hr>
-                 <!-- <div class="modal-footer">
+                 <div class="modal-footer">
                   
                   <?php if (is_admin() || has_permission('warehouse', '', 'edit') || has_permission('warehouse', '', 'create')) { ?>
 
@@ -319,115 +306,21 @@
                     <a href="<?php echo admin_url('warehouse/manage_delivery'); ?>"class="btn btn-default pull-right mright10 display-block"><?php echo _l('close'); ?></a>
 
 
-                </div> -->
+                </div>
 
                      
                       </div>
 
                     </div>
-
-                    <div class="panel-body mtop10 invoice-item">
-                      <div class="row">
-                        <div class="col-md-4">
-                          <?php $this->load->view('warehouse/item_include/main_item_select'); ?>
-                        </div>
-                      </div>
-
-                      <div class="table-responsive s_table ">
-                        <table class="table invoice-items-table items table-main-invoice-edit has-calculations no-mtop">
-                          <thead>
-                            <tr>
-                              <th></th>
-                              <th width="20%" align="left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_description_new_lines_notice'); ?>"></i> <?php echo _l('invoice_table_item_heading'); ?></th>
-                              <th width="15%" align="left"><?php echo _l('warehouse_name'); ?></th>
-                              <th width="10%" align="right" class="available_quantity"><?php echo _l('available_quantity'); ?></th>
-                              <th width="10%" align="right" class="qty"><?php echo _l('quantity'); ?></th>
-                              <th width="10%" align="right"><?php echo _l('rate'); ?></th>
-                              <th width="12%" align="right"><?php echo _l('invoice_table_tax_heading'); ?></th>
-                              <th width="10%" align="right"><?php echo _l('subtotal'); ?></th>
-                              <th width="7%" align="right"><?php echo _l('discount'); ?></th>
-                              <th width="10%" align="right"><?php echo _l('discount(money)'); ?></th>
-                              <th width="10%" align="right"><?php echo _l('total_money'); ?></th>
-                              <!-- <th width="10%" align="right"><?php echo _l('invoice_table_amount_heading'); ?></th> -->
-
-                              <th align="center"><i class="fa fa-cog"></i></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <?php echo $goods_delivery_row_template; ?>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div class="col-md-8 col-md-offset-4">
-                        <table class="table text-right">
-                          <tbody>
-                            <tr id="subtotal">
-                              <td><span class="bold"><?php echo _l('subtotal'); ?> :</span>
-                              </td>
-                              <td class="wh-subtotal">
-                              </td>
-                            </tr>
-                            <tr id="total_discount">
-                              <td><span class="bold"><?php echo _l('total_discount'); ?> :</span>
-                              </td>
-                              <td class="wh-total_discount">
-                              </td>
-                            </tr>
-                            
-                            <tr id="totalmoney">
-                              <td><span class="bold"><?php echo _l('total_money'); ?> :</span>
-                              </td>
-                              <td class="wh-total">
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div id="removed-items"></div>
-                    </div>
-
-
-                    <div class="row">
-                      <div class="col-md-12 mtop15">
-                       <div class="panel-body bottom-transaction">
-
-                        <?php $description = (isset($goods_delivery) ? $goods_delivery->description : ''); ?>
-                        <?php echo render_textarea('description','note_',$description,array(),array(),'mtop15'); ?>
-
-
-                        <div class="btn-bottom-toolbar text-right">
-                          <a href="<?php echo admin_url('warehouse/manage_delivery'); ?>"class="btn btn-default text-right mright5"><?php echo _l('close'); ?></a>
-
-                          <?php if(wh_check_approval_setting('2') != false) { ?>
-                            <?php if(isset($goods_delivery) && $goods_delivery->approval != 1){ ?>
-                              <a href="javascript:void(0)"class="btn btn-info pull-right mright5 add_goods_delivery_send" ><?php echo _l('save_send_request'); ?></a>
-                            <?php }elseif(!isset($goods_delivery)){ ?>
-                              <a href="javascript:void(0)"class="btn btn-info pull-right mright5 add_goods_delivery_send" ><?php echo _l('save_send_request'); ?></a>
-                            <?php } ?>
-                          <?php } ?>
-
-                          <?php if (is_admin() || has_permission('warehouse', '', 'edit') || has_permission('warehouse', '', 'create')) { ?>
-                            <?php if(isset($goods_delivery) && $goods_delivery->approval == 0){ ?>
-                              <a href="javascript:void(0)"class="btn btn-info pull-right mright5 add_goods_delivery" ><?php echo _l('save'); ?></a>
-                            <?php }elseif(!isset($goods_delivery)){ ?>
-                              <a href="javascript:void(0)"class="btn btn-info pull-right mright5 add_goods_delivery" ><?php echo _l('save'); ?></a>
-                            <?php } ?>
-                          <?php } ?>
-
-                        </div>
-                      </div>
-                      <div class="btn-bottom-pusher"></div>
-                    </div>
-                  </div>
                    
 
                   </div>
                
 
 
+                  <?php echo form_close(); ?>
 
                </div>
-                  <?php echo form_close(); ?>
             </div>
           </div>
       </div>

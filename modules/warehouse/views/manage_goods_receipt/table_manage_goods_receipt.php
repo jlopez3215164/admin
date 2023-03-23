@@ -26,7 +26,7 @@ if($this->ci->input->post('day_vouchers')){
 
 if (isset($day_vouchers)) {
 
-    $where[] = 'AND tblgoods_receipt.date_add <= "' . $day_vouchers . '"';
+    $where[] = ' AND tblgoods_receipt.date_add <= "' . $day_vouchers . '"';
     
 }
 
@@ -75,12 +75,12 @@ foreach ($rResult as $aRow) {
             }
 
             if ((has_permission('warehouse', '', 'delete') || is_admin()) && ($aRow['approval'] == 0)) {
-                $name .= ' | <a href="' . admin_url('warehouse/delete_goods_receipt/' . $aRow['id'] ).'" class="text-danger _delete" >' . _l('delete') . '</a>';
+                $name .= ' | <a href="' . admin_url('warehouse/delete_goods_receipt/' . $aRow['id'] ).'" class="text-danger" >' . _l('delete') . '</a>';
             }
 
             if(get_warehouse_option('revert_goods_receipt_goods_delivery') == 1 ){
                 if ((has_permission('warehouse', '', 'delete') || is_admin()) && ($aRow['approval'] == 1)) {
-                    $name .= ' | <a href="' . admin_url('warehouse/revert_goods_receipt/' . $aRow['id'] ).'" class="text-danger _delete" >' . _l('delete_after_approval') . '</a>';
+                    $name .= ' | <a href="' . admin_url('warehouse/revert_goods_receipt/' . $aRow['id'] ).'" class="text-danger" >' . _l('delete_after_approval') . '</a>';
                 }
             }
             
