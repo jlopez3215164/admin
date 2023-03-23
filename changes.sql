@@ -44,3 +44,15 @@ CREATE TABLE `tbl_orion_pos` (
   `date` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- orion_zeus.tbl_orion_pos_detail_sale definition
+
+CREATE TABLE `tbl_orion_pos_detail_sale` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `order_product_id` bigint unsigned DEFAULT NULL,
+  `quantity` decimal(18,4) DEFAULT NULL,
+  `price` decimal(18,4) DEFAULT NULL,
+  `cost` decimal(18,4) DEFAULT NULL,
+  `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
