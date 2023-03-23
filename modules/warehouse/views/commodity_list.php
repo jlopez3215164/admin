@@ -303,6 +303,7 @@
                                           _l('group_name'),
                                           _l('warehouse_name'),
                                           _l('tags'),
+                                          "Total Vendido",
                                           _l('inventory_number'),
                                           _l('unit_name'),
                                           _l('rate'),
@@ -312,7 +313,8 @@
                                           _l('status'),                         
                                           _l('minimum_stock'),                         
                                           _l('maximum_stock'),
-                                          _l('final_price'),                         
+                                          _l('final_price'),   
+                                                               
                                         );
 
                       $cf = get_custom_fields('items',array('show_on_table'=>1));

@@ -15,6 +15,7 @@ $aColumns = [
 	db_prefix() . 'items_groups.name as group_name',
 	db_prefix() . 'items.warehouse_id',
 	'(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'items.id and rel_type="item_tags" ORDER by tag_order ASC) as tags',
+	db_prefix() . 'items.total_sale_inventory',
 	'commodity_barcode',
 	'unit_id',
 	'rate',
@@ -325,6 +326,10 @@ $item_have_variation = $this->ci->warehouse_model->arr_item_have_variation();
 				}
 
 
+			}elseif($aColumns[$i] == 'total_sale_inventory') {
+				//final price: price*Vat
+				$_data = '<span class="tag text-danger">'.app_format_money((float)$aRow['total_sale_inventory'], '').'</span>';
+				
 			}elseif($aColumns[$i] == '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'items.id and rel_type="item_tags" ORDER by tag_order ASC) as tags'){
 				
 				$_data = render_tags($aRow['tags']);
