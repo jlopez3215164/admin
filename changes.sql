@@ -20,6 +20,16 @@ ALTER TABLE
 ADD
     COLUMN date_price DATETIME;
 
+ALTER TABLE
+    tblitems
+ADD
+    COLUMN total_sale_inventory NUMERIC(18,4);
+
+ALTER TABLE
+    tblitems
+ADD
+    COLUMN total_sale_price NUMERIC(18,4);
+
     -- orion_zeus.tbl_orion_pos_products definition
 
 CREATE TABLE `tbl_orion_pos_products` (
