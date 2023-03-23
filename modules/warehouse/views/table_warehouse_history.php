@@ -18,7 +18,7 @@ $aColumns = [
     '((quantity + old_quantity) - old_quantity) as mov',
     '(((quantity + old_quantity) - old_quantity)/old_quantity) * 100 as rendi',
     '(1-(((quantity + old_quantity) - old_quantity)/old_quantity)) * 100 as merma',
-    '(select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1) as costo',
+    'if((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1) != 0, (select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1), (select purchase_price from tblitems where id = tblgoods_transaction_detail.commodity_id)) as costo',
     '(((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.goods_receipt_id = tblgoods_transaction_detail.goods_receipt_id order by tblgoods_receipt_detail.id desc limit 1)/((((quantity + old_quantity) - old_quantity)/old_quantity) * 100)) * ((quantity + old_quantity) - old_quantity) ) as price_sug',
     '((select unit_price from tblgoods_receipt_detail where tblgoods_receipt_detail.commodity_code = tblgoods_transaction_detail.commodity_id order by tblgoods_receipt_detail.id desc limit 1)  * ((quantity + old_quantity) - old_quantity)) as price_sug_2',
     '(select profif_ratio from tblitems where id = tblgoods_transaction_detail.commodity_id) as gain',
