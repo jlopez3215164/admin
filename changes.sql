@@ -37,8 +37,10 @@ CREATE TABLE `tbl_orion_pos_products` (
   `admin_id` bigint unsigned DEFAULT NULL,
   `pos_id` bigint unsigned DEFAULT NULL,
   `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `orion_pos_id` bigint unsigned DEFAULT NULL,
+  `pos_id_variant` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- orion_zeus.tbl_orion_pos definition
 
