@@ -6182,6 +6182,10 @@ function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
 
         table_row += '<td class="rate"><input type="number" data-toggle="tooltip" title="' + app.lang.item_field_not_formatted + '" onblur="calculate_total();" onchange="calculate_total();" name="newitems[' + item_key + '][rate]" value="' + data.rate + '" class="form-control"></td>';
 
+        table_row += '<td class="taxrate">' + localStorage.getItem('tasaActiva') + '</td>';
+
+        table_row += '<td class="taxrate">' + localStorage.getItem('memberActive') + '</td>';
+        
         table_row += '<td class="taxrate">' + tax_dropdown + '</td>';
 
         table_row += '<td class="amount" align="right">' + format_money(amount, true) + '</td>';
@@ -6245,6 +6249,9 @@ function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
 
         $('select[name="task_select"]').find('[value="' + billed_task +'"]').remove();
         $('select[name="task_select"]').selectpicker('refresh');
+
+        localStorage.setItem('tasaActiva', '');
+        localStorage.setItem('memberActive', '');
 
         return true;
 

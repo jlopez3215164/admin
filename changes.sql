@@ -71,3 +71,5 @@ CREATE TABLE `tbl_orion_pos_detail_sale` (
   `orion_pos_id` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE tbl_orion_pos_products ADD price_from_pos int NULL;
