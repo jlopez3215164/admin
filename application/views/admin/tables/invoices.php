@@ -6,6 +6,10 @@ $project_id = $this->ci->input->post('project_id');
 
 $aColumns = [
     'number',
+    '(SELECT CONCAT(firstname, " ", lastname) FROM tblstaff WHERE staffid = '. db_prefix() . 'invoices.sale_agent) sale_agent_name',
+    '(select sum(amount) from tblinvoicepaymentrecords where invoiceid = ' . db_prefix() .'invoices.id) as total_payment',
+    '(total - (select sum(amount) from tblinvoicepaymentrecords where invoiceid = ' . db_prefix() .'invoices.id)) as total_restante',
+    'subtotal',
     'total',
     'total_tax',
     'YEAR(date) as year',
@@ -154,7 +158,15 @@ foreach ($rResult as $aRow) {
 
     $row[] = $numberOutput;
 
+    $row[] = $aRow['sale_agent_name'];
+
+    $row[] = '<label style="color:green;">'.app_format_money($aRow['total_payment'], $aRow['currency_name']).'</label>';
+
+    $row[] = '<label style="color:red;">'.app_format_money($aRow['total_restante'], $aRow['currency_name']).'</label>';
+
     $row[] = app_format_money($aRow['total'], $aRow['currency_name']);
+
+    $row[] = app_format_money($aRow['subtotal'], $aRow['currency_name']);
 
     $row[] = app_format_money($aRow['total_tax'], $aRow['currency_name']);
 
