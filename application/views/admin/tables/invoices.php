@@ -6,7 +6,7 @@ $project_id = $this->ci->input->post('project_id');
 
 $aColumns = [
     'number',
-    '(SELECT CONCAT(firstname, " ", lastname) FROM tblstaff WHERE staffid = '. db_prefix() . 'invoices.sale_agent) sale_agent_name',
+    '(SELECT CONCAT(firstname, " ", lastname) FROM tblstaff WHERE staffid = '. db_prefix() . 'invoices.sale_agent) as sale_agent_name',
     '(select sum(amount) from tblinvoicepaymentrecords where invoiceid = ' . db_prefix() .'invoices.id) as total_payment',
     '(total - (select sum(amount) from tblinvoicepaymentrecords where invoiceid = ' . db_prefix() .'invoices.id)) as total_restante',
     'subtotal',
