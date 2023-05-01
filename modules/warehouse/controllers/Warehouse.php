@@ -570,6 +570,7 @@ class warehouse extends AdminController {
 		$data['styles'] = $this->warehouse_model->get_style_add_commodity();
 		$data['models'] = $this->warehouse_model->get_body_add_commodity();
 		$data['sizes'] = $this->warehouse_model->get_size_add_commodity();
+		$data['point_of_sales'] = $this->warehouse_model->get_point_of_sale_actives();
 		//filter
 		$data['warehouse_filter'] = $this->warehouse_model->get_warehouse();
 		// $data['commodity_filter'] = $this->warehouse_model->get_commodity_active();

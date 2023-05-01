@@ -403,6 +403,17 @@ class Warehouse_model extends App_Model {
 
 	}
 
+
+	/**
+	 * get puntos de venta activos
+	 * @return array
+	 */
+	public function get_point_of_sale_actives() {
+
+		return $this->db->query('select * from tbl_orion_pos where status = 1')->result_array();
+
+	}
+
 	/**
 	 * delete size type
 	 * @param  integer $id

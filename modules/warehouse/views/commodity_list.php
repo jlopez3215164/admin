@@ -434,6 +434,12 @@
                        </a>
                     </li>
                     
+
+                    <li role="presentation">
+                       <a href="#synch_product_pos" aria-controls="custom_fields" role="tab" data-toggle="tab" aria-controls="custom_fields">
+                       <i class="fa fa-refresh"></i>&nbsp;<?php echo "SINCRONIZACION"; ?>
+                       </a>
+                    </li>
                     
                    </ul>
                  </div>
@@ -716,6 +722,27 @@
                    </div>
                  </div>
 
+                 <div role="tabpanel" class="tab-pane" id="synch_product_pos">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form">
+
+                          <div id="synch_product_pos_items">
+                          <div class="row">
+                          <div class="col-md-6">
+                            <?php echo render_select('pos',$point_of_sales,array('id',array('name','ip')),'Puntos de Venta'); ?>
+                          </div>
+                          <div class="col-md-2">
+                            <button style='margin-top:28px;' class="btn btn-info">SINCRONIZAR</button>
+                          </div>
+                          
+                        </div>
+                          </div>
+
+                        </div>
+                     </div>
+                   </div>
+                 </div>
 
               </div>
 
