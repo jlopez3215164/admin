@@ -799,6 +799,11 @@ class Warehouse_model extends App_Model {
 		return false;
 	}
 
+	public function synchronized_pos($id_item, $id_pos) {
+		$this->db->query("DELETE FROM tbl_orion_pos_products where admin_id=".$id_item." and orion_pos_id =".$id_pos);
+		$this->db->query("INSERT INTO tbl_orion_pos_products (admin_id, pos_id, orion_pos_id, price_from_pos) VALUES (".$id_item.", 0, ".$id_pos.", 0)");
+	}
+
 	/**
 	 * add warehouse
 	 * @param array  $data

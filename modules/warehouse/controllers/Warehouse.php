@@ -519,6 +519,10 @@ class warehouse extends AdminController {
 		}
 	}
 
+	public function synchronized_pos($id_pos = '0', $item_id = '0') {
+		$this->warehouse_model->synchronized_pos($item_id, $id_pos);
+	}
+
 	/**
 	 * delete warehouse
 	 * @param  integer $id

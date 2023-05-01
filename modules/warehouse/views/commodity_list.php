@@ -721,7 +721,17 @@
                      </div>
                    </div>
                  </div>
-
+                 <script>
+                    function syncronized(){
+                        $.ajax({
+                            type: "GET",
+                            url: "synchronized_pos/" + $("#pos").val() + "/" + 1153,          
+                            success: function(data) {
+                                alert("COMPLETO");
+                            }
+                        });
+                    }
+                </script>
                  <div role="tabpanel" class="tab-pane" id="synch_product_pos">
                     <div class="row">
                       <div class="col-md-12">
@@ -733,7 +743,7 @@
                             <?php echo render_select('pos',$point_of_sales,array('id',array('name','ip')),'Puntos de Venta'); ?>
                           </div>
                           <div class="col-md-2">
-                            <button style='margin-top:28px;' class="btn btn-info">SINCRONIZAR</button>
+                            <button style='margin-top:28px;' onclick="syncronized()" class="btn btn-info">SINCRONIZAR</button>
                           </div>
                           
                         </div>
