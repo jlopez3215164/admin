@@ -213,6 +213,7 @@ function edit_commodity_item(invoker){
       /*add id item when edit*/
       $('#commodity_item_id').empty();
       $('#commodity_item_id').append(hidden_input('id',$(invoker).data('commodity_id')));
+      //$('#commodity_item_id').append(hidden_input('commodity_id',$(invoker).data('commodity_id')), "commodity_id");
 
       $('.edit-commodity-title').removeClass('hide');
       $('.add-commodity-title').addClass('hide');

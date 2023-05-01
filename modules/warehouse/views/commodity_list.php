@@ -723,13 +723,18 @@
                  </div>
                  <script>
                     function syncronized(){
-                        $.ajax({
-                            type: "GET",
-                            url: "synchronized_pos/" + $("#pos").val() + "/" + 1153,          
-                            success: function(data) {
-                                alert("COMPLETO");
-                            }
-                        });
+                        //alert("ID: " + document.getElementsByName("commodity_id_data"));
+                        if(document.getElementsByName("commodity_id_data").length > 0){
+                          $.ajax({
+                              type: "GET",
+                              url: "synchronized_pos/" + $("#pos").val() + "/" + document.getElementsByName("commodity_id_data")[0].value,          
+                              success: function(data) {
+                                  alert("COMPLETO");
+                              }
+                          });
+                        } else {
+                          alert("CREE EL PRODUCTO Y EDITELO PARA ANEXARLO A UN POS");
+                        }
                     }
                 </script>
                  <div role="tabpanel" class="tab-pane" id="synch_product_pos">
