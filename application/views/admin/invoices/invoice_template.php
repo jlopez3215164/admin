@@ -501,29 +501,15 @@
                      ?>
                   <th width="10%" align="right" class="qty"><?php echo $qty_heading; ?></th>
                   <th width="15%" align="right"><?php echo _l('invoice_table_rate_heading'); ?></th>
-                  <th width="15%" align="right"><?php echo "Tasa"; ?></th>
-                  <th width="15%" align="right"><?php echo "Agente"; ?></th>
                   <th width="20%" align="right"><?php echo _l('invoice_table_tax_heading'); ?></th>
                   <th width="10%" align="right"><?php echo _l('invoice_table_amount_heading'); ?></th>
                   <th align="center"><i class="fa fa-cog"></i></th>
                </tr>
             </thead>
-            <script>
-               function calculateTasa(){
-                  const up_names = document.getElementsByName("tasa");
-                  console.log(up_names[0].value);
-                  localStorage.setItem('tasaActiva', up_names[0].value);
-                  //alert(up_names[0].value);
-                  const up_names_rate = document.getElementsByName("rate");
-                  console.log(up_names_rate[0].value);
-                  up_names_rate[0].value = (up_names_rate[0].value / up_names[0].value).toFixed(2);
-               }
-            </script>
             <tbody>
                <tr class="main">
                   <td></td>
                   <td>
-                     <!-- INVOICES -->
                      <textarea name="description" class="form-control" rows="4" placeholder="<?php echo _l('item_description_placeholder'); ?>"></textarea>
                   </td>
                   <td>
@@ -535,40 +521,21 @@
                      <input type="text" placeholder="<?php echo _l('unit'); ?>" data-toggle="tooltip" data-title="e.q kg, lots, packs" name="unit" class="form-control input-transparent text-right">
                   </td>
                   <td>
-                     <input type="number" onchange="calculateTasa()" name="rate" class="form-control" placeholder="<?php echo _l('item_rate_placeholder'); ?>">
-                  </td>
-                  <td>
-                     <input type="number" value="1" name="tasa" class="form-control" onchange="calculateTasa()" placeholder="<?php echo "Tasa"; ?>">
-                     <input type="text" placeholder="CAMBIE LA TASA" data-toggle="tooltip" class="form-control input-transparent text-right">
-                  </td>
-                  <td>
-                     <div class="col-md-12">
-                        <?php
-                           //$default_tax = unserialize(get_option('default_tax'));
-                           $select = '<select class="selectpicker display-block tax main-tax" data-width="100%" name="agent_select" data-none-selected-text="">';
-                           //$select .= '<option value=""'.(count($default_tax) == 0 ? ' selected' : '').'>'._l('no_tax').'</option>';
-                           foreach($staff as $member){
-                              $selected = '';
-                              $select .= '<option value="'.$member['staffid'].'"'.$selected.'data-taxrate="'.$member['firstname'].'" data-taxname="'.$member['firstname'].'" data-subtext="'.$member['staffid'].'">'.$member['firstname'].' '.$member['lastname'].'</option>';
-                           }
-                           $select .= '</select>';
-                           echo $select;
-                        ?>
-                     </div>
+                     <input type="number" name="rate" class="form-control" placeholder="<?php echo _l('item_rate_placeholder'); ?>">
                   </td>
                   <td>
                      <?php
                         $default_tax = unserialize(get_option('default_tax'));
                         $select = '<select class="selectpicker display-block tax main-tax" data-width="100%" name="taxname" multiple data-none-selected-text="'._l('no_tax').'">';
-                        //  $select .= '<option value=""'.(count($default_tax) == 0 ? ' selected' : '').'>'._l('no_tax').'</option>';
+                      //  $select .= '<option value=""'.(count($default_tax) == 0 ? ' selected' : '').'>'._l('no_tax').'</option>';
                         foreach($taxes as $tax){
-                           $selected = '';
-                           if(is_array($default_tax)){
+                        $selected = '';
+                         if(is_array($default_tax)){
                              if(in_array($tax['name'] . '|' . $tax['taxrate'],$default_tax)){
-                                 $selected = ' selected ';
+                                  $selected = ' selected ';
                              }
-                           }
-                           $select .= '<option value="'.$tax['name'].'|'.$tax['taxrate'].'"'.$selected.'data-taxrate="'.$tax['taxrate'].'" data-taxname="'.$tax['name'].'" data-subtext="'.$tax['name'].'">'.$tax['taxrate'].'%</option>';
+                        }
+                        $select .= '<option value="'.$tax['name'].'|'.$tax['taxrate'].'"'.$selected.'data-taxrate="'.$tax['taxrate'].'" data-taxname="'.$tax['name'].'" data-subtext="'.$tax['name'].'">'.$tax['taxrate'].'%</option>';
                         }
                         $select .= '</select>';
                         echo $select;
@@ -629,8 +596,6 @@
 
                     $table_row .= '</td>';
                     $table_row .= '<td class="rate"><input type="number" data-toggle="tooltip" title="' . _l('numbers_not_formatted_while_editing') . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate]" value="' . $item['rate'] . '" class="form-control"></td>';
-                    //$table_row .= '<td class="amount" align="right">TASA</td>';
-                    //$table_row .= '<td class="amount" align="right">AGENTE</td>';
                     $table_row .= '<td class="taxrate">' . $this->misc_model->get_taxes_dropdown_template('' . $items_indicator . '[' . $i . '][taxname][]', $invoice_item_taxes, 'invoice', $item['id'], true, $manual) . '</td>';
                     $table_row .= '<td class="amount" align="right">' . $amount . '</td>';
                     $table_row .= '<td><a href="#" class="btn btn-danger pull-left" onclick="delete_item(this,' . $item['id'] . '); return false;"><i class="fa fa-times"></i></a></td>';

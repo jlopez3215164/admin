@@ -74,6 +74,19 @@
 								<input type="radio" name="placement" id="c_placement_after" value="after">
 								<label for="c_placement_after"><?php echo _l('settings_sales_currency_placement_after'); ?></label>
 							</div>
+							
+						</div>
+						<div class="form-group">
+							<label for="tasa" class="control-label clearfix"><?php echo "TASA"; ?></label>
+							<input type="number" name="tasa" id="tasa" value="after">
+						</div>
+						
+						<div class="form-group">
+							<label for="decimal_separator"><?php echo "MONEDA SECUNDARIA PRINCIPAL"; ?></label>
+							<select id="is_secondary_currency" class="selectpicker" name="is_secondary_currency" data-width="100%">
+								<option value="0">SECUNDARIA NORMAL</option>
+								<option value="1">SECUNDARIA PRINCIPAL</option>
+							</select>
 						</div>
 					</div>
 				</div>

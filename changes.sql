@@ -75,3 +75,7 @@ CREATE TABLE `tbl_orion_pos_detail_sale` (
 ALTER TABLE tbl_orion_pos_products ADD price_from_pos int NULL;
 
 ALTER TABLE tbl_orion_pos_products ADD last_sync datetime NULL;
+
+ALTER TABLE tblcurrencies ADD tasa decimal(18,4) NULL;
+
+ALTER TABLE tblcurrencies ADD is_secondary_currency bigint NULL;

@@ -16,7 +16,7 @@
                  <h4 class="modal-title"><?php echo _l('bulk_actions'); ?></h4>
                </div>
                <div class="modal-body">
-                 <?php if(has_permission('items','','delete')){ ?>
+                 <?php if(has_permission('leads','','delete')){ ?>
                    <div class="checkbox checkbox-danger">
                     <input type="checkbox" name="mass_delete" id="mass_delete">
                     <label for="mass_delete"><?php echo _l('mass_delete'); ?></label>
