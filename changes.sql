@@ -79,3 +79,38 @@ ALTER TABLE tbl_orion_pos_products ADD last_sync datetime NULL;
 ALTER TABLE tblcurrencies ADD tasa decimal(18,4) NULL;
 
 ALTER TABLE tblcurrencies ADD is_secondary_currency bigint NULL;
+
+ALTER TABLE tblinvoices ADD is_print_fiscal bigint NULL;
+
+ALTER TABLE tblinvoices ADD bill_number varchar(100) NULL;
+
+-- orion_ares_gona_osneida.journal definition
+
+CREATE TABLE `journal` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `start` datetime DEFAULT CURRENT_TIMESTAMP,
+  `end` datetime DEFAULT NULL,
+  `active` int DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `is_print_report` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=145 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- orion_ares_gona.tbl_cashregister definition
+
+CREATE TABLE `tbl_cashregister` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `userid` int NOT NULL,
+  `counter_no` int NOT NULL,
+  `opening_balance` decimal(19,3) NOT NULL DEFAULT '0.000',
+  `closing_balance` decimal(19,3) NOT NULL DEFAULT '0.000',
+  `openclosedate` date NOT NULL,
+  `opendate` datetime DEFAULT '1970-01-01 01:01:01',
+  `closedate` datetime DEFAULT '1970-01-01 01:01:01',
+  `status` int NOT NULL DEFAULT '0',
+  `openingnote` text,
+  `closing_note` text,
+  `is_print_report` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userid` (`userid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
