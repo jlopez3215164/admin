@@ -274,6 +274,21 @@ if(isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
    <?php } ?>
 <?php } ?>
 <hr />
+<script>
+   function printFiscal(id){
+      //alert(admin_url);
+      $.ajax({
+         type: "GET",
+         url: "invoices/printFiscal/" + id,          
+         success: function(data) {
+            alert("FACTURA IMPRESA");
+         }
+      });
+   }
+</script>
+<div class="col-md-3">
+   <button style='margin-top:28px;' onclick="printFiscal(<?php echo $invoice->id; ?>)" class="btn btn-info">IMPRIMIR FACTURA FISCAL</button>
+</div>
 <?php if($invoice->clientnote != ''){ ?>
    <div class="col-md-12 row mtop15">
       <p class="bold text-muted"><?php echo _l('invoice_note'); ?></p>

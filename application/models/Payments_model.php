@@ -39,6 +39,18 @@ class Payments_model extends App_Model
         return $payment;
     }
 
+    
+     /**
+     * Print bill
+     * @param  mixed $idBill idBill
+     * @return array
+     */
+    public function printBill($idBill)
+    {
+        $this->db->query("UPDATE tblinvoices SET is_print_fiscal = 1 where id = " . $idBill);
+    }
+
+
     /**
      * Get all invoice payments
      * @param  mixed $invoiceid invoiceid

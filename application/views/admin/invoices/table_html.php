@@ -2,6 +2,7 @@
 
 $table_data = array(
   _l('invoice_dt_table_heading_number'),
+  "FACTURA FISCAL",
   "AGENTE",
   "MONTO PAGADO",
   "MONTO RESTANTE",
