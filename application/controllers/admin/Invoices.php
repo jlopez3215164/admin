@@ -514,6 +514,12 @@ class Invoices extends AdminController
         $this->payments_model->printBill($idBill);
     }
 
+    public function printNoFiscal($idBill)
+    {
+        $this->load->model('payments_model');
+        $this->payments_model->printNoFiscalBill($idBill);
+    }
+
     /* Send invoice to email */
     public function send_to_email($id)
     {

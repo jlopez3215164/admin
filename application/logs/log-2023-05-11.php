@@ -18,3 +18,7 @@ ERROR - 2023-05-11 07:20:52 --> Severity: error --> Exception: Call to undefined
 ERROR - 2023-05-11 07:22:26 --> Severity: Notice --> Undefined variable: invoiceid C:\laragon\www\admin\application\models\Payments_model.php 50
 ERROR - 2023-05-11 07:22:26 --> Query error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1 - Invalid query: UPDATE tblinvoices SET is_print_fiscal = 1 where id = 
 ERROR - 2023-05-11 11:56:15 --> 404 Page Not Found: /index
+ERROR - 2023-05-11 12:16:01 --> 404 Page Not Found: /index
+ERROR - 2023-05-11 13:05:14 --> 404 Page Not Found: /index
+ERROR - 2023-05-11 13:14:08 --> 404 Page Not Found: /index
+ERROR - 2023-05-11 14:23:35 --> 404 Page Not Found: /index

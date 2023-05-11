@@ -285,9 +285,23 @@ if(isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
          }
       });
    }
+
+   function printNoFiscal(id){
+      //alert(admin_url);
+      $.ajax({
+         type: "GET",
+         url: "invoices/printNoFiscal/" + id,          
+         success: function(data) {
+            alert("NOTA IMPRESA");
+         }
+      });
+   }
 </script>
 <div class="col-md-3">
    <button style='margin-top:28px;' onclick="printFiscal(<?php echo $invoice->id; ?>)" class="btn btn-info">IMPRIMIR FACTURA FISCAL</button>
+</div>
+<div class="col-md-3">
+   <button style='margin-top:28px;' onclick="printNoFiscal(<?php echo $invoice->id; ?>)" class="btn btn-info">IMPRIMIR NOTA DE ENTREGA</button>
 </div>
 <?php if($invoice->clientnote != ''){ ?>
    <div class="col-md-12 row mtop15">

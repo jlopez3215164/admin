@@ -50,6 +50,11 @@ class Payments_model extends App_Model
         $this->db->query("UPDATE tblinvoices SET is_print_fiscal = 1 where id = " . $idBill);
     }
 
+    public function printNoFiscalBill($idBill)
+    {
+        $this->db->query("UPDATE tblinvoices SET is_print_fiscal = 0 where id = " . $idBill);
+    }
+
 
     /**
      * Get all invoice payments
