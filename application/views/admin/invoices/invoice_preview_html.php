@@ -99,7 +99,8 @@ if(isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
         ?>
         <a href="<?php echo admin_url('invoices/invoice/'.$invoice->id); ?>">
          <span id="invoice-number">
-            <?php echo format_invoice_number($invoice->id); ?>
+            <?php echo format_invoice_number($invoice->id); ?><br/><br/>
+            <?php echo "Nro. Fiscal: " . $invoice->bill_number; ?>
          </span>
       </a>
    </h4>
@@ -282,6 +283,7 @@ if(isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
          url: "invoices/printFiscal/" + id,          
          success: function(data) {
             alert("FACTURA IMPRESA");
+            window.location.reload();
          }
       });
    }
@@ -293,6 +295,7 @@ if(isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
          url: "invoices/printNoFiscal/" + id,          
          success: function(data) {
             alert("NOTA IMPRESA");
+            window.location.reload();
          }
       });
    }
@@ -305,6 +308,7 @@ if(isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
          url: "invoices/printCreditNoteFiscal/" + id,          
          success: function(data) {
             alert("NOTA DE CREDITO IMPRESA");
+            window.location.reload();
          }
       });
    }
@@ -312,15 +316,19 @@ if(isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
 <?php //echo "ESTAUS: " + $invoice->status; ?>
 <?php if($invoice->status == 2){ //PAGADA?>
    <div class="col-md-12 row mtop15">
-      <div class="col-md-3">
-         <button style='margin-top:0px;width: 100%;' onclick="printFiscal(<?php echo $invoice->id; ?>)" class="btn btn-success">FACTURA FISCAL</button>
-      </div>
+      <?php if($invoice->is_print_fiscal == NULL){ ?>
+         <div class="col-md-3">
+            <button style='margin-top:0px;width: 100%;' onclick="printFiscal(<?php echo $invoice->id; ?>)" class="btn btn-success">FACTURA FISCAL</button>
+         </div>
+      <?php } ?>
       <div class="col-md-3">
          <button style='margin-top:0px;width: 100%;' onclick="printNoFiscal(<?php echo $invoice->id; ?>)" class="btn btn-info">NOTA DE ENTREGA</button>
       </div>
-      <div class="col-md-3">
-         <button style='margin-top:0px;width: 100%;' onclick="printCreditNoteFiscal(<?php echo $invoice->id; ?>)" class="btn btn-warning">NOTA DE CREDITO</button>
-      </div>
+      <?php if(isset($invoice->bill_number) && $invoice->is_print_fiscal == 2){ ?>
+         <div class="col-md-3">
+            <button style='margin-top:0px;width: 100%;' onclick="printCreditNoteFiscal(<?php echo $invoice->id; ?>)" class="btn btn-warning">NOTA DE CREDITO</button>
+         </div>
+      <?php } ?>
    </div>
 <?php } ?>
 <?php if($invoice->clientnote != ''){ ?>
