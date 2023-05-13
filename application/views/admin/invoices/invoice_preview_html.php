@@ -296,13 +296,31 @@ if(isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
          }
       });
    }
+
+   function printCreditNoteFiscal(id){
+      //alert(admin_url);
+      console.log("ID: " + id);
+      $.ajax({
+         type: "GET",
+         url: "invoices/printCreditNoteFiscal/" + id,          
+         success: function(data) {
+            alert("NOTA DE CREDITO IMPRESA");
+         }
+      });
+   }
 </script>
-<div class="col-md-3">
-   <button style='margin-top:28px;' onclick="printFiscal(<?php echo $invoice->id; ?>)" class="btn btn-info">IMPRIMIR FACTURA FISCAL</button>
-</div>
-<div class="col-md-3">
-   <button style='margin-top:28px;' onclick="printNoFiscal(<?php echo $invoice->id; ?>)" class="btn btn-info">IMPRIMIR NOTA DE ENTREGA</button>
-</div>
+<?php //echo "ESTAUS: " + $invoice->status; ?>
+<?php if($invoice->status == 2){ //PAGADA?>
+   <div class="col-md-3">
+      <button style='margin-top:28px;' onclick="printFiscal(<?php echo $invoice->id; ?>)" class="btn btn-success">FACTURA FISCAL</button>
+   </div>
+   <div class="col-md-3">
+      <button style='margin-top:28px;' onclick="printNoFiscal(<?php echo $invoice->id; ?>)" class="btn btn-info">NOTA DE ENTREGA</button>
+   </div>
+   <div class="col-md-3">
+      <button style='margin-top:28px;' onclick="printCreditNoteFiscal(<?php echo $invoice->id; ?>)" class="btn btn-warning">NOTA DE CREDITO</button>
+   </div>
+<?php } ?>
 <?php if($invoice->clientnote != ''){ ?>
    <div class="col-md-12 row mtop15">
       <p class="bold text-muted"><?php echo _l('invoice_note'); ?></p>

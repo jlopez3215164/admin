@@ -520,6 +520,12 @@ class Invoices extends AdminController
         $this->payments_model->printNoFiscalBill($idBill);
     }
 
+    public function printCreditNoteFiscal($idBill)
+    {
+        $this->load->model('payments_model');
+        $this->payments_model->printCreditNoteFiscal($idBill);
+    }
+
     /* Send invoice to email */
     public function send_to_email($id)
     {
