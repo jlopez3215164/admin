@@ -21,8 +21,9 @@ $aColumns = [
     'approve_status',
     'delivery_status',
     'number',
-    
     'expense_convert',
+    '(select sum(amount) from tblpur_order_payment where pur_order = tblpur_orders.id) as pagado',
+    'total - (select sum(amount) from tblpur_order_payment where pur_order = tblpur_orders.id) as restante',
     ];
 
 if(isset($vendor)){

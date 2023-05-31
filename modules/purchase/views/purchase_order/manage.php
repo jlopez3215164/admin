@@ -120,6 +120,8 @@
                            _l('delivery_status'),
                            _l('payment_status'),
                            _l('convert_expense'),
+                           "PAGADO",
+                           "RESTANTE"
                            );
                        $custom_fields = get_custom_fields('pur_order',array('show_on_table'=>1));
                         foreach($custom_fields as $field){
