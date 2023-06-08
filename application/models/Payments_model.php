@@ -62,6 +62,7 @@ class Payments_model extends App_Model
     public function deleteBill($idBill){
         $this->db->query("DELETE FROM tblinvoices where id = " . $idBill);
         $this->db->query("DELETE FROM tblinvoicepaymentrecords where invoiceid = " . $idBill);
+        $this->db->query("DELETE FROM tblitemable where rel_type = 'invoice' and rel_id = " . $idBill);
     }
 
     /**
