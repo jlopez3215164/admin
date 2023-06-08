@@ -526,6 +526,12 @@ class Invoices extends AdminController
         $this->payments_model->printCreditNoteFiscal($idBill);
     }
 
+    public function deleteBill($idBill)
+    {
+        $this->load->model('payments_model');
+        $this->payments_model->deleteBill($idBill);
+    }
+
     /* Send invoice to email */
     public function send_to_email($id)
     {

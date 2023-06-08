@@ -312,6 +312,22 @@ if(isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
          }
       });
    }
+
+   function deleteBillFinal(id){
+      //alert(admin_url);
+      console.log("ID: " + id);
+      var isBoss = confirm("¿Desea eliminar esta factura?");
+      if(isBoss){
+         $.ajax({
+            type: "GET",
+            url: "invoices/deleteBill/" + id,          
+            success: function(data) {
+               alert("FACTURA ELIMINADA");
+               window.location.reload();
+            }
+         });
+      }
+   }
 </script>
 <?php //echo "ESTAUS: " + $invoice->status; ?>
 <?php if($invoice->status == 2){ //PAGADA?>
@@ -329,6 +345,9 @@ if(isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
             <button style='margin-top:0px;width: 100%;' onclick="printCreditNoteFiscal(<?php echo $invoice->id; ?>)" class="btn btn-warning">NOTA DE CREDITO</button>
          </div>
       <?php } ?>
+      <div class="col-md-3">
+         <button style='margin-top:0px;width: 100%;' onclick="deleteBillFinal(<?php echo $invoice->id; ?>)" class="btn btn-warning">ELIMINAR</button>
+      </div>
    </div>
 <?php } ?>
 <?php if($invoice->clientnote != ''){ ?>

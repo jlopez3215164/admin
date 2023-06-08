@@ -59,6 +59,11 @@ class Payments_model extends App_Model
         $this->db->query("UPDATE tblinvoices SET is_print_fiscal = 3 where id = " . $idBill);
     }
 
+    public function deleteBill($idBill){
+        $this->db->query("DELETE FROM tblinvoices where id = " . $idBill);
+        $this->db->query("DELETE FROM tblinvoicepaymentrecords where invoiceid = " . $idBill);
+    }
+
     /**
      * Get all invoice payments
      * @param  mixed $invoiceid invoiceid
