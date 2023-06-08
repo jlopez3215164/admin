@@ -330,8 +330,8 @@ if(isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
    }
 </script>
 <?php //echo "ESTAUS: " + $invoice->status; ?>
+<div class="col-md-12 row mtop15">
 <?php if($invoice->status == 2){ //PAGADA?>
-   <div class="col-md-12 row mtop15">
       <?php if($invoice->is_print_fiscal == NULL){ ?>
          <div class="col-md-3">
             <button style='margin-top:0px;width: 100%;' onclick="printFiscal(<?php echo $invoice->id; ?>)" class="btn btn-success">FACTURA FISCAL</button>
@@ -345,11 +345,11 @@ if(isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
             <button style='margin-top:0px;width: 100%;' onclick="printCreditNoteFiscal(<?php echo $invoice->id; ?>)" class="btn btn-warning">NOTA DE CREDITO</button>
          </div>
       <?php } ?>
+<?php } ?>
       <div class="col-md-3">
          <button style='margin-top:0px;width: 100%;' onclick="deleteBillFinal(<?php echo $invoice->id; ?>)" class="btn btn-warning">ELIMINAR</button>
       </div>
    </div>
-<?php } ?>
 <?php if($invoice->clientnote != ''){ ?>
    <div class="col-md-12 row mtop15">
       <p class="bold text-muted"><?php echo _l('invoice_note'); ?></p>
