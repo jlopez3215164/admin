@@ -8,3 +8,6 @@ truncate table tblinventory_manage;
 truncate table tblwh_loss_adjustment;
 truncate table tblwh_loss_adjustment_detail;
 truncate table tblproduct_master;
+truncate table tblinvoices;
+truncate table tblinvoicepaymentrecords;
+truncate table tblitemable ;
