@@ -114,3 +114,21 @@ CREATE TABLE `tbl_cashregister` (
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+CREATE TABLE orion_zeus.tbl_orion_zeus (
+	id int NULL,
+	name text NULL,
+	ip varchar(100) NULL,
+	port varchar(100) NULL,
+	`database` text NULL,
+	user_database varchar(100) NULL,
+	password_database varchar(100) NULL,
+	status int NULL,
+	last_sync datetime NULL
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
+
+
+
