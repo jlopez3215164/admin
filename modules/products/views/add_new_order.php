@@ -41,7 +41,7 @@
              </div>
              <div class="col-md-2 col-sm-2">
               <label>&nbsp;</label><br/>
-              <button type="button" class="btn btn-sm btn-success add_row"><i class="fa fa-plus"></i> Add</button>
+              <button type="button" class="btn btn-sm btn-success add_row"><i class="fa fa-plus"></i> AGREGAR</button>
             </div>
           </div>
         </div>
