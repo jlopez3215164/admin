@@ -106,11 +106,11 @@ class Payments_model extends App_Model
                 fwrite($archivo, "------------------------------------------------\r\n");
                 $subtotal = 0;
                 foreach ($iteminfo as $item) {
-                    $total = 47 - (strlen($item->qty . " x " . substr($item->description, 0, 24)) + strlen((number_format($item->rate, 2, ",", ".")) . " = " . (number_format($item->rate * $item->qty, 2, ",", ".")) . ""));
+                    $total = 47 - (strlen($item->qty . " x " . substr($item->description, 0, 18)) + strlen((number_format($item->rate, 2, ",", ".")) . " = " . (number_format($item->rate * $item->qty, 2, ",", ".")) . ""));
                     $spaces = str_repeat(" ", $total);
                     //if ($item->kitchenid == $kitchen->kitchenid) {
                     //if($item->description != "Set"){
-                    fwrite($archivo, substr($item->description, 0, 24). $spaces . "\r\n" . number_format($item->qty, 2, ",", ".") . " x " . (number_format($item->rate, 2, ",", ".")) . " = " . (number_format($item->rate * $item->qty, 2, ",", ".")) . "\r\n");
+                    fwrite($archivo, substr($item->description, 0, 18). $spaces . "\r\n" . number_format($item->qty, 2, ",", ".") . " x " . (number_format($item->rate, 2, ",", ".")) . " = " . (number_format($item->rate * $item->qty, 2, ",", ".")) . "\r\n");
                     //}
                     //$printer-> text("----- ".$item->variantName."\n");
 
