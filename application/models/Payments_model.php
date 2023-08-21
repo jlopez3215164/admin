@@ -39,8 +39,8 @@ class Payments_model extends App_Model
         return $payment;
     }
 
-    
-     /**
+
+    /**
      * Print bill
      * @param  mixed $idBill idBill
      * @return array
@@ -52,14 +52,126 @@ class Payments_model extends App_Model
 
     public function printNoFiscalBill($idBill)
     {
-        $this->db->query("UPDATE tblinvoices SET is_print_fiscal = 0 where id = " . $idBill);
+        //$this->db->query("UPDATE tblinvoices SET is_print_fiscal = 0 where id = " . $idBill);
+        $order_info = $this->db->query("select t1.*, t2.company, t2.address, t2.phonenumber from tblinvoices t1 left join tblclients t2 on t1.clientid = t2.userid left join tblcontacts t3 on t2.userid = t3.userid where t1.id = ". $idBill)->result()[0];
+        $iteminfo = $this->db->query("select * from tblitemable t where rel_id = " . $idBill . " and rel_type = 'invoice'")->result();
+        //Imprimimos la nota
+        /*********************************************** NOTA DE ENTREGA ********************************************/
+        //Imprimir comanda de cocina
+        //****************************************************/
+        date_default_timezone_set("America/Caracas");
+        $DateAndTime = date('d-m-Y h:i:s a', time());
+        $DateAndTimeId = date('d-m-Y-h-i-s-a', time());
+        //Buscamos las impresoras de precuenta
+        //$kitchenlist = $this->db->select('kitchenid as kitchen_id,kitchen_name,ip,port')->from('tbl_kitchen')->where('is_prebill', 1)->order_by('kitchen_name', 'Asc')->get()->result();
+        //=====================================================================================================================================================
+        //$alliteminfo = $this->order_model->customerorderkitchenAll($orderid);
+        //$singleorderinfo = $this->order_model->kitchen_ajaxorderinfoall($id);
+        //$billinfo = $this->db->select('*')->from('bill')->where('order_id', $id)->get()->row();
+        //=====================================================================================================================================================
+        //foreach ($kitchenlist as $kitchen) {
+        //--------------------------------------------------------------------
+        try {
+            $path = "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps\\orion-core-server\\Queue\\" . "P_" . "192.168.1.40" . "-" . $DateAndTimeId . "-PRECUENTA.printer";
+            $archivo = fopen($path, "wb");
+            if ($archivo == false) {
+                echo "Error al crear el archivo";
+            } else {
+                // Escribir en el archivo:
+                //fwrite($archivo, "------------------------------------------------\r\n");
+                //fwrite($archivo, "PRECUENTA: \r\n");
+                fwrite($archivo, "------------------------------------------------\r\n");
+                fwrite($archivo, "ORDEN: " . $order_info->number . "\r\n");
+                fwrite($archivo, "APERTURA: " .  $order_info->datecreated . "\r\n");
+                fwrite($archivo, "------------------------------------------------\r\n");
+                //$table_name = "MESA";
+                /*if ($singleorderinfo->tablename == "") {
+                                   $table_name  = "ORDEN LIBRE";
+                               }*/
+                //fwrite($archivo, "MESA: " . $table_name . "\r\n");
+                fwrite($archivo, "CLIENTE: " .  $order_info->company . "\r\n");
+                fwrite($archivo, "DIRECCION: " .  $order_info->address . "\r\n");
+                fwrite($archivo, "TELEFONO: " .  $order_info->phonenumber . "\r\n");
+                //fwrite($archivo, "ATENDIO: " . "" . " " . "" . "\r\n");
+                //fwrite($archivo, "AREA: " . $kitchen->kitchen_name . "\r\n");
+                
+                //fwrite($archivo, "COMENTARIO: " . "" . "\r\n");
+                fwrite($archivo, "------------------------------------------------\r\n");
+                fwrite($archivo, "CANT.x PRODUCTO .x PRECIO                              \r\n");
+                fwrite($archivo, "------------------------------------------------\r\n");
+                $subtotal = 0;
+                foreach ($iteminfo as $item) {
+                    $total = 47 - (strlen($item->qty . "x " . substr($item->description, 0, 24)) + strlen((number_format($item->rate, 2, ",", ".")) . " = " . (number_format($item->rate * $item->qty, 2, ",", ".")) . ""));
+                    $spaces = str_repeat(" ", $total);
+                    //if ($item->kitchenid == $kitchen->kitchenid) {
+                    //if($item->description != "Set"){
+                    fwrite($archivo, number_format($item->qty, 2, ",", ".") . "x " . substr($item->description, 0, 24) . $spaces . (number_format($item->rate, 2, ",", ".")) . " = " . (number_format($item->rate * $item->qty, 2, ",", ".")) . "\r\n");
+                    //}
+                    //$printer-> text("----- ".$item->variantName."\n");
+
+                    $subtotal = $subtotal + ($item->rate * $item->qty);
+                }
+                fwrite($archivo, "------------------------------------------------\r\n");
+                $total = 48 - (strlen('SUB-TOTAL') + strlen((number_format($subtotal, 2, ",", ".")) . ""));
+                $spaces = str_repeat(" ", $total);
+                fwrite($archivo, "SUB-TOTAL" .  $spaces . number_format($subtotal, 2, ",", ".") . " \r\n");
+                $total = 48 - (strlen('IMPUESTO') + strlen(number_format($order_info->total_tax, 2, ",", ".") . ""));
+                $spaces = str_repeat(" ", $total);
+                fwrite($archivo, "IMPUESTO" . $spaces . number_format($order_info->total_tax, 2, ",", ".") . " \r\n");
+                //$total = 48 - (strlen('SERVICIO') + strlen(round($singleorderinfo->service_charge, 2) . ""));
+                //$spaces = str_repeat(" ", $total);
+                //fwrite($archivo, "SERVICIO" . $spaces . round($singleorderinfo->service_charge, 2) . " \r\n");
+                //fwrite($archivo, "------------------------------------------------\r\n");
+                $total = 48 - (strlen('TOTAL ') + strlen((number_format($order_info->total, 2, ",", ".")) . ""));
+                $spaces = str_repeat(" ", $total);
+                fwrite($archivo, "TOTAL " . "" . $spaces . number_format($order_info->total, 2, ",", ".") . " \r\n");
+                fwrite($archivo, "------------------------------------------------\r\n");
+                //$total = 48 - (strlen('TASA') + strlen((0) . ""));
+                //$spaces = str_repeat(" ", $total);
+                //fwrite($archivo, "TASA" . $spaces . $currency_tasa[0]["curr_rate"] . " \r\n");
+                //$total = 48 - (strlen('TOTAL ' . $currency_tasa[0]["curr_icon"]) + strlen((round($singleorderinfo->totalamount * $currency_tasa[0]["curr_rate"], 2)) . ""));
+                //$spaces = str_repeat(" ", $total);
+                //fwrite($archivo, "TOTAL " . $currency_tasa[0]["curr_icon"] . $spaces . number_format($singleorderinfo->totalamount * $currency_tasa[0]["curr_rate"], 2, ",", ".") . " \r\n");
+                fwrite($archivo, "------------------------------------------------\r\n");
+                fwrite($archivo, "FECHA: " . $DateAndTime . "\r\n");
+                fwrite($archivo, "IMPRESORA: " . "192.168.1.40" . "\r\n");
+                //fwrite($archivo, "EQUIPO: " . $this->getRealIP() . "\r\n");
+                fwrite($archivo, "------------------------------------------------\r\n");
+                /*fwrite($archivo, "ESTE TICKET NO ES UN DOCUMENTO FISCAL\r\n");
+                               fwrite($archivo, "------------------------------------------------\r\n");
+                               fwrite($archivo, "SI DESEA FACTURA PERSONALIZADA:\r\n");
+                               fwrite($archivo, "------------------------------------------------\r\n");
+                               fwrite($archivo, "CEDULA/RIF:\r\n\n");
+                               fwrite($archivo, "________________________________________________\r\n\n");
+                               fwrite($archivo, "NOMBRE/RAZON SOCIAL:\r\n\n");
+                               fwrite($archivo, "________________________________________________\r\n\n");
+                               fwrite($archivo, "------------------------------------------------\r\n");
+                               fwrite($archivo, "OTROS DATOS:\r\n");
+                               fwrite($archivo, "------------------------------------------------\r\n");
+                               fwrite($archivo, "________________________________________________\r\n\n");
+                               fwrite($archivo, "________________________________________________\r\n\n");
+                               fwrite($archivo, "________________________________________________\r\n\n");
+                               fwrite($archivo, "________________________________________________\r\n\n");
+                               fwrite($archivo, "________________________________________________\r\n\n");*/
+                // Fuerza a que se escriban los datos pendientes en el buffer:
+                fflush($archivo);
+            }
+        } finally {
+            // Cerrar el archivo:
+            fclose($archivo);
+        }
+        //--------------------------------------------------------------------
+        //}
+        //***********************************************************************************************************/
     }
 
-    public function printCreditNoteFiscal($idBill){
+    public function printCreditNoteFiscal($idBill)
+    {
         $this->db->query("UPDATE tblinvoices SET is_print_fiscal = 3 where id = " . $idBill);
     }
 
-    public function deleteBill($idBill){
+    public function deleteBill($idBill)
+    {
         $this->db->query("DELETE FROM tblinvoices where id = " . $idBill);
         $this->db->query("DELETE FROM tblinvoicepaymentrecords where invoiceid = " . $idBill);
         $this->db->query("DELETE FROM tblitemable where rel_type = 'invoice' and rel_id = " . $idBill);
@@ -80,12 +192,12 @@ class Payments_model extends App_Model
         // Since version 1.0.1
         $this->load->model('payment_modes_model');
         $payment_gateways = $this->payment_modes_model->get_payment_gateways(true);
-        $i                = 0;
+        $i = 0;
         foreach ($payments as $payment) {
             if (is_null($payment['id'])) {
                 foreach ($payment_gateways as $gateway) {
                     if ($payment['paymentmode'] == $gateway['id']) {
-                        $payments[$i]['id']   = $gateway['id'];
+                        $payments[$i]['id'] = $gateway['id'];
                         $payments[$i]['name'] = $gateway['name'];
                     }
                 }
@@ -114,7 +226,7 @@ class Payments_model extends App_Model
 
             return false;
 
-        // Is online payment mode request by client or staff
+            // Is online payment mode request by client or staff
         } elseif (!is_numeric($data['paymentmode']) && !empty($data['paymentmode'])) {
             // This request will come from admin area only
             // If admin clicked the button that dont want to pay the invoice from the getaways only want
@@ -153,8 +265,8 @@ class Payments_model extends App_Model
             }
 
             $data['invoiceid'] = $invoiceid;
-            $data['invoice']   = $invoice;
-            $data              = hooks()->apply_filters('before_process_gateway_func', $data);
+            $data['invoice'] = $invoice;
+            $data = hooks()->apply_filters('before_process_gateway_func', $data);
 
             $this->load->model('payment_modes_model');
             $gateway = $this->payment_modes_model->get($data['paymentmode']);
@@ -226,12 +338,12 @@ class Payments_model extends App_Model
         }
 
         $data['daterecorded'] = date('Y-m-d H:i:s');
-        $data                 = hooks()->apply_filters('before_payment_recorded', $data);
+        $data = hooks()->apply_filters('before_payment_recorded', $data);
 
         $this->db->insert(db_prefix() . 'invoicepaymentrecords', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
-            $invoice      = $this->invoices_model->get($data['invoiceid']);
+            $invoice = $this->invoices_model->get($data['invoiceid']);
             $force_update = false;
 
             if (!class_exists('Invoices_model', false)) {
@@ -259,32 +371,33 @@ class Payments_model extends App_Model
             log_activity('Payment Recorded [ID:' . $insert_id . ', Invoice Number: ' . format_invoice_number($invoice->id) . ', Total: ' . app_format_money($data['amount'], $invoice->currency_name) . ']');
 
             // Send email to the client that the payment is recorded
-            $payment               = $this->get($insert_id);
+            $payment = $this->get($insert_id);
             $payment->invoice_data = $this->invoices_model->get($payment->invoiceid);
             set_mailing_constant();
-            $paymentpdf           = payment_pdf($payment);
+            $paymentpdf = payment_pdf($payment);
             $payment_pdf_filename = mb_strtoupper(slug_it(_l('payment') . '-' . $payment->paymentid), 'UTF-8') . '.pdf';
-            $attach               = $paymentpdf->Output($payment_pdf_filename, 'S');
+            $attach = $paymentpdf->Output($payment_pdf_filename, 'S');
 
-            if (!isset($do_not_send_email_template)
+            if (
+                !isset($do_not_send_email_template)
                 || ($subscription != false && $after_success == 'send_invoice_and_receipt')
                 || ($subscription != false && $after_success == 'send_invoice')
             ) {
-                $template_name        = 'invoice_payment_recorded_to_customer';
+                $template_name = 'invoice_payment_recorded_to_customer';
                 $pdfInvoiceAttachment = false;
                 $attachPaymentReceipt = true;
-                $emails_sent          = [];
+                $emails_sent = [];
 
                 $where = ['active' => 1, 'invoice_emails' => 1];
 
                 if ($subscription != false) {
                     $where['is_primary'] = 1;
-                    $template_name       = 'subscription_payment_succeeded';
+                    $template_name = 'subscription_payment_succeeded';
 
                     if ($after_success == 'send_invoice_and_receipt' || $after_success == 'send_invoice') {
                         $invoice_number = format_invoice_number($payment->invoiceid);
                         set_mailing_constant();
-                        $pdfInvoice           = invoice_pdf($payment->invoice_data);
+                        $pdfInvoice = invoice_pdf($payment->invoice_data);
                         $pdfInvoiceAttachment = $pdfInvoice->Output($invoice_number . '.pdf', 'S');
 
                         if ($after_success == 'send_invoice') {
@@ -296,7 +409,7 @@ class Payments_model extends App_Model
                     if (get_option('attach_invoice_to_payment_receipt_email') == 1) {
                         $invoice_number = format_invoice_number($payment->invoiceid);
                         set_mailing_constant();
-                        $pdfInvoice           = invoice_pdf($payment->invoice_data);
+                        $pdfInvoice = invoice_pdf($payment->invoice_data);
                         $pdfInvoiceAttachment = $pdfInvoice->Output($invoice_number . '.pdf', 'S');
                     }
                 }
@@ -314,17 +427,17 @@ class Payments_model extends App_Model
 
                     if ($attachPaymentReceipt) {
                         $template->add_attachment([
-                                'attachment' => $attach,
-                                'filename'   => $payment_pdf_filename,
-                                'type'       => 'application/pdf',
-                            ]);
+                            'attachment' => $attach,
+                            'filename' => $payment_pdf_filename,
+                            'type' => 'application/pdf',
+                        ]);
                     }
 
                     if ($pdfInvoiceAttachment) {
                         $template->add_attachment([
                             'attachment' => $pdfInvoiceAttachment,
-                            'filename'   => str_replace('/', '-', $invoice_number) . '.pdf',
-                            'type'       => 'application/pdf',
+                            'filename' => str_replace('/', '-', $invoice_number) . '.pdf',
+                            'type' => 'application/pdf',
                         ]);
                     }
                     $merge_fields = $template->get_merge_fields();
@@ -338,8 +451,8 @@ class Payments_model extends App_Model
 
                 if (count($emails_sent) > 0) {
                     $additional_activity_data = serialize([
-                       implode(', ', $emails_sent),
-                     ]);
+                        implode(', ', $emails_sent),
+                    ]);
                     $activity_lang_key = 'invoice_activity_record_payment_email_to_customer';
                     if ($subscription != false) {
                         $activity_lang_key = 'invoice_activity_subscription_payment_succeeded';
@@ -361,14 +474,14 @@ class Payments_model extends App_Model
                     // E.q. had permissions create not don't have, so we must re-check this
                     if (user_can_view_invoice($invoice->id, $member['staffid'])) {
                         $notified = add_notification([
-                        'fromcompany'     => true,
-                        'touserid'        => $member['staffid'],
-                        'description'     => 'not_invoice_payment_recorded',
-                        'link'            => 'invoices/list_invoices/' . $invoice->id,
-                        'additional_data' => serialize([
-                            format_invoice_number($invoice->id),
-                        ]),
-                    ]);
+                            'fromcompany' => true,
+                            'touserid' => $member['staffid'],
+                            'description' => 'not_invoice_payment_recorded',
+                            'link' => 'invoices/list_invoices/' . $invoice->id,
+                            'additional_data' => serialize([
+                                format_invoice_number($invoice->id),
+                            ]),
+                        ]);
                         if ($notified) {
                             array_push($notifiedUsers, $member['staffid']);
                         }
@@ -430,9 +543,9 @@ class Payments_model extends App_Model
      */
     public function delete($id)
     {
-        $current         = $this->get($id);
+        $current = $this->get($id);
         $current_invoice = $this->invoices_model->get($current->invoiceid);
-        $invoiceid       = $current->invoiceid;
+        $invoiceid = $current->invoiceid;
         hooks()->do_action('before_payment_deleted', [
             'paymentid' => $id,
             'invoiceid' => $invoiceid,
@@ -490,15 +603,18 @@ class Payments_model extends App_Model
                 update_invoice_status($data['invoiceid'], $force_update);
 
                 $this->invoices_model->log_invoice_activity(
-                    $data['invoiceid'], 'invoice_activity_payment_made_by_staff',
+                    $data['invoiceid'],
+                    'invoice_activity_payment_made_by_staff',
                     false,
                     serialize([
                         app_format_money($data['amount'], $invoice->currency_name),
                         '<a href="' . admin_url('payments/payment/' . $insert_id) . '" target="_blank">#' . $insert_id . '</a>',
                     ])
                 );
-                log_activity('Payment Recorded [ID:' . $insert_id . ', Invoice Number: ' . format_invoice_number($invoice->id) . ', Total: ' . app_format_money($data['amount'],
-                        $invoice->currency_name) . ']');
+                log_activity('Payment Recorded [ID:' . $insert_id . ', Invoice Number: ' . format_invoice_number($invoice->id) . ', Total: ' . app_format_money(
+                    $data['amount'],
+                    $invoice->currency_name
+                ) . ']');
             }
             hooks()->do_action('after_payment_added', $insert_id);
         }
@@ -555,28 +671,29 @@ class Payments_model extends App_Model
         return $template->send();
     }
 
-    private function _add_payment_mail_attachments_to_template($template, $payment) {
+    private function _add_payment_mail_attachments_to_template($template, $payment)
+    {
         set_mailing_constant();
 
         $paymentPDF = payment_pdf($payment);
-        $filename   = mb_strtoupper(slug_it(_l('payment') . '-' . $payment->paymentid), 'UTF-8') . '.pdf';
+        $filename = mb_strtoupper(slug_it(_l('payment') . '-' . $payment->paymentid), 'UTF-8') . '.pdf';
         $attach = $paymentPDF->Output($filename, 'S');
         $template->add_attachment([
             'attachment' => $attach,
-            'filename'   => $filename,
-            'type'       => 'application/pdf',
+            'filename' => $filename,
+            'type' => 'application/pdf',
         ]);
 
         if (get_option('attach_invoice_to_payment_receipt_email') == 1) {
             $invoice_number = format_invoice_number($payment->invoiceid);
             set_mailing_constant();
-            $pdfInvoice           = invoice_pdf($payment->invoice_data);
+            $pdfInvoice = invoice_pdf($payment->invoice_data);
             $pdfInvoiceAttachment = $pdfInvoice->Output($invoice_number . '.pdf', 'S');
 
             $template->add_attachment([
                 'attachment' => $pdfInvoiceAttachment,
-                'filename'   => str_replace('/', '-', $invoice_number) . '.pdf',
-                'type'       => 'application/pdf',
+                'filename' => str_replace('/', '-', $invoice_number) . '.pdf',
+                'type' => 'application/pdf',
             ]);
         }
         return $template;
@@ -588,7 +705,8 @@ class Payments_model extends App_Model
             $this->load->model('clients_model');
         }
         return $this->clients_model->get_contacts($client_id, [
-            'active' => 1, 'invoice_emails' => 1,
+            'active' => 1,
+            'invoice_emails' => 1,
         ]);
     }
 }
