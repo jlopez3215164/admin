@@ -55,6 +55,7 @@ class Payments_model extends App_Model
         //$this->db->query("UPDATE tblinvoices SET is_print_fiscal = 0 where id = " . $idBill);
         $order_info = $this->db->query("select t1.*, t2.company, t2.address, t2.phonenumber from tblinvoices t1 left join tblclients t2 on t1.clientid = t2.userid left join tblcontacts t3 on t2.userid = t3.userid where t1.id = ". $idBill)->result()[0];
         $iteminfo = $this->db->query("select * from tblitemable t where rel_id = " . $idBill . " and rel_type = 'invoice'")->result();
+        $system_param = $this->db->query("select * from system_param")->result();
         //Imprimimos la nota
         /*********************************************** NOTA DE ENTREGA ********************************************/
         //Imprimir comanda de cocina
@@ -72,7 +73,9 @@ class Payments_model extends App_Model
         //foreach ($kitchenlist as $kitchen) {
         //--------------------------------------------------------------------
         try {
-            $path = "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps\\orion-core-server\\Queue\\" . "P_" . "192.168.1.40" . "-" . $DateAndTimeId . "-PRECUENTA.printer";
+            //$path = "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps\\orion-core-server\\Queue\\" . "P_" . "192.168.1.40" . "-" . $DateAndTimeId . "-NOTA.printer";
+            //$system_param
+            $path = $system_param[0]->value . "P_" . "192.168.1.40" . "-" . $DateAndTimeId . "-NOTA.printer";
             $archivo = fopen($path, "wb");
             if ($archivo == false) {
                 echo "Error al crear el archivo";
@@ -97,15 +100,15 @@ class Payments_model extends App_Model
                 
                 //fwrite($archivo, "COMENTARIO: " . "" . "\r\n");
                 fwrite($archivo, "------------------------------------------------\r\n");
-                fwrite($archivo, "CANT.x PRODUCTO .x PRECIO                              \r\n");
+                fwrite($archivo, "CANT.x PRODUCTO .x PRECIO\r\n");
                 fwrite($archivo, "------------------------------------------------\r\n");
                 $subtotal = 0;
                 foreach ($iteminfo as $item) {
-                    $total = 47 - (strlen($item->qty . "x " . substr($item->description, 0, 24)) + strlen((number_format($item->rate, 2, ",", ".")) . " = " . (number_format($item->rate * $item->qty, 2, ",", ".")) . ""));
+                    $total = 47 - (strlen($item->qty . "x " . substr($item->description, 0, 18)) + strlen((number_format($item->rate, 2, ",", ".")) . " = " . (number_format($item->rate * $item->qty, 2, ",", ".")) . ""));
                     $spaces = str_repeat(" ", $total);
                     //if ($item->kitchenid == $kitchen->kitchenid) {
                     //if($item->description != "Set"){
-                    fwrite($archivo, number_format($item->qty, 2, ",", ".") . "x " . substr($item->description, 0, 24) . $spaces . (number_format($item->rate, 2, ",", ".")) . " = " . (number_format($item->rate * $item->qty, 2, ",", ".")) . "\r\n");
+                    fwrite($archivo, number_format($item->qty, 2, ",", ".") . "x " . substr($item->description, 0, 18) . $spaces . (number_format($item->rate, 2, ",", ".")) . " = " . (number_format($item->rate * $item->qty, 2, ",", ".")) . "\r\n");
                     //}
                     //$printer-> text("----- ".$item->variantName."\n");
 

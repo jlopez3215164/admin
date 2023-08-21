@@ -131,4 +131,15 @@ DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_general_ci;
 
 
+-- orion_ares_gona.system_param definition
+
+CREATE TABLE `system_param` (
+  `id` int unsigned DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `description` varchar(1000) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `value` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `active` bit(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 
