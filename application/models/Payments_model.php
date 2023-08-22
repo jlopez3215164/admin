@@ -85,7 +85,7 @@ class Payments_model extends App_Model
                 //fwrite($archivo, "------------------------------------------------\r\n");
                 //fwrite($archivo, "PRECUENTA: \r\n");
                 fwrite($archivo, "------------------------------------------------\r\n");
-                fwrite($archivo, "DISTRIBUIDORA BODEGON SA CALLE MEXICO EDIFICIO MI PARAISO PISO PB URB. NUEVA CARACAS
+                fwrite($archivo, "DISTRIBUIDORA BODEGON VSA CALLE MEXICO EDIFICIO MI PARAISO PISO PB URB. NUEVA CARACAS
                 CATIA CARACAS
                 Venezuela 1071
                 RIF: J500018878
