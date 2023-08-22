@@ -85,11 +85,11 @@ class Payments_model extends App_Model
                 //fwrite($archivo, "------------------------------------------------\r\n");
                 //fwrite($archivo, "PRECUENTA: \r\n");
                 fwrite($archivo, "------------------------------------------------\r\n");
-                fwrite($archivo, "DISTRIBUIDORA BODEGON SA\r\n
-                CALLE MEXICO EDIFICIO MI PARAISO PISO PB URB. NUEVA CARACAS\r\n
-                CATIA CARACAS\r\n
-                Venezuela 1071\r\n
-                RIF: J500018878\r\n");
+                fwrite($archivo, "DISTRIBUIDORA BODEGON SA
+                CALLE MEXICO EDIFICIO MI PARAISO PISO PB URB. NUEVA CARACAS
+                CATIA CARACAS
+                Venezuela 1071
+                RIF: J500018878");
                 fwrite($archivo, "------------------------------------------------\r\n");
                 fwrite($archivo, "ORDEN: " . $order_info->number . "\r\n");
                 fwrite($archivo, "APERTURA: " . $order_info->datecreated . "\r\n");
