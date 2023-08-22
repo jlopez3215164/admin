@@ -53,7 +53,7 @@ class Payments_model extends App_Model
     public function printNoFiscalBill($idBill)
     {
         //$this->db->query("UPDATE tblinvoices SET is_print_fiscal = 0 where id = " . $idBill);
-        $order_info = $this->db->query("select t1.*, t2.company, t2.address, t2.phonenumber, t2.vat from tblinvoices t1 left join tblclients t2 on t1.clientid = t2.userid left join tblcontacts t3 on t2.userid = t3.userid where t1.id = ". $idBill)->result()[0];
+        $order_info = $this->db->query("select t1.*, t2.company, t2.address, t2.phonenumber, t2.vat from tblinvoices t1 left join tblclients t2 on t1.clientid = t2.userid left join tblcontacts t3 on t2.userid = t3.userid where t1.id = " . $idBill)->result()[0];
         $iteminfo = $this->db->query("select * from tblitemable t where rel_id = " . $idBill . " and rel_type = 'invoice'")->result();
         $system_param = $this->db->query("select * from system_param")->result();
         $currency = $this->db->query("select * from tblcurrencies where is_secondary_currency = 1")->result()[0];
@@ -85,21 +85,27 @@ class Payments_model extends App_Model
                 //fwrite($archivo, "------------------------------------------------\r\n");
                 //fwrite($archivo, "PRECUENTA: \r\n");
                 fwrite($archivo, "------------------------------------------------\r\n");
+                fwrite($archivo, "DISTRIBUIDORA BODEGON SA\r\n
+                CALLE MEXICO EDIFICIO MI PARAISO PISO PB URB. NUEVA CARACAS\r\n
+                CATIA CARACAS\r\n
+                Venezuela 1071\r\n
+                RIF: J500018878\r\n");
+                fwrite($archivo, "------------------------------------------------\r\n");
                 fwrite($archivo, "ORDEN: " . $order_info->number . "\r\n");
-                fwrite($archivo, "APERTURA: " .  $order_info->datecreated . "\r\n");
+                fwrite($archivo, "APERTURA: " . $order_info->datecreated . "\r\n");
                 fwrite($archivo, "------------------------------------------------\r\n");
                 //$table_name = "MESA";
                 /*if ($singleorderinfo->tablename == "") {
                                    $table_name  = "ORDEN LIBRE";
                                }*/
                 //fwrite($archivo, "MESA: " . $table_name . "\r\n");
-                fwrite($archivo, "CLIENTE: " .  $order_info->company . "\r\n");
-                fwrite($archivo, "RIF/CED.: " .  $order_info->vat . "\r\n");
-                fwrite($archivo, "DIRECCION: " .  $order_info->address . "\r\n");
-                fwrite($archivo, "TELEFONO: " .  $order_info->phonenumber . "\r\n");
+                fwrite($archivo, "CLIENTE: " . $order_info->company . "\r\n");
+                fwrite($archivo, "RIF/CED.: " . $order_info->vat . "\r\n");
+                fwrite($archivo, "DIRECCION: " . $order_info->address . "\r\n");
+                fwrite($archivo, "TELEFONO: " . $order_info->phonenumber . "\r\n");
                 //fwrite($archivo, "ATENDIO: " . "" . " " . "" . "\r\n");
                 //fwrite($archivo, "AREA: " . $kitchen->kitchen_name . "\r\n");
-                
+
                 //fwrite($archivo, "COMENTARIO: " . "" . "\r\n");
                 fwrite($archivo, "------------------------------------------------\r\n");
                 fwrite($archivo, "PRODUCTO CANT.x PRECIO\r\n");
@@ -110,7 +116,7 @@ class Payments_model extends App_Model
                     $spaces = str_repeat(" ", $total);
                     //if ($item->kitchenid == $kitchen->kitchenid) {
                     //if($item->description != "Set"){
-                    fwrite($archivo, substr($item->description, 0, 24). $spaces . "\r\n" . number_format($item->qty, 2, ",", ".") . " x " . (number_format($item->rate, 2, ",", ".")) . " = " . (number_format($item->rate * $item->qty, 2, ",", ".")) . "\r\n");
+                    fwrite($archivo, substr($item->description, 0, 24) . $spaces . "\r\n" . number_format($item->qty, 2, ",", ".") . " x " . (number_format($item->rate, 2, ",", ".")) . " = " . (number_format($item->rate * $item->qty, 2, ",", ".")) . "\r\n");
                     //}
                     //$printer-> text("----- ".$item->variantName."\n");
 
@@ -119,7 +125,7 @@ class Payments_model extends App_Model
                 fwrite($archivo, "------------------------------------------------\r\n");
                 $total = 48 - (strlen('SUB-TOTAL') + strlen((number_format($subtotal, 2, ",", ".")) . ""));
                 $spaces = str_repeat(" ", $total);
-                fwrite($archivo, "SUB-TOTAL" .  $spaces . number_format($subtotal, 2, ",", ".") . " \r\n");
+                fwrite($archivo, "SUB-TOTAL" . $spaces . number_format($subtotal, 2, ",", ".") . " \r\n");
                 $total = 48 - (strlen('IMPUESTO') + strlen(number_format($order_info->total_tax, 2, ",", ".") . ""));
                 $spaces = str_repeat(" ", $total);
                 fwrite($archivo, "IMPUESTO" . $spaces . number_format($order_info->total_tax, 2, ",", ".") . " \r\n");
