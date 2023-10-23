@@ -108,7 +108,15 @@ class Warehouse_model extends App_Model {
 
 
 	public function consolidate_production() {
-		$this->db->query("UPDATE tblgoods_transaction_detail set consolidate = '".$_SESSION["item_merma"]."' where consolidate is NULL");
+		//tblgoods_transaction_production_header
+		$data = [
+			'item_merma' => $_SESSION["item_merma"],
+		];
+		$this->db->insert('tblgoods_transaction_production_header', $data);
+		$insert_id = $this->db->insert_id();
+		//$this->db->query("INSERT INTO tblgoods_transaction_production_header (item_merma) VALUES('".$_SESSION["item_merma"]."')");
+		$this->db->query("UPDATE tblgoods_transaction_detail set consolidate = '".$_SESSION["item_merma"]."', tblgoods_transaction_production_id = '".$insert_id."' where consolidate is NULL");
+		$_SESSION["item_merma"] = NULL;
 		return true;
 	}
 
