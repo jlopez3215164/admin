@@ -101,16 +101,31 @@
                   <div>
                      <div class="tab-content">
 
-                        <?php $this->load->view((isset($tab) ? $tab['view'] : 'admin/clients/groups/profile')); ?>
+                        <?php $this->load->view((isset($tab) ? $tab['view'] : 'admin/clients/groups/profile'));
+
+
+                        $price_groups = $this->db->query("select * from tblclient_item_price_group")->result();
+                        ?>
                         <hr>
                         <div class="form-group col">
                            <label class="col-sm-3 col-form-label">Grupos de Precio</label>
-                           <div class="col-sm-9">
+                           <div class="col-sm-7">
                               <select name="status" class="form-control">
                                  <option value="" selected="selected">Seleccione uno</option>
-                                 <option value="1">Active</option>
-                                 <option value="0">Inactive</option>
+                                 <?php
+                                 if (!empty($price_groups)) {
+                                    foreach ($price_groups as $value) {
+                                       ?>
+                                       <option value="<?php echo $value->id; ?>"><?php echo $value->name; ?></option>
+                                    <?php }
+                                 } ?>
+
                               </select>
+                           </div>
+                           <div class="col-sm-2">
+                              <button type="reset" class="btn btn-primary w-md m-b-5">
+                                 <?php echo "GUARDAR" ?>
+                              </button>
                            </div>
                         </div>
                         <hr>
@@ -120,14 +135,16 @@
 
 
                         //echo "HOLA MUNDO";
-                        $products = $this->db->query("select t2.commodity_name, t2.id, t1.price, t1.date from tblclients_item_price t1 left join tblitems t2 on t1.item_id  = t2.id ")->result();
+                        $products = $this->db->query("select t2.commodity_name, t2.id, t1.price, t1.date from tblclients_item_price t1 left join tblitems t2 on t1.item_id  = t2.id where t1.client_id = ".$client->userid)->result();
+
 
                         ?>
-                        <input class="form-control col-md-3 light-table-filter" data-table="order-table" type="text" placeholder="Search.."/>
-                       
+                        <input class="form-control col-md-3 light-table-filter" data-table="order-table" type="text"
+                           placeholder="Search.." />
+
                         <br />
                         <table class="table table-bordered table-striped table-hover order-table" id="">
-                          
+
                            <thead>
                               <tr style="background-color: #DCF3DE;font-weight: bold;">
                                  <th colspan="6">PRECIOS PARA ESTE CLIENTE</th>
@@ -202,45 +219,45 @@
       $(function () {
          init_rel_tasks_table(<?php echo $client->userid; ?>, 'customer');
       });
-      (function(document) {
-      'use strict';
+      (function (document) {
+         'use strict';
 
-      var LightTableFilter = (function(Arr) {
+         var LightTableFilter = (function (Arr) {
 
-        var _input;
+            var _input;
 
-        function _onInputEvent(e) {
-          _input = e.target;
-          var tables = document.getElementsByClassName(_input.getAttribute('data-table'));
-          Arr.forEach.call(tables, function(table) {
-            Arr.forEach.call(table.tBodies, function(tbody) {
-              Arr.forEach.call(tbody.rows, _filter);
-            });
-          });
-        }
+            function _onInputEvent(e) {
+               _input = e.target;
+               var tables = document.getElementsByClassName(_input.getAttribute('data-table'));
+               Arr.forEach.call(tables, function (table) {
+                  Arr.forEach.call(table.tBodies, function (tbody) {
+                     Arr.forEach.call(tbody.rows, _filter);
+                  });
+               });
+            }
 
-        function _filter(row) {
-          var text = row.textContent.toLowerCase(), val = _input.value.toLowerCase();
-          row.style.display = text.indexOf(val) === -1 ? 'none' : 'table-row';
-        }
+            function _filter(row) {
+               var text = row.textContent.toLowerCase(), val = _input.value.toLowerCase();
+               row.style.display = text.indexOf(val) === -1 ? 'none' : 'table-row';
+            }
 
-        return {
-          init: function() {
-            var inputs = document.getElementsByClassName('light-table-filter');
-            Arr.forEach.call(inputs, function(input) {
-              input.oninput = _onInputEvent;
-            });
-          }
-        };
-      })(Array.prototype);
+            return {
+               init: function () {
+                  var inputs = document.getElementsByClassName('light-table-filter');
+                  Arr.forEach.call(inputs, function (input) {
+                     input.oninput = _onInputEvent;
+                  });
+               }
+            };
+         })(Array.prototype);
 
-      document.addEventListener('readystatechange', function() {
-        if (document.readyState === 'complete') {
-          LightTableFilter.init();
-        }
-      });
+         document.addEventListener('readystatechange', function () {
+            if (document.readyState === 'complete') {
+               LightTableFilter.init();
+            }
+         });
 
-    })(document);
+      })(document);
    </script>
 <?php } ?>
 <?php $this->load->view('admin/clients/client_js'); ?>
