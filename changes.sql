@@ -152,5 +152,25 @@ CREATE TABLE `tblclients_item_price` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- orion_zeus.tblclient_item_price_group definition
+
+CREATE TABLE `tblclient_item_price_group` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` longtext COLLATE utf8mb4_general_ci,
+  `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- orion_zeus.tblclient_item_price_group_detail definition
+
+CREATE TABLE `tblclient_item_price_group_detail` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `item_id` bigint DEFAULT NULL,
+  `price` decimal(18,4) DEFAULT NULL,
+  `item_price_group_id` bigint DEFAULT NULL,
+  `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=222 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 
