@@ -77,6 +77,8 @@ class Invoices extends AdminController
     public function client_change_data($customer_id, $current_invoice = '')
     {
         if ($this->input->is_ajax_request()) {
+            $_SESSION['client_id_active'] = $customer_id;
+
             $this->load->model('projects_model');
             $data                     = [];
             $data['billing_shipping'] = $this->clients_model->get_customer_billing_and_shipping_details($customer_id);

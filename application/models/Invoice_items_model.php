@@ -29,7 +29,7 @@ class Invoice_items_model extends App_Model
             'long_description' => $_data['long_description'],
         ];
 
-        foreach ($_data as $column  => $value) {
+        foreach ($_data as $column => $value) {
             if (strpos($column, 'rate_currency_') !== false) {
                 $data[$column] = $value;
             }
@@ -76,20 +76,25 @@ class Invoice_items_model extends App_Model
      */
     public function get($id = '')
     {
-        $columns             = $this->db->list_fields(db_prefix() . 'items');
+        $columns = $this->db->list_fields(db_prefix() . 'items');
         $rateCurrencyColumns = '';
         foreach ($columns as $column) {
             if (strpos($column, 'rate_currency_') !== false) {
                 $rateCurrencyColumns .= $column . ',';
             }
         }
-        $this->db->select($rateCurrencyColumns . '' . db_prefix() . 'items.id as itemid,rate,
+        $this->db->select($rateCurrencyColumns . '' . db_prefix() . 'items.id as itemid,ifnull(t3.price,rate) as rate,
             t1.taxrate as taxrate,t1.id as taxid,t1.name as taxname,
             t2.taxrate as taxrate_2,t2.id as taxid_2,t2.name as taxname_2,
             description,long_description,group_id,' . db_prefix() . 'items_groups.name as group_name,unit');
         $this->db->from(db_prefix() . 'items');
         $this->db->join('' . db_prefix() . 'taxes t1', 't1.id = ' . db_prefix() . 'items.tax', 'left');
         $this->db->join('' . db_prefix() . 'taxes t2', 't2.id = ' . db_prefix() . 'items.tax2', 'left');
+        if(isset($_SESSION['client_id_active'])){
+        $this->db->join('' . db_prefix() . 'clients_item_price t3', db_prefix() . 'items.id = ' . 't3.item_id and '. 't3.client_id = ' . $_SESSION['client_id_active'], 'left');
+        }
+        //$this->db->join('' . db_prefix() . 'clients_item_price t4',, 'left');
+
         $this->db->join(db_prefix() . 'items_groups', '' . db_prefix() . 'items_groups.id = ' . db_prefix() . 'items.group_id', 'left');
         $this->db->order_by('description', 'asc');
         if (is_numeric($id)) {
@@ -108,7 +113,7 @@ class Invoice_items_model extends App_Model
         $groups = $this->db->get(db_prefix() . 'items_groups')->result_array();
 
         array_unshift($groups, [
-            'id'   => 0,
+            'id' => 0,
             'name' => '',
         ]);
 
@@ -253,15 +258,16 @@ class Invoice_items_model extends App_Model
 
     public function search($q)
     {
-        $this->db->select('rate, id, description as name, long_description as subtext');
-        $this->db->like('description', $q);
-        $this->db->or_like('long_description', $q);
 
-        $items = $this->db->get(db_prefix() . 'items')->result_array();
+        //$this->db->select('');
+        //$this->db->like('description', $q);
+        //$this->db->or_like('long_description', $q);
+
+        $items = $this->db->query("select ifnull(t2.price, t1.rate) as rate, t1.id, t1.description as name, t1.long_description as subtext from tblitems t1 left join tblclients_item_price t2 on t1.id = t2.item_id and t2.client_id = '".$_SESSION['client_id_active']."' where t1.description like '%" . $q . "%' or long_description like '%" . $q . "%'")->result_array();
 
         foreach ($items as $key => $item) {
             $items[$key]['subtext'] = strip_tags(mb_substr($item['subtext'], 0, 200)) . '...';
-            $items[$key]['name']    = '(' . app_format_number($item['rate']) . ') ' . $item['name'];
+            $items[$key]['name'] = '(' . app_format_number($item['rate']) . ') - ' . $item['id'] . " - " . $item['name'];
         }
 
         return $items;

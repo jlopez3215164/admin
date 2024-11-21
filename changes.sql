@@ -141,5 +141,16 @@ CREATE TABLE `system_param` (
   `active` bit(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- orion_zeus.tblclients_item_price definition
+
+CREATE TABLE `tblclients_item_price` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `client_id` bigint DEFAULT NULL,
+  `item_id` bigint DEFAULT NULL,
+  `price` decimal(18,4) DEFAULT NULL,
+  `date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 
