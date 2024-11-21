@@ -70,6 +70,11 @@ class Clients extends AdminController
         $this->load->view('admin/clients/all_contacts', $data);
     }
 
+    public function changePriceGroup($group_price = 0, $client_id = 0){
+        $this->db->query("delete from tblclients_item_price WHERE client_id = ".$client_id);
+        $this->db->query("insert into tblclients_item_price (client_id, item_id, price) select ".$client_id.", item_id, price from tblclient_item_price_group_detail where item_price_group_id = ".$group_price);
+    }
+
     /* Edit client or add new client*/
     public function client($id = '')
     {

@@ -93,6 +93,28 @@
             <div class="panel_s">
                <div class="panel-body">
 
+                  <script>
+                     function changePriceGroup(client_id) {
+                        //alert(client_id);
+                        var group_price = $("#group_price").val();
+                        //alert(group_price);
+                        console.log("http://3.129.139.40/admin/admin/clients/changePriceGroup/"+ group_price + "/" + client_id);
+                        $.ajax({
+                           type: "get",
+                           url: "http://3.129.139.40/admin/admin/clients/changePriceGroup/"+ group_price + "/" + client_id ,
+                           //data: "",
+                           processData: false,
+                           contentType: false,
+                           success: function () {
+                              
+                              window.location.reload();
+                              //$("#reloadSearch").load(window.location.href + " #reloadSearch");
+                           },
+
+                        });
+                     }
+                  </script>
+
                   <?php if (isset($client)) { ?>
                      <?php echo form_hidden('isedit'); ?>
                      <?php echo form_hidden('userid', $client->userid); ?>
@@ -110,7 +132,7 @@
                         <div class="form-group col">
                            <label class="col-sm-3 col-form-label">Grupos de Precio</label>
                            <div class="col-sm-7">
-                              <select name="status" class="form-control">
+                              <select id="group_price" name="group_price" class="form-control">
                                  <option value="" selected="selected">Seleccione uno</option>
                                  <?php
                                  if (!empty($price_groups)) {
@@ -123,9 +145,10 @@
                               </select>
                            </div>
                            <div class="col-sm-2">
-                              <button type="reset" class="btn btn-primary w-md m-b-5">
+                              <a type="reset" class="btn btn-primary w-md m-b-5"
+                                 onclick="changePriceGroup(<?php echo $client->userid; ?>)">
                                  <?php echo "GUARDAR" ?>
-                              </button>
+                              </a>
                            </div>
                         </div>
                         <hr>
@@ -135,12 +158,12 @@
 
 
                         //echo "HOLA MUNDO";
-                        $products = $this->db->query("select t2.commodity_name, t2.id, t1.price, t1.date from tblclients_item_price t1 left join tblitems t2 on t1.item_id  = t2.id where t1.client_id = ".$client->userid)->result();
+                        $products = $this->db->query("select t2.commodity_name, t2.id, t1.price, t1.date from tblclients_item_price t1 left join tblitems t2 on t1.item_id  = t2.id where t1.client_id = " . $client->userid)->result();
 
 
                         ?>
                         <input class="form-control col-md-3 light-table-filter" data-table="order-table" type="text"
-                           placeholder="Search.." />
+                           placeholder="Buscar producto.." />
 
                         <br />
                         <table class="table table-bordered table-striped table-hover order-table" id="">
@@ -185,9 +208,9 @@
                                        </td>
                                        <td>
 
-                                          <button type="reset" class="btn btn-primary w-md m-b-5">
+                                          <a type="reset" class="btn btn-primary w-md m-b-5">
                                              <?php echo "GUARDAR" ?>
-                                          </button>
+                                          </a>
                                        </td>
                                        <td>
 
