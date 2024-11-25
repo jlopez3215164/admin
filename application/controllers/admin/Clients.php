@@ -75,6 +75,14 @@ class Clients extends AdminController
         $this->db->query("insert into tblclients_item_price (client_id, item_id, price) select ".$client_id.", item_id, price from tblclient_item_price_group_detail where item_price_group_id = ".$group_price);
     }
 
+    public function editPriceGroupItem($item_id = 0, $price = 0, $client_id = 0){
+        $this->db->query("update tblclients_item_price set price = ".$price." where item_id = ".$item_id." and client_id = ".$client_id);
+    }
+
+    public function deletePriceGroupItem($item_id = 0, $client_id = 0){
+        $this->db->query("delete from tblclients_item_price where item_id = ".$item_id." and client_id = ".$client_id);
+    }
+
     /* Edit client or add new client*/
     public function client($id = '')
     {

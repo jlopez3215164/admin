@@ -113,6 +113,46 @@
 
                         });
                      }
+                     function editPriceGroupItem(item_id, price, client_id) {
+                        //alert(client_id);
+                        //var group_price = $("#group_price").val();
+                        //alert(group_price);
+                        var price = $("#price_"+item_id).val();
+                        console.log("http://3.129.139.40/admin/admin/clients/editPriceGroupItem/"+ item_id + "/" + price + "/" + client_id);
+                        $.ajax({
+                           type: "get",
+                           url: "http://3.129.139.40/admin/admin/clients/editPriceGroupItem/"+ item_id + "/" + price + "/" + client_id ,
+                           //data: "",
+                           processData: false,
+                           contentType: false,
+                           success: function () {
+                              
+                              window.location.reload();
+                              //$("#reloadSearch").load(window.location.href + " #reloadSearch");
+                           },
+
+                        });
+                     }
+                     function deletePriceGroupItem(item_id, client_id) {
+                        //alert(client_id);
+                        //var group_price = $("#group_price").val();
+                        //alert(group_price);
+                        //var price = $("#price_"+item_id).val();
+                        console.log("http://3.129.139.40/admin/admin/clients/deletePriceGroupItem/"+ item_id + "/" + client_id);
+                        $.ajax({
+                           type: "get",
+                           url: "http://3.129.139.40/admin/admin/clients/deletePriceGroupItem/"+ item_id + "/" + client_id ,
+                           //data: "",
+                           processData: false,
+                           contentType: false,
+                           success: function () {
+                              
+                              window.location.reload();
+                              //$("#reloadSearch").load(window.location.href + " #reloadSearch");
+                           },
+
+                        });
+                     }
                   </script>
 
                   <?php if (isset($client)) { ?>
@@ -199,7 +239,7 @@
                                        </td>
 
                                        <td>
-                                          <input type="text" class="form-control" value="<?php echo $value->price; ?>">
+                                          <input id="price_<?php echo $value->id; ?>" type="text" class="form-control" value="<?php echo $value->price; ?>">
 
                                        </td>
 
@@ -208,15 +248,15 @@
                                        </td>
                                        <td>
 
-                                          <a type="reset" class="btn btn-primary w-md m-b-5">
+                                          <a type="reset"  class="btn btn-primary w-md m-b-5" onclick="editPriceGroupItem(<?php echo $value->id; ?>, <?php echo $value->price; ?>, <?php echo $client->userid; ?>)">
                                              <?php echo "GUARDAR" ?>
                                           </a>
                                        </td>
                                        <td>
 
-                                          <button type="reset" class="btn btn-danger w-md m-b-5">
+                                          <a type="reset" onclick="deletePriceGroupItem(<?php echo $value->id; ?>, <?php echo $client->userid; ?>)" class="btn btn-danger w-md m-b-5">
                                              <?php echo "ELIMINAR" ?>
-                                          </button>
+                                          </a>
                                        </td>
                                     </tr>
 
