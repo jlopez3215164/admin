@@ -354,8 +354,8 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
    $footer = "'footer': {
                   'sTSDD': ".$data_header[0]->subtotal.",
                   'sTSDB': ".($data_header[0]->subtotal * $currency[0]->tasa).",
-                  'descuentoD': 0,
-                  'descuentoB': 0,
+                  'descuentoD': ".$data_header[0]->discount_total.",
+                  'descuentoB': ".($data_header[0]->discount_total * $currency[0]->tasa).",
                   'baseImponibleD': ".$data_header[0]->subtotal.",
                   'baseImponibleB': ".($data_header[0]->subtotal * $currency[0]->tasa).",
                   'ivaD': ".$data_header[0]->total_tax.",
