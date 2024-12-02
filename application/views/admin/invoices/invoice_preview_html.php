@@ -319,7 +319,7 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
    <?php } ?>
    <hr />
    <?php
-
+   $currency = $this->db->query("select * from tblcurrencies where is_secondary_currency = 1")->result();
    $data_header = $this->db->query("select t1.*, t2.*, t1.datecreated emision from tblinvoices t1 left join tblclients t2 on t1.clientid = t2.userid where id = " . $invoice->id)->result();
 
    $json = "{
@@ -344,7 +344,7 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
       $body_data = "'body': [";
       foreach ($data_body as $value) {
          $body_data = $body_data . "{ 'codigo':'" . $value->item_order . "', 'descripcion': '" . $value->description . "', 'peso':" . $value->qty . ", 'cantidad':" . $value->qty . ", 'pUD': ".$value->rate.",
-          'pUB': ".($value->rate * 47).", 'ALIC':16, 'descuento': 0, 'totalD': ".($value->rate * $value->qty).", 'totalB': ".(($value->rate * 47) * $value->qty)."},";
+          'pUB': ".($value->rate * $currency[0]->tasa).", 'ALIC':16, 'descuento': 0, 'totalD': ".($value->rate * $value->qty).", 'totalB': ".(($value->rate * $currency[0]->tasa) * $value->qty)."},";
       }
       $body_data = $body_data . "]";
    }
@@ -353,16 +353,16 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
 
    $footer = "'footer': {
                   'sTSDD': ".$data_header[0]->subtotal.",
-                  'sTSDB': ".($data_header[0]->subtotal * 47).",
+                  'sTSDB': ".($data_header[0]->subtotal * $currency[0]->tasa).",
                   'descuentoD': 0,
                   'descuentoB': 0,
                   'baseImponibleD': ".$data_header[0]->subtotal.",
-                  'baseImponibleB': ".($data_header[0]->subtotal * 47).",
+                  'baseImponibleB': ".($data_header[0]->subtotal * $currency[0]->tasa).",
                   'ivaD': ".$data_header[0]->total_tax.",
-                  'ivaB': ".($data_header[0]->total_tax * 47)."
+                  'ivaB': ".($data_header[0]->total_tax * $currency[0]->tasa)."
                }}";
 
-   $json = $json . $body_data . ", 'tasa': 47," . $footer;
+   $json = $json . $body_data . ", 'tasa': ".$currency[0]->tasa."," . $footer;
 
    ?>
    <script>
