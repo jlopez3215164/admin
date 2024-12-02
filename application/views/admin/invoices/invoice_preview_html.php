@@ -319,21 +319,21 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
    <?php } ?>
    <hr />
    <?php
-   
+
    $data_header = $this->db->query("select t1.*, t2.*, t1.datecreated emision from tblinvoices t1 left join tblclients t2 on t1.clientid = t2.userid where id = " . $invoice->id)->result();
 
    $json = "{
                'encabezado': {
-                  'razonSocial': '".$data_header[0]->company."',
-                  'nFactura': '".$data_header[0]->number."',
-                  'CI': '".$data_header[0]->vat."',
-                  'fEmision': '".$data_header[0]->emision."',
-                  'fVecimiento': '".$data_header[0]->duedate."',
-                  'tlf': '".$data_header[0]->phonenumber."',
-                  'domicilio': '".$data_header[0]->billing_street."',
+                  'razonSocial': '" . $data_header[0]->company . "',
+                  'nFactura': '" . $data_header[0]->number . "',
+                  'CI': '" . $data_header[0]->vat . "',
+                  'fEmision': '" . $data_header[0]->emision . "',
+                  'fVecimiento': '" . $data_header[0]->duedate . "',
+                  'tlf': '" . $data_header[0]->phonenumber . "',
+                  'domicilio': '" . $data_header[0]->billing_street . "',
                   'condicionPago': 'CONTADO',
                   'vendedor': 'jarvis',
-                  'direcionDespacho': '".$data_header[0]->billing_street."',
+                  'direcionDespacho': '" . $data_header[0]->billing_street . "',
                   'transporte': 'JAR'
                },";
    $data_body = $this->db->query("select * from tblitemable where rel_id = " . $invoice->id . " and rel_type = 'invoice'")->result();
@@ -442,11 +442,12 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
    </script>
    <?php //echo "ESTAUS: " + $invoice->status; ?>
    <div class="col-md-12 row mtop15">
+      <div class="col-md-3">
+         <button style='margin-top:0px;width: 100%;' onclick="printReportJarvis(<?php echo $invoice->id; ?>)"
+            class="btn btn-warning">REPORTE FACTURA</button>
+      </div>
       <?php if ($invoice->status == 2) { //PAGADA ?>
-         <div class="col-md-3">
-            <button style='margin-top:0px;width: 100%;' onclick="printReportJarvis(<?php echo $invoice->id; ?>)"
-               class="btn btn-warning">REPORTE FACTURA</button>
-         </div>
+
          <?php if ($invoice->is_print_fiscal == NULL) { ?>
             <div class="col-md-3">
                <button style='margin-top:0px;width: 100%;' onclick="printFiscal(<?php echo $invoice->id; ?>)"
