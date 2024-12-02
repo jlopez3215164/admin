@@ -339,10 +339,12 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
    $data_body = $this->db->query("select * from tblitemable where rel_id = " . $invoice->id . " and rel_type = 'invoice'")->result();
    $body_data = "";
 
+
    if (!empty($data_body)) {
       $body_data = "'body': [";
       foreach ($data_body as $value) {
-         $body_data = $body_data . "{ 'codigo':'" . $value->item_order . "', 'descripcion': '" . $value->description . "', 'peso':" . $value->qty . ", 'cantidad':" . $value->qty . ", 'pUD': 1, 'pUB': 1, 'ALIC':16, 'descuento': 0, 'totalD': 1, 'totalB': 1},";
+         $body_data = $body_data . "{ 'codigo':'" . $value->item_order . "', 'descripcion': '" . $value->description . "', 'peso':" . $value->qty . ", 'cantidad':" . $value->qty . ", 'pUD': ".$value->rate.",
+          'pUB': ".($value->rate * 47).", 'ALIC':16, 'descuento': 0, 'totalD': ".($value->rate * $value->qty).", 'totalB': ".(($value->rate * 47) * $value->qty)."},";
       }
       $body_data = $body_data . "]";
    }
@@ -350,17 +352,17 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
 
 
    $footer = "'footer': {
-                  'sTSDD': 10,
-                  'sTSDB': 570,
+                  'sTSDD': ".$data_header[0]->subtotal.",
+                  'sTSDB': ".($data_header[0]->subtotal * 47).",
                   'descuentoD': 0,
                   'descuentoB': 0,
-                  'baseImponibleD': 10,
-                  'baseImponibleB': 570,
-                  'ivaD': 1.6,
-                  'ivaB': 91.2
+                  'baseImponibleD': ".$data_header[0]->subtotal.",
+                  'baseImponibleB': ".($data_header[0]->subtotal * 47).",
+                  'ivaD': ".$data_header[0]->total_tax.",
+                  'ivaB': ".($data_header[0]->total_tax * 47)."
                }}";
 
-   $json = $json . $body_data . ", 'tasa': 10," . $footer;
+   $json = $json . $body_data . ", 'tasa': 47," . $footer;
 
    ?>
    <script>
