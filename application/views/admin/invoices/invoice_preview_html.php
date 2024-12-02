@@ -319,19 +319,21 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
    <?php } ?>
    <hr />
    <?php
+   
+   $data_header = $this->db->query("select t1.*, t2.*, t1.datecreated emision from tblinvoices t1 left join tblclients t2 on t1.clientid = t2.userid where id = " . $invoice->id)->result();
 
    $json = "{
                'encabezado': {
-                  'razonSocial': 'jarvisPrueba',
-                  'nFactura': '1212',
-                  'CI': '21212',
-                  'fEmision': '2024-10-31',
-                  'fVecimiento': '2024-10-31',
-                  'tlf': '04125913610',
-                  'domicilio': 'Caracas venezuela',
+                  'razonSocial': '".$data_header[0]->company."',
+                  'nFactura': '".$data_header[0]->number."',
+                  'CI': '".$data_header[0]->vat."',
+                  'fEmision': '".$data_header[0]->emision."',
+                  'fVecimiento': '".$data_header[0]->duedate."',
+                  'tlf': '".$data_header[0]->phonenumber."',
+                  'domicilio': '".$data_header[0]->billing_street."',
                   'condicionPago': 'CONTADO',
                   'vendedor': 'jarvis',
-                  'direcionDespacho': 'CFM',
+                  'direcionDespacho': '".$data_header[0]->billing_street."',
                   'transporte': 'JAR'
                },";
    $data_body = $this->db->query("select * from tblitemable where rel_id = " . $invoice->id . " and rel_type = 'invoice'")->result();
