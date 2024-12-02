@@ -84,11 +84,13 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
       <?php if ($invoice->project_id != 0) { ?>
          <div class="col-md-12">
             <h4 class="font-medium mtop15 mbot20">
-               <?php echo _l('related_to_project', array(
-                  _l('invoice_lowercase'),
-                  _l('project_lowercase'),
-                  '<a href="' . admin_url('projects/view/' . $invoice->project_id) . '" target="_blank">' . $invoice->project_data->name . '</a>',
-               )
+               <?php echo _l(
+                  'related_to_project',
+                  array(
+                     _l('invoice_lowercase'),
+                     _l('project_lowercase'),
+                     '<a href="' . admin_url('projects/view/' . $invoice->project_id) . '" target="_blank">' . $invoice->project_data->name . '</a>',
+                  )
                ); ?>
             </h4>
          </div>
@@ -316,6 +318,49 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
       <?php } ?>
    <?php } ?>
    <hr />
+   <?php
+
+   $json = "{
+               'encabezado': {
+                  'razonSocial': 'jarvisPrueba',
+                  'nFactura': '1212',
+                  'CI': '21212',
+                  'fEmision': '2024-10-31',
+                  'fVecimiento': '2024-10-31',
+                  'tlf': '04125913610',
+                  'domicilio': 'Caracas venezuela',
+                  'condicionPago': 'CONTADO',
+                  'vendedor': 'jarvis',
+                  'direcionDespacho': 'CFM',
+                  'transporte': 'JAR'
+               },";
+   $data_body = $this->db->query("select * from tblitemable where rel_id = " . $invoice->id . " and rel_type = 'invoice'")->result();
+   $body_data = "";
+
+   if (!empty($data_body)) {
+      $body_data = "'body': [";
+      foreach ($data_body as $value) {
+         $body_data = $body_data . "{ 'codigo':'" . $value->item_order . "', 'descripcion': '" . $value->description . "', 'peso':" . $value->qty . ", 'cantidad':" . $value->qty . ", 'pUD': 1, 'pUB': 1, 'ALIC':16, 'descuento': 0, 'totalD': 1, 'totalB': 1},";
+      }
+      $body_data = $body_data . "]";
+   }
+
+
+
+   $footer = "'footer': {
+                  'sTSDD': 10,
+                  'sTSDB': 570,
+                  'descuentoD': 0,
+                  'descuentoB': 0,
+                  'baseImponibleD': 10,
+                  'baseImponibleB': 570,
+                  'ivaD': 1.6,
+                  'ivaB': 91.2
+               }}";
+
+   $json = $json . $body_data . ", 'tasa': 10," . $footer;
+
+   ?>
    <script>
       function printFiscal(id) {
          //alert(admin_url);
@@ -336,7 +381,7 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
          $.ajax({
             type: "GET",
             url: admin_url + "invoices/printNoFiscal/" + id,
-            cache:false,
+            cache: false,
             success: function (data) {
                console.log(data);
                alert("NOTA IMPRESA");
@@ -364,7 +409,7 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
          var isBoss = confirm("¿Desea eliminar esta factura?");
          if (isBoss) {
             $.ajax({
-               cache:false,
+               cache: false,
                type: "GET",
                url: admin_url + "invoices/deleteBill/" + id,
                success: function (data) {
@@ -374,10 +419,32 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
             });
          }
       }
+
+      function printReportJarvis(id) {
+         //alert(admin_url);
+         console.log("ID: " + id);
+         $.ajax({
+            cache: false,
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            type: "POST",
+            url: "http://3.141.186.119:9999/factura2",
+            data: JSON.stringify(<?php echo $json; ?>),
+            success: function (data) {
+               console.log("correcto");
+               console.log(data);
+               window.open(data.urlContent);
+            }
+         });
+      }
    </script>
    <?php //echo "ESTAUS: " + $invoice->status; ?>
    <div class="col-md-12 row mtop15">
-      <?php if ($invoice->status == 2) { //PAGADA?>
+      <?php if ($invoice->status == 2) { //PAGADA ?>
+         <div class="col-md-3">
+            <button style='margin-top:0px;width: 100%;' onclick="printReportJarvis(<?php echo $invoice->id; ?>)"
+               class="btn btn-warning">REPORTE FACTURA</button>
+         </div>
          <?php if ($invoice->is_print_fiscal == NULL) { ?>
             <div class="col-md-3">
                <button style='margin-top:0px;width: 100%;' onclick="printFiscal(<?php echo $invoice->id; ?>)"
