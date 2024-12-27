@@ -432,7 +432,7 @@ if (isset($invoice->scheduled_email) && $invoice->scheduled_email) { ?>
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             type: "POST",
-            url: "http://3.141.186.119:9999/factura2",
+            url: "http://3.22.94.232:2007/factura2",
             data: JSON.stringify(<?php echo $json; ?>),
             success: function (data) {
                console.log("correcto");
